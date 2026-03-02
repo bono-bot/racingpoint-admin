@@ -43,10 +43,10 @@ export default function OverviewPage() {
   }, []);
 
   const cards = [
-    { label: "Today's Bookings", value: stats.todayBookings, color: 'text-red-400' },
+    { label: "Today's Bookings", value: stats.todayBookings, color: 'text-rp-red' },
     { label: 'Total Bookings', value: stats.totalBookings, color: 'text-blue-400' },
     { label: 'Total Customers', value: stats.totalCustomers, color: 'text-green-400' },
-    { label: 'Gateway Status', value: stats.gatewayStatus, color: stats.gatewayStatus === 'online' ? 'text-emerald-400' : 'text-red-400' },
+    { label: 'Gateway Status', value: stats.gatewayStatus, color: stats.gatewayStatus === 'online' ? 'text-emerald-400' : 'text-rp-red' },
   ];
 
   return (
@@ -55,47 +55,47 @@ export default function OverviewPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {cards.map((card) => (
-          <div key={card.label} className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-            <p className="text-sm text-zinc-500">{card.label}</p>
+          <div key={card.label} className="bg-rp-card border border-rp-border rounded-xl p-6">
+            <p className="text-sm text-rp-grey">{card.label}</p>
             <p className={`text-3xl font-bold mt-2 ${card.color}`}>{card.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-6">
           <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
           <div className="space-y-3">
-            <a href="/bookings" className="block px-4 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+            <a href="/bookings" className="block px-4 py-3 bg-rp-card hover:bg-rp-card rounded-lg text-sm transition-colors">
               View All Bookings
             </a>
-            <a href="/customers" className="block px-4 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+            <a href="/customers" className="block px-4 py-3 bg-rp-card hover:bg-rp-card rounded-lg text-sm transition-colors">
               Customer Directory
             </a>
-            <a href="/leaderboard" className="block px-4 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+            <a href="/leaderboard" className="block px-4 py-3 bg-rp-card hover:bg-rp-card rounded-lg text-sm transition-colors">
               View Leaderboard
             </a>
-            <a href="/chat" className="block px-4 py-3 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors">
+            <a href="/chat" className="block px-4 py-3 bg-rp-card hover:bg-rp-card rounded-lg text-sm transition-colors">
               Ask AI Assistant
             </a>
           </div>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-6">
           <h2 className="text-lg font-semibold mb-4">System Status</h2>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between items-center">
-              <span className="text-zinc-400">API Gateway</span>
-              <span className={stats.gatewayStatus === 'online' ? 'text-emerald-400' : 'text-red-400'}>
+              <span className="text-neutral-400">API Gateway</span>
+              <span className={stats.gatewayStatus === 'online' ? 'text-emerald-400' : 'text-rp-red'}>
                 {stats.gatewayStatus}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-zinc-400">WhatsApp Bot</span>
+              <span className="text-neutral-400">WhatsApp Bot</span>
               <span className="text-emerald-400">connected</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-zinc-400">Discord Bot</span>
+              <span className="text-neutral-400">Discord Bot</span>
               <span className="text-emerald-400">connected</span>
             </div>
           </div>

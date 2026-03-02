@@ -44,7 +44,7 @@ export default function BookingsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Bookings</h1>
-        <span className="text-sm text-zinc-500">{total} total</span>
+        <span className="text-sm text-rp-grey">{total} total</span>
       </div>
 
       {/* Filters */}
@@ -54,12 +54,12 @@ export default function BookingsPage() {
           placeholder="Search name, phone, or ID..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-red-500"
+          className="flex-1 bg-rp-card border border-rp-border rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-rp-red"
         />
         <select
           value={sourceFilter}
           onChange={(e) => setSourceFilter(e.target.value)}
-          className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm"
+          className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm"
         >
           <option value="">All Sources</option>
           <option value="whatsapp">WhatsApp</option>
@@ -68,7 +68,7 @@ export default function BookingsPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm"
+          className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm"
         >
           <option value="">All Status</option>
           <option value="confirmed">Confirmed</option>
@@ -77,15 +77,15 @@ export default function BookingsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+      <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-zinc-500">Loading...</div>
+          <div className="p-8 text-center text-rp-grey">Loading...</div>
         ) : bookings.length === 0 ? (
-          <div className="p-8 text-center text-zinc-500">No bookings found</div>
+          <div className="p-8 text-center text-rp-grey">No bookings found</div>
         ) : (
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-500 text-left">
+              <tr className="border-b border-rp-border text-rp-grey text-left">
                 <th className="px-4 py-3 font-medium">ID</th>
                 <th className="px-4 py-3 font-medium">Customer</th>
                 <th className="px-4 py-3 font-medium">Phone</th>
@@ -99,10 +99,10 @@ export default function BookingsPage() {
             </thead>
             <tbody>
               {bookings.map((b) => (
-                <tr key={b.booking_id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                  <td className="px-4 py-3 font-mono text-xs text-zinc-400">{b.booking_id}</td>
+                <tr key={b.booking_id} className="border-b border-rp-border/50 hover:bg-rp-card/30">
+                  <td className="px-4 py-3 font-mono text-xs text-neutral-400">{b.booking_id}</td>
                   <td className="px-4 py-3">{b.customer_name}</td>
-                  <td className="px-4 py-3 text-zinc-400">{b.customer_phone}</td>
+                  <td className="px-4 py-3 text-neutral-400">{b.customer_phone}</td>
                   <td className="px-4 py-3">{b.booking_type}</td>
                   <td className="px-4 py-3">{formatDate(b.session_date)}</td>
                   <td className="px-4 py-3">{formatTime(b.start_time)} - {formatTime(b.end_time)}</td>
@@ -115,7 +115,7 @@ export default function BookingsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className={`text-xs px-2 py-1 rounded-full ${
-                      b.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'
+                      b.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rp-red/10 text-rp-red'
                     }`}>
                       {b.status}
                     </span>
@@ -124,7 +124,7 @@ export default function BookingsPage() {
                     {b.status === 'confirmed' && (
                       <button
                         onClick={() => handleCancel(b.booking_id)}
-                        className="text-xs text-red-400 hover:text-red-300"
+                        className="text-xs text-rp-red hover:text-rp-red-light"
                       >
                         Cancel
                       </button>

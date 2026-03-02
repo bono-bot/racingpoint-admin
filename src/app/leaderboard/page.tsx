@@ -42,18 +42,18 @@ export default function LeaderboardPage() {
       <h1 className="text-2xl font-bold mb-6">Leaderboard</h1>
 
       {error ? (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-red-400 text-sm">
+        <div className="bg-rp-red/10 border border-rp-red/20 rounded-xl p-6 text-rp-red text-sm">
           {error}
         </div>
       ) : loading ? (
-        <div className="text-center text-zinc-500 py-8">Loading...</div>
+        <div className="text-center text-rp-grey py-8">Loading...</div>
       ) : drivers.length === 0 ? (
-        <div className="text-center text-zinc-500 py-8">No driver data yet</div>
+        <div className="text-center text-rp-grey py-8">No driver data yet</div>
       ) : (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-500 text-left">
+              <tr className="border-b border-rp-border text-rp-grey text-left">
                 <th className="px-4 py-3 font-medium">#</th>
                 <th className="px-4 py-3 font-medium">Driver</th>
                 <th className="px-4 py-3 font-medium">Total Laps</th>
@@ -62,11 +62,11 @@ export default function LeaderboardPage() {
             </thead>
             <tbody>
               {drivers.map((d, i) => (
-                <tr key={d.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                  <td className="px-4 py-3 text-zinc-500">{i + 1}</td>
+                <tr key={d.id} className="border-b border-rp-border/50 hover:bg-rp-card/30">
+                  <td className="px-4 py-3 text-rp-grey">{i + 1}</td>
                   <td className="px-4 py-3 font-medium">{d.name}</td>
-                  <td className="px-4 py-3 text-zinc-400">{d.total_laps}</td>
-                  <td className="px-4 py-3 font-mono text-zinc-400">
+                  <td className="px-4 py-3 text-neutral-400">{d.total_laps}</td>
+                  <td className="px-4 py-3 font-mono text-neutral-400">
                     {d.total_time_ms ? formatLapTime(d.total_time_ms) : '-'}
                   </td>
                 </tr>

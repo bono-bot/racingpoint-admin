@@ -31,7 +31,7 @@ export default function CustomersPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Customers</h1>
-        <span className="text-sm text-zinc-500">{total} total</span>
+        <span className="text-sm text-rp-grey">{total} total</span>
       </div>
 
       <input
@@ -39,22 +39,22 @@ export default function CustomersPage() {
         placeholder="Search by name, phone, or email..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm mb-6 focus:outline-none focus:border-red-500"
+        className="w-full bg-rp-card border border-rp-border rounded-lg px-4 py-2 text-sm mb-6 focus:outline-none focus:border-rp-red"
       />
 
       {loading ? (
-        <div className="text-center text-zinc-500 py-8">Loading...</div>
+        <div className="text-center text-rp-grey py-8">Loading...</div>
       ) : customers.length === 0 ? (
-        <div className="text-center text-zinc-500 py-8">No customers found</div>
+        <div className="text-center text-rp-grey py-8">No customers found</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {customers.map((c) => (
-            <div key={c.phone} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+            <div key={c.phone} className="bg-rp-card border border-rp-border rounded-xl p-5">
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <h3 className="font-semibold">{c.name}</h3>
-                  <p className="text-sm text-zinc-400">{c.phone}</p>
-                  {c.email && <p className="text-sm text-zinc-500">{c.email}</p>}
+                  <p className="text-sm text-neutral-400">{c.phone}</p>
+                  {c.email && <p className="text-sm text-rp-grey">{c.email}</p>}
                 </div>
                 <div className="flex gap-1">
                   {c.sources.map((s) => (
@@ -66,7 +66,7 @@ export default function CustomersPage() {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-between text-xs text-zinc-500 border-t border-zinc-800 pt-3">
+              <div className="flex justify-between text-xs text-rp-grey border-t border-rp-border pt-3">
                 <span>{c.total_bookings} booking{c.total_bookings !== 1 ? 's' : ''}</span>
                 <span>Last: {formatDate(c.last_booking)}</span>
               </div>

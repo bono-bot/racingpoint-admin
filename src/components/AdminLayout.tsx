@@ -85,20 +85,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     : allPages;
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-zinc-100">
+    <div className="flex h-screen bg-rp-black text-white">
       {/* Sidebar */}
       <aside className={cn(
-        'border-r border-zinc-800 flex flex-col transition-all duration-200 shrink-0',
+        'border-r border-rp-border flex flex-col transition-all duration-200 shrink-0 bg-rp-black',
         sidebarOpen ? 'w-56' : 'w-0 overflow-hidden'
       )}>
-        <div className="p-5 border-b border-zinc-800">
-          <h1 className="text-lg font-bold text-red-500">RacingPoint</h1>
-          <p className="text-[10px] text-zinc-600 mt-0.5">Admin Dashboard</p>
+        <div className="p-5 border-b border-rp-border">
+          <h1 className="text-lg font-bold text-rp-red tracking-wide">RacingPoint</h1>
+          <p className="text-[10px] text-rp-grey mt-0.5">Admin Dashboard</p>
         </div>
         <nav className="flex-1 overflow-auto p-3 space-y-4">
           {navSections.map((section) => (
             <div key={section.title}>
-              <p className="text-[10px] uppercase tracking-wider text-zinc-600 px-2 mb-1">{section.title}</p>
+              <p className="text-[10px] uppercase tracking-wider text-rp-grey px-2 mb-1">{section.title}</p>
               <div className="space-y-0.5">
                 {section.items.map((item) => (
                   <Link
@@ -107,8 +107,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     className={cn(
                       'block px-3 py-1.5 rounded-lg text-sm transition-colors',
                       pathname === item.href
-                        ? 'bg-red-500/10 text-red-400 font-medium'
-                        : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50'
+                        ? 'bg-rp-red/10 text-rp-red font-medium'
+                        : 'text-neutral-400 hover:text-white hover:bg-rp-card'
                     )}
                   >
                     {item.label}
@@ -118,29 +118,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           ))}
         </nav>
-        <div className="p-3 border-t border-zinc-800">
+        <div className="p-3 border-t border-rp-border">
           <Link href="/settings" className={cn(
             'block px-3 py-1.5 rounded-lg text-sm transition-colors',
-            pathname === '/settings' ? 'bg-red-500/10 text-red-400' : 'text-zinc-500 hover:text-zinc-300'
+            pathname === '/settings' ? 'bg-rp-red/10 text-rp-red' : 'text-rp-grey hover:text-neutral-300'
           )}>
             Settings
           </Link>
-          <p className="text-[10px] text-zinc-700 px-3 mt-1">Bono v2.0</p>
+          <p className="text-[10px] text-rp-grey/50 px-3 mt-1">Bono v2.0</p>
         </div>
       </aside>
 
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
-        <header className="h-12 border-b border-zinc-800 flex items-center px-4 gap-3 shrink-0">
+        <header className="h-12 border-b border-rp-border flex items-center px-4 gap-3 shrink-0 bg-rp-black">
           <button onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-zinc-500 hover:text-zinc-300 text-sm px-1">
-            {sidebarOpen ? '◀' : '▶'}
+            className="text-rp-grey hover:text-neutral-300 text-sm px-1">
+            {sidebarOpen ? '\u25C0' : '\u25B6'}
           </button>
           <button onClick={() => { setSearchOpen(true); setSearchQuery(''); }}
-            className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1 text-sm text-zinc-500 hover:border-zinc-700 flex-1 max-w-xs">
+            className="flex items-center gap-2 bg-rp-card border border-rp-border rounded-lg px-3 py-1 text-sm text-rp-grey hover:border-neutral-600 flex-1 max-w-xs">
             <span>Search...</span>
-            <kbd className="ml-auto text-[10px] bg-zinc-800 px-1.5 py-0.5 rounded">Ctrl+K</kbd>
+            <kbd className="ml-auto text-[10px] bg-rp-black px-1.5 py-0.5 rounded border border-rp-border">Ctrl+K</kbd>
           </button>
         </header>
 
@@ -154,14 +154,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {searchOpen && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] bg-black/60"
           onClick={() => setSearchOpen(false)}>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-md shadow-2xl"
+          <div className="bg-rp-card border border-rp-border rounded-xl w-full max-w-md shadow-2xl"
             onClick={e => e.stopPropagation()}>
             <input
               autoFocus
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search pages..."
-              className="w-full bg-transparent px-4 py-3 text-sm border-b border-zinc-800 focus:outline-none"
+              className="w-full bg-transparent px-4 py-3 text-sm border-b border-rp-border focus:outline-none text-white placeholder-rp-grey"
             />
             <div className="max-h-64 overflow-auto p-2">
               {filteredPages.map(page => (
@@ -171,14 +171,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   onClick={() => setSearchOpen(false)}
                   className={cn(
                     'block px-3 py-2 rounded-lg text-sm transition-colors',
-                    pathname === page.href ? 'bg-red-500/10 text-red-400' : 'text-zinc-300 hover:bg-zinc-800'
+                    pathname === page.href ? 'bg-rp-red/10 text-rp-red' : 'text-neutral-300 hover:bg-rp-black'
                   )}
                 >
                   {page.label}
                 </Link>
               ))}
               {filteredPages.length === 0 && (
-                <p className="text-sm text-zinc-500 px-3 py-4 text-center">No pages found</p>
+                <p className="text-sm text-rp-grey px-3 py-4 text-center">No pages found</p>
               )}
             </div>
           </div>

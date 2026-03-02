@@ -19,10 +19,10 @@ const COLORS = ['#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899'
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
-      <p className="text-xs text-zinc-500 mb-1">{label}</p>
+    <div className="bg-rp-card border border-rp-border rounded-xl p-5">
+      <p className="text-xs text-rp-grey mb-1">{label}</p>
       <p className="text-2xl font-bold">{value}</p>
-      {sub && <p className="text-xs text-zinc-500 mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-rp-grey mt-1">{sub}</p>}
     </div>
   );
 }
@@ -35,8 +35,8 @@ export default function AnalyticsPage() {
     fetch('/api/analytics').then(r => r.json()).then(d => { setData(d); setLoading(false); });
   }, []);
 
-  if (loading) return <div className="text-center text-zinc-500 py-8">Loading analytics...</div>;
-  if (!data) return <div className="text-center text-zinc-500 py-8">Failed to load</div>;
+  if (loading) return <div className="text-center text-rp-grey py-8">Loading analytics...</div>;
+  if (!data) return <div className="text-center text-rp-grey py-8">Failed to load</div>;
 
   const fmt = (n: number) => `₹${n.toLocaleString('en-IN')}`;
   const totalRevenue = data.dailyRevenue.reduce((s, d) => s + d.revenue, 0);
@@ -60,7 +60,7 @@ export default function AnalyticsPage() {
 
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Peak Hours */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5">
           <h2 className="text-lg font-semibold mb-4">Peak Hours</h2>
           {data.hourlyData.some(h => h.count > 0) ? (
             <ResponsiveContainer width="100%" height={250}>
@@ -73,12 +73,12 @@ export default function AnalyticsPage() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-sm text-zinc-500 py-8 text-center">No sales data yet — charts will appear as sales are recorded</p>
+            <p className="text-sm text-rp-grey py-8 text-center">No sales data yet — charts will appear as sales are recorded</p>
           )}
         </div>
 
         {/* Revenue Trend */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5">
           <h2 className="text-lg font-semibold mb-4">Revenue Trend (30 days)</h2>
           {data.dailyRevenue.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
@@ -93,12 +93,12 @@ export default function AnalyticsPage() {
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-sm text-zinc-500 py-8 text-center">No revenue data yet</p>
+            <p className="text-sm text-rp-grey py-8 text-center">No revenue data yet</p>
           )}
         </div>
 
         {/* Payment Methods */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5">
           <h2 className="text-lg font-semibold mb-4">Payment Methods</h2>
           {data.paymentBreakdown.length > 0 ? (
             <div className="flex items-center gap-6">
@@ -118,19 +118,19 @@ export default function AnalyticsPage() {
                 {data.paymentBreakdown.map((p, i) => (
                   <div key={p.payment_method} className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
-                    <span className="text-sm text-zinc-400">{p.payment_method.toUpperCase()}</span>
+                    <span className="text-sm text-neutral-400">{p.payment_method.toUpperCase()}</span>
                     <span className="text-sm font-mono">{fmt(p.total)}</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <p className="text-sm text-zinc-500 py-8 text-center">No payment data yet</p>
+            <p className="text-sm text-rp-grey py-8 text-center">No payment data yet</p>
           )}
         </div>
 
         {/* Expense Breakdown */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5">
           <h2 className="text-lg font-semibold mb-4">Expense Breakdown</h2>
           {data.expenseBreakdown.length > 0 ? (
             <div className="flex items-center gap-6">
@@ -150,20 +150,20 @@ export default function AnalyticsPage() {
                 {data.expenseBreakdown.map((p, i) => (
                   <div key={p.category} className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
-                    <span className="text-sm text-zinc-400">{p.category}</span>
+                    <span className="text-sm text-neutral-400">{p.category}</span>
                     <span className="text-sm font-mono">{fmt(p.total)}</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <p className="text-sm text-zinc-500 py-8 text-center">No expense data yet</p>
+            <p className="text-sm text-rp-grey py-8 text-center">No expense data yet</p>
           )}
         </div>
       </div>
 
       {/* Top Selling Items */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
+      <div className="bg-rp-card border border-rp-border rounded-xl p-5 mb-6">
         <h2 className="text-lg font-semibold mb-4">Top Selling Items</h2>
         {data.topItems.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
@@ -176,13 +176,13 @@ export default function AnalyticsPage() {
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-sm text-zinc-500 py-8 text-center">No sales data yet</p>
+          <p className="text-sm text-rp-grey py-8 text-center">No sales data yet</p>
         )}
       </div>
 
       {/* Booking Sources */}
       {data.bookingStats.total > 0 && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5">
           <h2 className="text-lg font-semibold mb-4">Booking Sources</h2>
           <div className="flex items-center gap-6">
             <ResponsiveContainer width="30%" height={200}>
@@ -200,12 +200,12 @@ export default function AnalyticsPage() {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-green-500" />
-                <span className="text-sm text-zinc-400">WhatsApp</span>
+                <span className="text-sm text-neutral-400">WhatsApp</span>
                 <span className="text-sm font-mono">{data.bookingStats.sources.whatsapp}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-purple-500" />
-                <span className="text-sm text-zinc-400">Discord</span>
+                <span className="text-sm text-neutral-400">Discord</span>
                 <span className="text-sm font-mono">{data.bookingStats.sources.discord}</span>
               </div>
             </div>

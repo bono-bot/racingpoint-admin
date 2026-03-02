@@ -1,26 +1,43 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --rp-red: #E10600;
+  --rp-red-light: #FF1A1A;
+  --rp-black: #1A1A1A;
+  --rp-grey: #5A5A5A;
+  --rp-white: #FFFFFF;
+  --background: #1A1A1A;
+  --foreground: #FFFFFF;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-rp-red: #E10600;
+  --color-rp-red-light: #FF1A1A;
+  --color-rp-black: #1A1A1A;
+  --color-rp-grey: #5A5A5A;
+  --color-rp-card: #222222;
+  --color-rp-border: #333333;
+  --font-sans: 'Montserrat', sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--rp-black);
+  color: var(--rp-white);
+  font-family: 'Montserrat', sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--rp-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--rp-grey);
+  border-radius: 3px;
 }

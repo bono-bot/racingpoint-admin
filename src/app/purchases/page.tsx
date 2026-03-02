@@ -110,7 +110,7 @@ export default function PurchasesPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Purchases</h1>
-          <p className="text-sm text-zinc-500 mt-1">Total: ₹{totalSpent.toLocaleString('en-IN')}</p>
+          <p className="text-sm text-rp-grey mt-1">Total: ₹{totalSpent.toLocaleString('en-IN')}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => { setShowScan(!showScan); setShowAdd(false); }}
@@ -118,7 +118,7 @@ export default function PurchasesPage() {
             {showScan ? 'Cancel Scan' : 'Scan Receipt'}
           </button>
           <button onClick={() => { setShowAdd(!showAdd); setShowScan(false); }}
-            className="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-medium">
+            className="px-4 py-2 bg-rp-red hover:bg-rp-red rounded-lg text-sm font-medium">
             {showAdd ? 'Cancel' : '+ Add Manual'}
           </button>
         </div>
@@ -126,44 +126,44 @@ export default function PurchasesPage() {
 
       {/* Receipt Scanner */}
       {showScan && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5 mb-6">
           <h3 className="font-semibold mb-3">Scan Receipt</h3>
-          <p className="text-sm text-zinc-400 mb-4">Upload a receipt image. AI will extract vendor, items, and amounts.</p>
+          <p className="text-sm text-neutral-400 mb-4">Upload a receipt image. AI will extract vendor, items, and amounts.</p>
 
           <input type="file" accept="image/*" onChange={handleScan}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm w-full mb-4" />
+            className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm w-full mb-4" />
 
           {scanning && (
-            <div className="text-sm text-zinc-400 py-4 text-center">Scanning receipt... This may take a moment.</div>
+            <div className="text-sm text-neutral-400 py-4 text-center">Scanning receipt... This may take a moment.</div>
           )}
 
           {scanned && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-zinc-500">Vendor</label>
+                  <label className="text-xs text-rp-grey">Vendor</label>
                   <input value={scanned.vendor} onChange={e => setScanned({...scanned, vendor: e.target.value})}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm mt-1" />
+                    className="w-full bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm mt-1" />
                 </div>
                 <div>
-                  <label className="text-xs text-zinc-500">Invoice #</label>
+                  <label className="text-xs text-rp-grey">Invoice #</label>
                   <input value={scanned.invoice_number || ''} onChange={e => setScanned({...scanned, invoice_number: e.target.value})}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm mt-1" />
+                    className="w-full bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm mt-1" />
                 </div>
                 <div>
-                  <label className="text-xs text-zinc-500">Date</label>
+                  <label className="text-xs text-rp-grey">Date</label>
                   <input type="date" value={scanned.purchase_date} onChange={e => setScanned({...scanned, purchase_date: e.target.value})}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm mt-1" />
+                    className="w-full bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm mt-1" />
                 </div>
                 <div>
-                  <label className="text-xs text-zinc-500">Total Amount</label>
+                  <label className="text-xs text-rp-grey">Total Amount</label>
                   <input type="number" value={scanned.total_amount} onChange={e => setScanned({...scanned, total_amount: parseFloat(e.target.value) || 0})}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm mt-1" />
+                    className="w-full bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm mt-1" />
                 </div>
                 <div>
-                  <label className="text-xs text-zinc-500">Category</label>
+                  <label className="text-xs text-rp-grey">Category</label>
                   <select value={scanned.category} onChange={e => setScanned({...scanned, category: e.target.value})}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm mt-1">
+                    className="w-full bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm mt-1">
                     <option>Kitchen Supplies</option><option>Beverages</option><option>Equipment</option>
                     <option>Maintenance</option><option>Utilities</option><option>Other</option>
                   </select>
@@ -172,11 +172,11 @@ export default function PurchasesPage() {
 
               {scanned.items.length > 0 && (
                 <div>
-                  <label className="text-xs text-zinc-500">Extracted Items</label>
-                  <div className="border border-zinc-800 rounded-lg overflow-hidden mt-1">
+                  <label className="text-xs text-rp-grey">Extracted Items</label>
+                  <div className="border border-rp-border rounded-lg overflow-hidden mt-1">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-zinc-800 text-zinc-500">
+                        <tr className="border-b border-rp-border text-rp-grey">
                           <th className="px-3 py-2 text-left font-medium">Item</th>
                           <th className="px-3 py-2 text-right font-medium">Qty</th>
                           <th className="px-3 py-2 text-right font-medium">Price</th>
@@ -185,7 +185,7 @@ export default function PurchasesPage() {
                       </thead>
                       <tbody>
                         {scanned.items.map((item, i) => (
-                          <tr key={i} className="border-b border-zinc-800/50">
+                          <tr key={i} className="border-b border-rp-border/50">
                             <td className="px-3 py-2">{item.item_name}</td>
                             <td className="px-3 py-2 text-right">{item.quantity}</td>
                             <td className="px-3 py-2 text-right font-mono">₹{item.unit_price}</td>
@@ -200,8 +200,8 @@ export default function PurchasesPage() {
 
               {ocrText && (
                 <details className="text-xs">
-                  <summary className="text-zinc-500 cursor-pointer">View raw OCR text</summary>
-                  <pre className="bg-zinc-800 rounded p-3 mt-2 whitespace-pre-wrap text-zinc-400 max-h-40 overflow-auto">{ocrText}</pre>
+                  <summary className="text-rp-grey cursor-pointer">View raw OCR text</summary>
+                  <pre className="bg-rp-card rounded p-3 mt-2 whitespace-pre-wrap text-neutral-400 max-h-40 overflow-auto">{ocrText}</pre>
                 </details>
               )}
 
@@ -209,7 +209,7 @@ export default function PurchasesPage() {
                 <button onClick={saveScanResult} className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-sm font-medium">
                   Save Purchase
                 </button>
-                <button onClick={() => { setScanned(null); setOcrText(''); }} className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg text-sm font-medium">
+                <button onClick={() => { setScanned(null); setOcrText(''); }} className="px-4 py-2 bg-rp-card hover:bg-rp-card rounded-lg text-sm font-medium">
                   Discard
                 </button>
               </div>
@@ -220,37 +220,37 @@ export default function PurchasesPage() {
 
       {/* Manual Add */}
       {showAdd && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6 grid grid-cols-2 gap-4">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5 mb-6 grid grid-cols-2 gap-4">
           <input placeholder="Vendor name" value={form.vendor} onChange={e => setForm({...form, vendor: e.target.value})}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm" />
+            className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm" />
           <input placeholder="Invoice number" value={form.invoice_number} onChange={e => setForm({...form, invoice_number: e.target.value})}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm" />
+            className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm" />
           <input placeholder="Total amount (INR)" type="number" value={form.total_amount} onChange={e => setForm({...form, total_amount: e.target.value})}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm" />
+            className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm" />
           <input type="date" value={form.purchase_date} onChange={e => setForm({...form, purchase_date: e.target.value})}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm" />
+            className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm" />
           <select value={form.category} onChange={e => setForm({...form, category: e.target.value})}
-            className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
+            className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm">
             <option>Kitchen Supplies</option><option>Beverages</option><option>Equipment</option>
             <option>Maintenance</option><option>Utilities</option><option>Other</option>
           </select>
           <div className="flex items-center gap-2">
             <input placeholder="Notes" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm flex-1" />
+              className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm flex-1" />
             <button onClick={addPurchase} className="px-4 py-2 bg-green-600 hover:bg-green-500 rounded-lg text-sm font-medium">Save</button>
           </div>
         </div>
       )}
 
       {loading ? (
-        <div className="text-center text-zinc-500 py-8">Loading...</div>
+        <div className="text-center text-rp-grey py-8">Loading...</div>
       ) : purchases.length === 0 ? (
-        <div className="text-center text-zinc-500 py-8">No purchases recorded yet</div>
+        <div className="text-center text-rp-grey py-8">No purchases recorded yet</div>
       ) : (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-500 text-left">
+              <tr className="border-b border-rp-border text-rp-grey text-left">
                 <th className="px-4 py-3 font-medium">Date</th>
                 <th className="px-4 py-3 font-medium">Vendor</th>
                 <th className="px-4 py-3 font-medium">Invoice</th>
@@ -260,14 +260,14 @@ export default function PurchasesPage() {
             </thead>
             <tbody>
               {purchases.map(p => (
-                <tr key={p.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                  <td className="px-4 py-3 text-zinc-400">{formatDate(p.purchase_date)}</td>
+                <tr key={p.id} className="border-b border-rp-border/50 hover:bg-rp-card/30">
+                  <td className="px-4 py-3 text-neutral-400">{formatDate(p.purchase_date)}</td>
                   <td className="px-4 py-3 font-medium">{p.vendor}</td>
-                  <td className="px-4 py-3 text-zinc-500 font-mono text-xs">{p.invoice_number || '-'}</td>
+                  <td className="px-4 py-3 text-rp-grey font-mono text-xs">{p.invoice_number || '-'}</td>
                   <td className="px-4 py-3">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">{p.category}</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-rp-card text-neutral-400">{p.category}</span>
                   </td>
-                  <td className="px-4 py-3 text-right font-mono text-zinc-300">₹{p.total_amount.toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3 text-right font-mono text-neutral-300">₹{p.total_amount.toLocaleString('en-IN')}</td>
                 </tr>
               ))}
             </tbody>

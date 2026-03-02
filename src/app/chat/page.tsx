@@ -55,7 +55,7 @@ export default function ChatPage() {
       {/* Messages */}
       <div className="flex-1 overflow-auto space-y-4 mb-4">
         {messages.length === 0 && (
-          <div className="text-center text-zinc-500 py-16">
+          <div className="text-center text-rp-grey py-16">
             <p className="text-lg mb-2">Hey, I am Bono!</p>
             <p className="text-sm">Ask me anything about RacingPoint — bookings, customers, leaderboards, inventory...</p>
           </div>
@@ -64,8 +64,8 @@ export default function ChatPage() {
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[70%] rounded-xl px-4 py-3 text-sm ${
               m.role === 'user'
-                ? 'bg-red-500/10 text-red-100 border border-red-500/20'
-                : 'bg-zinc-900 border border-zinc-800'
+                ? 'bg-rp-red/10 text-red-100 border border-rp-red/20'
+                : 'bg-rp-card border border-rp-border'
             }`}>
               <p className="whitespace-pre-wrap">{m.content}</p>
             </div>
@@ -73,7 +73,7 @@ export default function ChatPage() {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-500">
+            <div className="bg-rp-card border border-rp-border rounded-xl px-4 py-3 text-sm text-rp-grey">
               Thinking...
             </div>
           </div>
@@ -88,13 +88,13 @@ export default function ChatPage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask Bono something..."
-          className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-red-500"
+          className="flex-1 bg-rp-card border border-rp-border rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-rp-red"
           disabled={loading}
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="px-6 py-3 bg-red-600 hover:bg-red-500 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-lg text-sm font-medium transition-colors"
+          className="px-6 py-3 bg-rp-red hover:bg-rp-red disabled:bg-rp-card disabled:text-rp-grey rounded-lg text-sm font-medium transition-colors"
         >
           Send
         </button>

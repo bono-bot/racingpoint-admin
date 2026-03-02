@@ -92,36 +92,36 @@ export default function SalesPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Sales</h1>
-          <p className="text-sm text-zinc-500 mt-1">Today: ₹{todayTotal.toLocaleString('en-IN')} ({todaySales.length} bills)</p>
+          <p className="text-sm text-rp-grey mt-1">Today: ₹{todayTotal.toLocaleString('en-IN')} ({todaySales.length} bills)</p>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} className="px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg text-sm font-medium">
+        <button onClick={() => setShowAdd(!showAdd)} className="px-4 py-2 bg-rp-red hover:bg-rp-red rounded-lg text-sm font-medium">
           {showAdd ? 'Cancel' : '+ New Bill'}
         </button>
       </div>
 
       {showAdd && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5 mb-6">
           <div className="grid grid-cols-3 gap-4 mb-4">
             <input placeholder="Customer name (optional)" value={form.customer_name}
               onChange={e => setForm({...form, customer_name: e.target.value})}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm" />
+              className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm" />
             <select value={form.payment_method} onChange={e => setForm({...form, payment_method: e.target.value})}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
+              className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm">
               <option value="cash">Cash</option>
               <option value="upi">UPI</option>
               <option value="card">Card</option>
             </select>
             <input type="date" value={form.sale_date} onChange={e => setForm({...form, sale_date: e.target.value})}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm" />
+              className="bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm" />
           </div>
 
           {/* Menu items grid */}
           <div className="mb-4">
-            <p className="text-xs text-zinc-500 mb-2">Quick add from menu:</p>
+            <p className="text-xs text-rp-grey mb-2">Quick add from menu:</p>
             <div className="flex flex-wrap gap-2">
               {menuItems.map(item => (
                 <button key={item.id} onClick={() => addToCart(item)}
-                  className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg text-xs">
+                  className="px-3 py-1.5 bg-rp-card hover:bg-rp-card border border-rp-border rounded-lg text-xs">
                   {item.name} - ₹{item.price}
                 </button>
               ))}
@@ -130,10 +130,10 @@ export default function SalesPage() {
 
           {/* Cart */}
           {cart.length > 0 && (
-            <div className="border border-zinc-800 rounded-lg overflow-hidden mb-4">
+            <div className="border border-rp-border rounded-lg overflow-hidden mb-4">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-800 text-zinc-500 text-left">
+                  <tr className="border-b border-rp-border text-rp-grey text-left">
                     <th className="px-3 py-2 font-medium">Item</th>
                     <th className="px-3 py-2 font-medium text-center">Qty</th>
                     <th className="px-3 py-2 font-medium text-right">Price</th>
@@ -143,19 +143,19 @@ export default function SalesPage() {
                 </thead>
                 <tbody>
                   {cart.map((item, i) => (
-                    <tr key={i} className="border-b border-zinc-800/50">
+                    <tr key={i} className="border-b border-rp-border/50">
                       <td className="px-3 py-2">{item.item_name}</td>
                       <td className="px-3 py-2 text-center">{item.quantity}</td>
                       <td className="px-3 py-2 text-right font-mono">₹{item.unit_price}</td>
                       <td className="px-3 py-2 text-right font-mono">₹{item.total}</td>
                       <td className="px-3 py-2 text-right">
-                        <button onClick={() => removeFromCart(i)} className="text-red-400 hover:text-red-300 text-xs">Remove</button>
+                        <button onClick={() => removeFromCart(i)} className="text-rp-red hover:text-rp-red-light text-xs">Remove</button>
                       </td>
                     </tr>
                   ))}
-                  <tr className="bg-zinc-800/30">
+                  <tr className="bg-rp-card/30">
                     <td colSpan={3} className="px-3 py-2 font-semibold text-right">Total</td>
-                    <td className="px-3 py-2 text-right font-mono font-semibold text-red-400">₹{cartTotal}</td>
+                    <td className="px-3 py-2 text-right font-mono font-semibold text-rp-red">₹{cartTotal}</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -164,21 +164,21 @@ export default function SalesPage() {
           )}
 
           <button onClick={createSale} disabled={cart.length === 0}
-            className="px-6 py-2 bg-green-600 hover:bg-green-500 disabled:bg-zinc-800 disabled:text-zinc-600 rounded-lg text-sm font-medium">
+            className="px-6 py-2 bg-green-600 hover:bg-green-500 disabled:bg-rp-card disabled:text-rp-grey rounded-lg text-sm font-medium">
             Generate Bill
           </button>
         </div>
       )}
 
       {loading ? (
-        <div className="text-center text-zinc-500 py-8">Loading...</div>
+        <div className="text-center text-rp-grey py-8">Loading...</div>
       ) : sales.length === 0 ? (
-        <div className="text-center text-zinc-500 py-8">No sales recorded yet</div>
+        <div className="text-center text-rp-grey py-8">No sales recorded yet</div>
       ) : (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+        <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-800 text-zinc-500 text-left">
+              <tr className="border-b border-rp-border text-rp-grey text-left">
                 <th className="px-4 py-3 font-medium">Bill #</th>
                 <th className="px-4 py-3 font-medium">Date</th>
                 <th className="px-4 py-3 font-medium">Customer</th>
@@ -189,9 +189,9 @@ export default function SalesPage() {
             </thead>
             <tbody>
               {sales.map(s => (
-                <tr key={s.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                  <td className="px-4 py-3 font-mono text-xs text-red-400">{s.bill_number}</td>
-                  <td className="px-4 py-3 text-zinc-400">{formatDate(s.sale_date)}</td>
+                <tr key={s.id} className="border-b border-rp-border/50 hover:bg-rp-card/30">
+                  <td className="px-4 py-3 font-mono text-xs text-rp-red">{s.bill_number}</td>
+                  <td className="px-4 py-3 text-neutral-400">{formatDate(s.sale_date)}</td>
                   <td className="px-4 py-3">{s.customer_name || '-'}</td>
                   <td className="px-4 py-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
@@ -200,8 +200,8 @@ export default function SalesPage() {
                       'bg-green-500/10 text-green-400'
                     }`}>{s.payment_method.toUpperCase()}</span>
                   </td>
-                  <td className="px-4 py-3 text-center text-zinc-400">{s.item_count}</td>
-                  <td className="px-4 py-3 text-right font-mono text-zinc-300">₹{s.total_amount.toLocaleString('en-IN')}</td>
+                  <td className="px-4 py-3 text-center text-neutral-400">{s.item_count}</td>
+                  <td className="px-4 py-3 text-right font-mono text-neutral-300">₹{s.total_amount.toLocaleString('en-IN')}</td>
                 </tr>
               ))}
             </tbody>
