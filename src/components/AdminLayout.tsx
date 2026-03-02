@@ -49,6 +49,14 @@ const navSections: NavSection[] = [
     ],
   },
   {
+    title: 'HR',
+    items: [
+      { href: '/hr', label: 'Employees' },
+      { href: '/hr/attendance', label: 'Attendance' },
+      { href: '/hr/leaves', label: 'Leaves' },
+    ],
+  },
+  {
     title: 'AI',
     items: [
       { href: '/chat', label: 'Assistant' },

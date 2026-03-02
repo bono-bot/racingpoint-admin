@@ -91,6 +91,59 @@ function initTables(db: Database.Database) {
       total REAL NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS employees (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      phone TEXT UNIQUE NOT NULL,
+      email TEXT,
+      pin_hash TEXT NOT NULL,
+      role TEXT DEFAULT 'staff',
+      department TEXT DEFAULT 'operations',
+      hire_date TEXT,
+      status TEXT DEFAULT 'active',
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS attendance (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      employee_id INTEGER NOT NULL REFERENCES employees(id),
+      date TEXT NOT NULL,
+      check_in TEXT,
+      check_in_lat REAL,
+      check_in_lng REAL,
+      check_out TEXT,
+      check_out_lat REAL,
+      check_out_lng REAL,
+      total_minutes INTEGER DEFAULT 0,
+      status TEXT DEFAULT 'present',
+      notes TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(employee_id, date)
+    );
+
+    CREATE TABLE IF NOT EXISTS leave_requests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      employee_id INTEGER NOT NULL REFERENCES employees(id),
+      leave_type TEXT NOT NULL,
+      start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL,
+      days INTEGER NOT NULL,
+      reason TEXT,
+      status TEXT DEFAULT 'pending',
+      reviewed_by TEXT,
+      reviewed_at TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS leave_balances (
+      employee_id INTEGER NOT NULL REFERENCES employees(id),
+      leave_type TEXT NOT NULL,
+      total_days INTEGER DEFAULT 0,
+      used_days INTEGER DEFAULT 0,
+      PRIMARY KEY (employee_id, leave_type)
+    );
+
     CREATE TABLE IF NOT EXISTS bank_transactions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       transaction_date TEXT NOT NULL,
