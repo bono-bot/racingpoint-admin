@@ -67,6 +67,34 @@ export interface CustomersResponse {
   total: number;
 }
 
+export interface TranscribeSegment {
+  id: number;
+  start: number;
+  end: number;
+  text: string;
+  avg_logprob: number;
+  no_speech_prob: number;
+}
+
+export interface TranscribeWord {
+  word: string;
+  start: number;
+  end: number;
+}
+
+export interface TranscribeResponse {
+  status?: string;
+  text?: string;
+  duration?: number;
+  language?: string;
+  model?: string;
+  segments?: TranscribeSegment[];
+  words?: TranscribeWord[];
+  original_filename?: string;
+  error?: string;
+  details?: unknown;
+}
+
 export const api = {
   getBookings: (params?: Record<string, string>) => {
     const qs = params ? '?' + new URLSearchParams(params).toString() : '';
@@ -85,4 +113,31 @@ export const api = {
       body: JSON.stringify({ message, history }),
     }) as Promise<{ reply?: string; model?: string; error?: string }>,
   health: () => apiFetch('/api/health'),
+
+  // Marketing admin APIs (rc-core)
+  getCoupons: () => rcFetch('/coupons'),
+  createCoupon: (data: Record<string, unknown>) => rcFetch('/coupons', { method: 'POST', body: JSON.stringify(data) }),
+  deleteCoupon: (id: string) => rcFetch(`/coupons/${id}`, { method: 'DELETE' }),
+  getPricingRules: () => rcFetch('/pricing/rules'),
+  createPricingRule: (data: Record<string, unknown>) => rcFetch('/pricing/rules', { method: 'POST', body: JSON.stringify(data) }),
+  deletePricingRule: (id: string) => rcFetch(`/pricing/rules/${id}`, { method: 'DELETE' }),
+  getPackages: () => rcFetch('/customer/packages'),
+  getTournaments: () => rcFetch('/tournaments'),
+  createTournament: (data: Record<string, unknown>) => rcFetch('/tournaments', { method: 'POST', body: JSON.stringify(data) }),
+  getTournament: (id: string) => rcFetch(`/tournaments/${id}`),
+  getTournamentRegistrations: (id: string) => rcFetch(`/tournaments/${id}/registrations`),
+  getTournamentMatches: (id: string) => rcFetch(`/tournaments/${id}/matches`),
+  generateBracket: (id: string) => rcFetch(`/tournaments/${id}/generate-bracket`, { method: 'POST' }),
+  recordMatchResult: (tournamentId: string, matchId: string, winnerId: string) => rcFetch(`/tournaments/${tournamentId}/matches/${matchId}/result`, { method: 'POST', body: JSON.stringify({ winner_id: winnerId }) }),
+  getTimeTrials: () => rcFetch('/time-trials'),
+  createTimeTrial: (data: Record<string, unknown>) => rcFetch('/time-trials', { method: 'POST', body: JSON.stringify(data) }),
+  transcribe: (file: File, options?: { model?: string; language?: string }) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return fetch(`${GATEWAY_URL}/api/transcribe?model=${options?.model || 'whisper-large-v3-turbo'}${options?.language ? `&language=${options.language}` : ''}&response_format=verbose_json&timestamps=word,segment`, {
+      method: 'POST',
+      headers: { 'x-api-key': API_KEY },
+      body: formData,
+    }).then(r => r.json()) as Promise<TranscribeResponse>;
+  },
 };

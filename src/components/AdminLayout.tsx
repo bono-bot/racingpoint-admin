@@ -31,6 +31,16 @@ const navSections: NavSection[] = [
     title: 'Racing',
     items: [
       { href: '/leaderboard', label: 'Leaderboard' },
+      { href: '/tournaments', label: 'Tournaments' },
+    ],
+  },
+  {
+    title: 'Marketing',
+    items: [
+      { href: '/coupons', label: 'Coupons' },
+      { href: '/pricing', label: 'Pricing Rules' },
+      { href: '/packages', label: 'Packages' },
+      { href: '/memberships', label: 'Memberships' },
     ],
   },
   {
@@ -60,6 +70,7 @@ const navSections: NavSection[] = [
     title: 'AI',
     items: [
       { href: '/chat', label: 'Assistant' },
+      { href: '/transcribe', label: 'Transcribe' },
     ],
   },
 ];
