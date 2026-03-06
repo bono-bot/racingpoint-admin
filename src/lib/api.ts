@@ -131,6 +131,14 @@ export const api = {
   recordMatchResult: (tournamentId: string, matchId: string, winnerId: string) => rcFetch(`/tournaments/${tournamentId}/matches/${matchId}/result`, { method: 'POST', body: JSON.stringify({ winner_id: winnerId }) }),
   getTimeTrials: () => rcFetch('/time-trials'),
   createTimeTrial: (data: Record<string, unknown>) => rcFetch('/time-trials', { method: 'POST', body: JSON.stringify(data) }),
+  // Kiosk (rc-core)
+  getKioskSettings: () => rcFetch('/kiosk/settings'),
+  updateKioskSettings: (data: Record<string, string>) => rcFetch('/kiosk/settings', { method: 'PUT', body: JSON.stringify(data) }),
+  getKioskExperiences: () => rcFetch('/kiosk/experiences'),
+  createKioskExperience: (data: Record<string, unknown>) => rcFetch('/kiosk/experiences', { method: 'POST', body: JSON.stringify(data) }),
+  updateKioskExperience: (id: string, data: Record<string, unknown>) => rcFetch(`/kiosk/experiences/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteKioskExperience: (id: string) => rcFetch(`/kiosk/experiences/${id}`, { method: 'DELETE' }),
+
   transcribe: (file: File, options?: { model?: string; language?: string }) => {
     const formData = new FormData();
     formData.append('file', file);

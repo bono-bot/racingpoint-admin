@@ -28,7 +28,7 @@ export default function OverviewPage() {
           api.getBookings(),
           api.getBookings({ date_from: today, date_to: today }),
           api.getCustomers(),
-          api.health(),
+          fetch('/api/health').then(r => { if (!r.ok) throw new Error(); return r.json(); }),
         ]);
 
         setStats({

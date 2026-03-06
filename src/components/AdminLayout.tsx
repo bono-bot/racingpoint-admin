@@ -32,6 +32,7 @@ const navSections: NavSection[] = [
     items: [
       { href: '/leaderboard', label: 'Leaderboard' },
       { href: '/tournaments', label: 'Tournaments' },
+      { href: '/kiosk', label: 'Kiosk Control' },
     ],
   },
   {
@@ -62,6 +63,7 @@ const navSections: NavSection[] = [
     title: 'HR',
     items: [
       { href: '/hr', label: 'Employees' },
+      { href: '/hr/hiring', label: 'Hiring' },
       { href: '/hr/attendance', label: 'Attendance' },
       { href: '/hr/leaves', label: 'Leaves' },
     ],
