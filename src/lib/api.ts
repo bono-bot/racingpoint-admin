@@ -129,6 +129,9 @@ export const api = {
   recordMatchResult: (tournamentId: string, matchId: string, winnerId: string) => rcFetch(`/tournaments/${tournamentId}/matches/${matchId}/result`, { method: 'POST', body: JSON.stringify({ winner_id: winnerId }) }),
   getTimeTrials: () => rcFetch('/time-trials'),
   createTimeTrial: (data: Record<string, unknown>) => rcFetch('/time-trials', { method: 'POST', body: JSON.stringify(data) }),
+  // Pods (rc-core)
+  listPods: () => rcFetch('/pods'),
+  setPodScreen: (podId: string, blank: boolean) => rcFetch(`/pods/${podId}/screen`, { method: 'POST', body: JSON.stringify({ blank }) }),
   // Kiosk (rc-core)
   getKioskSettings: () => rcFetch('/kiosk/settings'),
   updateKioskSettings: (data: Record<string, string>) => rcFetch('/kiosk/settings', { method: 'PUT', body: JSON.stringify(data) }),

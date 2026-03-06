@@ -56,9 +56,18 @@ const TEXT_SETTINGS = [
   { key: 'business_hours_end', label: 'Closing Time' },
 ];
 
+interface PodInfo {
+  id: string;
+  number: number;
+  name: string;
+  status: string;
+}
+
 export default function KioskControlPage() {
   const [settings, setSettings] = useState<KioskSettings>({});
   const [experiences, setExperiences] = useState<KioskExperience[]>([]);
+  const [pods, setPods] = useState<PodInfo[]>([]);
+  const [podBlanking, setPodBlanking] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
@@ -76,12 +85,15 @@ export default function KioskControlPage() {
   const load = async () => {
     setLoading(true);
     try {
-      const [settingsRes, expRes] = await Promise.all([
+      const [settingsRes, expRes, podsRes] = await Promise.all([
         api.getKioskSettings(),
         api.getKioskExperiences(),
+        api.listPods(),
       ]);
       setSettings(settingsRes.settings || {});
       setExperiences(expRes.experiences || []);
+      const podList = (podsRes as { pods: PodInfo[] }).pods || [];
+      setPods(podList.sort((a: PodInfo, b: PodInfo) => a.number - b.number));
     } catch {
       setError('Failed to load kiosk data. Is rc-core running?');
     }
@@ -101,11 +113,20 @@ export default function KioskControlPage() {
     setSaving(null);
   };
 
-  const handleTextChange = async (key: string, value: string) => {
+  const handlePodBlank = async (podId: string, blank: boolean) => {
+    setSaving(`pod-${podId}`);
+    try {
+      await api.setPodScreen(podId, blank);
+      setPodBlanking(prev => ({ ...prev, [podId]: blank }));
+    } catch { alert('Failed to update pod screen'); }
+    setSaving(null);
+  };
+
+  const handleTextChange = (key: string, value: string) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleTextSave = async (key: string) => {
+  const handleTextBlur = async (key: string) => {
     setSaving(key);
     try {
       await api.updateKioskSettings({ [key]: settings[key] || '' });
@@ -156,21 +177,13 @@ export default function KioskControlPage() {
             {TEXT_SETTINGS.map(({ key, label }) => (
               <div key={key} className="space-y-1">
                 <label className="text-xs text-rp-grey">{label}</label>
-                <div className="flex gap-2">
-                  <input
-                    type={key.includes('hours') ? 'time' : 'text'}
-                    value={settings[key] || ''}
-                    onChange={e => handleTextChange(key, e.target.value)}
-                    className="flex-1 bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rp-red"
-                  />
-                  <button
-                    onClick={() => handleTextSave(key)}
-                    disabled={saving === key}
-                    className="px-3 py-2 text-xs bg-rp-red/10 text-rp-red border border-rp-red/20 rounded-lg hover:bg-rp-red/20 disabled:opacity-50"
-                  >
-                    {saving === key ? '...' : 'Save'}
-                  </button>
-                </div>
+                <input
+                  type={key.includes('hours') ? 'time' : 'text'}
+                  value={settings[key] || ''}
+                  onChange={e => handleTextChange(key, e.target.value)}
+                  onBlur={() => handleTextBlur(key)}
+                  className={`w-full bg-rp-black border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rp-red ${saving === key ? 'border-rp-red/50' : 'border-rp-border'}`}
+                />
               </div>
             ))}
           </div>
@@ -199,8 +212,8 @@ export default function KioskControlPage() {
                   } ${saving === key ? 'opacity-50' : ''}`}
                 >
                   <span
-                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                      settings[key] === 'true' ? 'translate-x-6' : 'translate-x-0.5'
+                    className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                      settings[key] === 'true' ? 'translate-x-[22px]' : 'translate-x-0'
                     }`}
                   />
                 </button>
@@ -209,6 +222,46 @@ export default function KioskControlPage() {
           </div>
         </section>
       ))}
+
+      {/* Per-Pod Screen Control */}
+      {pods.length > 0 && (
+        <section className="mb-8">
+          <div className="mb-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-rp-grey">Pod Screen Control</h2>
+            <p className="text-xs text-neutral-500 mt-0.5">Blank or unblank individual pod screens</p>
+          </div>
+          <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden">
+            <div className="grid grid-cols-4 gap-0 divide-x divide-y divide-rp-border">
+              {pods.map(pod => {
+                const blanked = podBlanking[pod.id] ?? false;
+                const isSaving = saving === `pod-${pod.id}`;
+                const isOffline = pod.status === 'offline' || pod.status === 'disabled';
+                return (
+                  <div key={pod.id} className={`flex items-center justify-between px-4 py-3 ${isOffline ? 'opacity-40' : ''}`}>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-white">Pod {pod.number}</p>
+                      <p className="text-xs text-neutral-500 truncate">{pod.name}</p>
+                    </div>
+                    <label className={`flex items-center gap-2 cursor-pointer shrink-0 ml-3 ${isSaving ? 'opacity-50' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={blanked}
+                        disabled={isOffline || isSaving}
+                        onChange={e => handlePodBlank(pod.id, e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <span className={`w-10 h-5 rounded-full relative transition-colors ${blanked ? 'bg-rp-red' : 'bg-zinc-700'} peer-focus-visible:ring-2 peer-focus-visible:ring-rp-red/50`}>
+                        <span className={`absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition-transform ${blanked ? 'translate-x-[18px]' : 'translate-x-0'}`} />
+                      </span>
+                      <span className="text-xs text-neutral-500">{blanked ? 'Blanked' : 'Active'}</span>
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Kiosk Experiences */}
       <section className="mb-8">
