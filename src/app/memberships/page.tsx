@@ -37,7 +37,7 @@ export default function MembershipsPage() {
         const data = await api.getPackages();
         // Membership tiers come from a different endpoint but let's use what's available
         // For now fetch from rc-core
-        const tiersRes = await fetch(`${process.env.NEXT_PUBLIC_RC_URL || 'http://localhost:8080'}/api/v1/customer/membership/tiers`);
+        const tiersRes = await fetch('/api/rc/customer/membership/tiers');
         if (tiersRes.ok) {
           const tiersData = await tiersRes.json();
           setTiers(tiersData.tiers || []);

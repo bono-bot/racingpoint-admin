@@ -1,7 +1,5 @@
 const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3100';
 const API_KEY = process.env.NEXT_PUBLIC_GATEWAY_API_KEY || 'rp-gateway-2026-secure-key';
-const RC_URL = process.env.NEXT_PUBLIC_RC_URL || 'http://localhost:8080';
-
 async function apiFetch(path: string, options: RequestInit = {}) {
   const res = await fetch(`${GATEWAY_URL}${path}`, {
     ...options,
@@ -16,7 +14,7 @@ async function apiFetch(path: string, options: RequestInit = {}) {
 }
 
 async function rcFetch(path: string, options: RequestInit = {}) {
-  const res = await fetch(`${RC_URL}/api/v1${path}`, {
+  const res = await fetch(`/api/rc${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
