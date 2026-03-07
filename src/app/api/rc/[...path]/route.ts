@@ -5,7 +5,8 @@ const RC_URL = process.env.RC_URL || 'http://localhost:8080';
 async function proxy(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params;
   const rcPath = `/api/v1/${path.join('/')}`;
-  const url = `${RC_URL}${rcPath}`;
+  const qs = req.nextUrl.search;
+  const url = `${RC_URL}${rcPath}${qs}`;
 
   try {
     const res = await fetch(url, {
