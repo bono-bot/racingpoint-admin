@@ -57,6 +57,7 @@ const navSections: NavSection[] = [
     title: 'Finance',
     items: [
       { href: '/purchases', label: 'Purchases' },
+      { href: '/wallet-transactions', label: 'Wallet Log' },
       { href: '/finance', label: 'Dashboard' },
     ],
   },
