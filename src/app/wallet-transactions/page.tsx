@@ -177,6 +177,7 @@ export default function WalletTransactionsPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-rp-border text-rp-grey text-left">
+                        <th className="px-4 py-2.5 font-medium">Txn ID</th>
                         <th className="px-4 py-2.5 font-medium">Time</th>
                         <th className="px-4 py-2.5 font-medium">Customer</th>
                         <th className="px-4 py-2.5 font-medium">Type</th>
@@ -192,6 +193,7 @@ export default function WalletTransactionsPage() {
                         const isCredit = t.txn_type.startsWith('topup') || t.txn_type === 'bonus' || t.txn_type.startsWith('refund');
                         return (
                           <tr key={t.id} className="border-b border-rp-border/50 last:border-0 hover:bg-white/[0.02]">
+                            <td className="px-4 py-2.5 font-mono text-[11px] text-rp-grey">{t.id.slice(0, 8)}</td>
                             <td className="px-4 py-2.5 tabular-nums">{fmtClock(t.created_at)}</td>
                             <td className="px-4 py-2.5">
                               <div className="font-medium">{t.driver_name}</div>
