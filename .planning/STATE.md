@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v20.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 159-01-PLAN.md
-last_updated: "2026-03-22T11:43:44Z"
-last_activity: 2026-03-22 -- Completed Plan 01 auth foundation (jose, login/logout/me routes)
+stopped_at: Completed 159-02-PLAN.md
+last_updated: "2026-03-22T11:49:13Z"
+last_activity: 2026-03-22 -- Completed Plan 02 middleware, secured proxy, route groups
 progress:
   total_phases: 11
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
-  percent: 0
+  completed_plans: 2
+  percent: 67
 ---
 
 # Project State
@@ -26,24 +26,24 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 ## Current Position
 
 Phase: 1 of 11 (Authentication & Session Security)
-Plan: 1 of 3 in current phase (completed)
+Plan: 2 of 3 in current phase (completed)
 Status: Executing
-Last activity: 2026-03-22 -- Completed Plan 01 auth foundation (jose, login/logout/me routes)
+Last activity: 2026-03-22 -- Completed Plan 02 middleware, secured proxy, route groups
 
-Progress: [███░░░░░░░] 33%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 2 min
-- Total execution time: 0.03 hours
+- Total plans completed: 2
+- Average duration: 2.5 min
+- Total execution time: 0.08 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 159 (Auth) | 1/3 | 2min | 2min |
+| 159 (Auth) | 2/3 | 5min | 2.5min |
 
 **Recent Trend:**
 - Last 5 plans: none
@@ -63,6 +63,9 @@ Recent decisions affecting current work:
 - [Roadmap]: Control room last -- composite view needs all component parts built first
 - [Roadmap]: Data migration deferred to v2 -- RC APIs must be battle-tested first
 - [159-01]: jose for JWT, secure:false (LAN-only), RC_URL fail-fast (no localhost fallback)
+- [159-02]: Inlined constants in Edge middleware to avoid import issues
+- [159-02]: Defense-in-depth: proxy independently rejects unauthenticated requests
+- [159-02]: Route groups: (auth) for login, (dashboard) for sidebar pages
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T11:43:44Z
-Stopped at: Completed 159-01-PLAN.md
-Resume file: .planning/phases/159-authentication-session-security/159-02-PLAN.md
+Last session: 2026-03-22T11:49:13Z
+Stopped at: Completed 159-02-PLAN.md
+Resume file: .planning/phases/159-authentication-session-security/159-03-PLAN.md
