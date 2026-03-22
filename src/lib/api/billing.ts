@@ -1,16 +1,11 @@
 import { rcFetch } from './base';
+import type { BillingSession, BillingSessionStatus } from '@racingpoint/types';
+export type { BillingSessionStatus };
 
-export interface ActiveSession {
-  id: string;
-  driver_id: string;
-  driver_name: string;
-  pod_id: string;
+/** Admin-view session — extends shared BillingSession with admin-only fields */
+export interface ActiveSession extends BillingSession {
+  // Admin-specific fields not in the base shared type
   pod_number: number;
-  pricing_tier_name: string;
-  allocated_seconds: number;
-  driving_seconds: number;
-  remaining_seconds: number;
-  status: 'active' | 'paused_manual' | 'completed' | 'cancelled' | 'expired';
   price_paise: number;
   started_at: string;
   paused_at: string | null;

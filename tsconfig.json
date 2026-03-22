@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@racingpoint/types": ["../racecontrol/packages/shared-types/src/index.ts"]
     }
   },
   "include": [

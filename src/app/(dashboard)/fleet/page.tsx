@@ -8,7 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import type { PodFleetStatus, FleetHealthResponse, ActivityEntry, DeployStatus, ExecResult } from '@/lib/api/fleet';
 
-function formatUptime(secs: number | null): string {
+function formatUptime(secs: number | null | undefined): string {
   if (secs === null || secs === undefined) return 'N/A';
   const days = Math.floor(secs / 86400);
   const hours = Math.floor((secs % 86400) / 3600);
