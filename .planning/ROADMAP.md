@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 160: Shared Infrastructure** - Form validation, toast notifications, icon system, and API client refactor (completed 2026-03-22)
 - [x] **Phase 161: Fleet Monitoring** - Real-time fleet health dashboard showing all 8 pods with status and activity (completed 2026-03-22)
 - [x] **Phase 162: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy (completed 2026-03-22)
-- [ ] **Phase 163: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers
+- [x] **Phase 163: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers (completed 2026-03-22)
 - [ ] **Phase 164: Billing Management** - Refunds, split billing, daily reports, session history, rate management
 - [ ] **Phase 165: Drivers & Wallets** - Driver profiles, search, wallet operations, memberships, badges
 - [ ] **Phase 166: Events & Championships** - Event CRUD, championship management, time trials
@@ -207,7 +207,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | 160. Shared Infrastructure | 3/3 | Complete    | 2026-03-22 |
 | 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
 | 162. Fleet Actions & Deployment | 2/2 | Complete    | 2026-03-22 |
-| 163. Billing & Active Sessions | 1/2 | In Progress|  |
+| 163. Billing & Active Sessions | 2/2 | Complete   | 2026-03-22 |
 | 164. Billing Management | 0/TBD | Not started | - |
 | 165. Drivers & Wallets | 0/TBD | Not started | - |
 | 166. Events & Championships | 0/TBD | Not started | - |

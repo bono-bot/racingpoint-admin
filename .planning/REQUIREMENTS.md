@@ -30,16 +30,16 @@
 ### Billing & Sessions
 
 - [x] **BILL-01**: Staff can view all active billing sessions with real-time status and timers
-- [ ] **BILL-02**: Staff can start a new billing session from the dashboard
-- [ ] **BILL-03**: Staff can stop an active billing session
-- [ ] **BILL-04**: Staff can pause and resume an active billing session
-- [ ] **BILL-05**: Staff can extend an active billing session
+- [x] **BILL-02**: Staff can start a new billing session from the dashboard
+- [x] **BILL-03**: Staff can stop an active billing session
+- [x] **BILL-04**: Staff can pause and resume an active billing session
+- [x] **BILL-05**: Staff can extend an active billing session
 - [ ] **BILL-06**: Staff can issue a refund for a billing session
 - [ ] **BILL-07**: Staff can view refund history for a session
 - [ ] **BILL-08**: Staff can view split billing options for a session
 - [ ] **BILL-09**: Staff can view daily billing report
 - [ ] **BILL-10**: Admin can manage billing rates (CRUD)
-- [ ] **BILL-11**: Staff can view session event timeline (per session)
+- [x] **BILL-11**: Staff can view session event timeline (per session)
 - [ ] **BILL-12**: Staff can view billing session history with search and filters
 
 ### Drivers & Wallets
@@ -148,11 +148,11 @@
 | FLEET-08 | Phase 162 | Complete |
 | FLEET-09 | Phase 162 | Complete |
 | BILL-01 | Phase 163 | Complete |
-| BILL-02 | Phase 163 | Pending |
-| BILL-03 | Phase 163 | Pending |
-| BILL-04 | Phase 163 | Pending |
-| BILL-05 | Phase 163 | Pending |
-| BILL-11 | Phase 163 | Pending |
+| BILL-02 | Phase 163 | Complete |
+| BILL-03 | Phase 163 | Complete |
+| BILL-04 | Phase 163 | Complete |
+| BILL-05 | Phase 163 | Complete |
+| BILL-11 | Phase 163 | Complete |
 | BILL-06 | Phase 164 | Pending |
 | BILL-07 | Phase 164 | Pending |
 | BILL-08 | Phase 164 | Pending |
