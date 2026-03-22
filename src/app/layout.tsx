@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import AdminLayout from "@/components/AdminLayout";
 import { ToastProvider } from "@/components/Toast";
 
 const montserrat = Montserrat({
@@ -26,7 +25,7 @@ export default function RootLayout({
         className={`${montserrat.variable} antialiased bg-rp-black font-sans`}
       >
         <ToastProvider>
-          <AdminLayout>{children}</AdminLayout>
+          {children}
         </ToastProvider>
       </body>
     </html>
