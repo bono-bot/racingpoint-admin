@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NavSection {
   title: string;
@@ -86,6 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { user, isAdmin, logout } = useAuth();
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -142,12 +144,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           ))}
         </nav>
         <div className="p-3 border-t border-rp-border">
+          {user && (
+            <div className="flex items-center gap-2 px-3 py-1.5 mb-1">
+              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="text-sm text-neutral-300">{user.sub}</span>
+              {isAdmin && (
+                <span className="ml-auto text-[10px] bg-rp-red/20 text-rp-red px-1.5 py-0.5 rounded font-medium">Admin</span>
+              )}
+            </div>
+          )}
           <Link href="/settings" className={cn(
             'block px-3 py-1.5 rounded-lg text-sm transition-colors',
             pathname === '/settings' ? 'bg-rp-red/10 text-rp-red' : 'text-rp-grey hover:text-neutral-300'
           )}>
             Settings
           </Link>
+          <button
+            onClick={logout}
+            className="w-full text-left px-3 py-1.5 rounded-lg text-sm text-rp-grey hover:text-red-400 hover:bg-red-500/10 transition-colors mt-0.5"
+          >
+            Logout
+          </button>
           <p className="text-[10px] text-rp-grey/50 px-3 mt-1">Bono v2.0</p>
         </div>
       </aside>
