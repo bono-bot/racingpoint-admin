@@ -88,9 +88,9 @@
 
 - [x] **INFRA-01**: API client refactored into domain-specific modules
 - [ ] **INFRA-02**: Proper form infrastructure with validation (zod + react-hook-form)
-- [ ] **INFRA-03**: Toast notification system for action feedback (sonner)
+- [x] **INFRA-03**: Toast notification system for action feedback (sonner)
 - [ ] **INFRA-04**: Consistent icon system (lucide-react)
-- [ ] **INFRA-05**: Proper Tailwind class merging (clsx + tailwind-merge)
+- [x] **INFRA-05**: Proper Tailwind class merging (clsx + tailwind-merge)
 
 ## v2 Requirements
 
@@ -134,9 +134,9 @@
 | AUTH-06 | Phase 159 | Complete |
 | INFRA-01 | Phase 160 | Complete |
 | INFRA-02 | Phase 160 | Pending |
-| INFRA-03 | Phase 160 | Pending |
+| INFRA-03 | Phase 160 | Complete |
 | INFRA-04 | Phase 160 | Pending |
-| INFRA-05 | Phase 160 | Pending |
+| INFRA-05 | Phase 160 | Complete |
 | FLEET-01 | Phase 161 | Pending |
 | FLEET-10 | Phase 161 | Pending |
 | FLEET-02 | Phase 162 | Pending |

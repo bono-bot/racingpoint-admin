@@ -68,6 +68,7 @@ Recent decisions affecting current work:
 - [159-02]: Inlined constants in Edge middleware to avoid import issues
 - [159-02]: Defense-in-depth: proxy independently rejects unauthenticated requests
 - [159-02]: Route groups: (auth) for login, (dashboard) for sidebar pages
+- [160-01]: Kept useToast() as backward-compatible shim for sonner migration
 - [Phase 160]: Kept unified api object via spread in index.ts for zero-change backward compatibility
 
 ### Pending Todos
