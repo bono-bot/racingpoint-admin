@@ -1,4 +1,4 @@
-# Roadmap: Racing Point Admin Dashboard
+# Roadmap: Racing Point Admin Dashboard (v20.0)
 
 ## Overview
 
@@ -7,26 +7,26 @@ Transform the existing 27-page Next.js admin dashboard from an open, partial-cov
 ## Phases
 
 **Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+- Global numbering continues from racecontrol roadmap (phases 159-169)
+- Decimal phases (159.1, 159.2): Urgent insertions (marked with INSERTED)
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Authentication & Session Security** - Lock down the dashboard with RC admin login, JWT sessions, and protected routes
-- [ ] **Phase 2: Shared Infrastructure** - Form validation, toast notifications, icon system, and API client refactor
-- [ ] **Phase 3: Fleet Monitoring** - Real-time fleet health dashboard showing all 8 pods with status and activity
-- [ ] **Phase 4: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy
-- [ ] **Phase 5: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers
-- [ ] **Phase 6: Billing Management** - Refunds, split billing, daily reports, session history, rate management
-- [ ] **Phase 7: Drivers & Wallets** - Driver profiles, search, wallet operations, memberships, badges
-- [ ] **Phase 8: Events & Championships** - Event CRUD, championship management, time trials
-- [ ] **Phase 9: Game Management** - Launch/stop/relaunch games on pods, game history, AC content browser
-- [ ] **Phase 10: Operations & System Health** - Scheduler, ops stats, audit log, system health monitoring
-- [ ] **Phase 11: Control Room Overview** - Composite mission control view with quick actions and alerts
+- [ ] **Phase 159: Authentication & Session Security** - Lock down the dashboard with RC admin login, JWT sessions, and protected routes
+- [ ] **Phase 160: Shared Infrastructure** - Form validation, toast notifications, icon system, and API client refactor
+- [ ] **Phase 161: Fleet Monitoring** - Real-time fleet health dashboard showing all 8 pods with status and activity
+- [ ] **Phase 162: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy
+- [ ] **Phase 163: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers
+- [ ] **Phase 164: Billing Management** - Refunds, split billing, daily reports, session history, rate management
+- [ ] **Phase 165: Drivers & Wallets** - Driver profiles, search, wallet operations, memberships, badges
+- [ ] **Phase 166: Events & Championships** - Event CRUD, championship management, time trials
+- [ ] **Phase 167: Game Management** - Launch/stop/relaunch games on pods, game history, AC content browser
+- [ ] **Phase 168: Operations & System Health** - Scheduler, ops stats, audit log, system health monitoring
+- [ ] **Phase 169: Control Room Overview** - Composite mission control view with quick actions and alerts
 
 ## Phase Details
 
-### Phase 1: Authentication & Session Security
+### Phase 159: Authentication & Session Security
 **Goal**: Staff must log in before accessing any dashboard functionality; unauthenticated users see only the login page
 **Depends on**: Nothing (first phase)
 **Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06
@@ -39,12 +39,12 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: TBD
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 159-01: TBD
+- [ ] 159-02: TBD
 
-### Phase 2: Shared Infrastructure
+### Phase 160: Shared Infrastructure
 **Goal**: Common UI and data patterns are in place so feature phases can build CRUD views and mutation flows without reinventing plumbing
-**Depends on**: Phase 1
+**Depends on**: Phase 159
 **Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05
 **Success Criteria** (what must be TRUE):
   1. API calls are organized by domain module (fleet, billing, drivers, etc.) not a single monolith
@@ -55,12 +55,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 160-01: TBD
+- [ ] 160-02: TBD
 
-### Phase 3: Fleet Monitoring
+### Phase 161: Fleet Monitoring
 **Goal**: Staff can see the live status of all 8 racing pods at a glance and review recent pod activity
-**Depends on**: Phase 2
+**Depends on**: Phase 160
 **Requirements**: FLEET-01, FLEET-10
 **Success Criteria** (what must be TRUE):
   1. Staff can view a dashboard showing all 8 pods with their status, version, uptime, and connection state
@@ -69,12 +69,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 161-01: TBD
+- [ ] 161-02: TBD
 
-### Phase 4: Fleet Actions & Deployment
+### Phase 162: Fleet Actions & Deployment
 **Goal**: Staff can control pods individually and in bulk, set maintenance mode, and admins can deploy updates across the fleet
-**Depends on**: Phase 3
+**Depends on**: Phase 161
 **Requirements**: FLEET-02, FLEET-03, FLEET-04, FLEET-05, FLEET-06, FLEET-07, FLEET-08, FLEET-09
 **Success Criteria** (what must be TRUE):
   1. Staff can wake, shutdown, or restart any individual pod from the fleet dashboard
@@ -85,12 +85,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 162-01: TBD
+- [ ] 162-02: TBD
 
-### Phase 5: Billing & Active Sessions
+### Phase 163: Billing & Active Sessions
 **Goal**: Staff can monitor all active billing sessions in real time and perform core session lifecycle actions
-**Depends on**: Phase 2
+**Depends on**: Phase 160
 **Requirements**: BILL-01, BILL-02, BILL-03, BILL-04, BILL-05, BILL-11
 **Success Criteria** (what must be TRUE):
   1. Staff can see all active billing sessions with live countdown timers and status
@@ -100,12 +100,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 163-01: TBD
+- [ ] 163-02: TBD
 
-### Phase 6: Billing Management
+### Phase 164: Billing Management
 **Goal**: Staff can handle refunds, view reports and history, and admins can manage billing rates
-**Depends on**: Phase 5
+**Depends on**: Phase 163
 **Requirements**: BILL-06, BILL-07, BILL-08, BILL-09, BILL-10, BILL-12
 **Success Criteria** (what must be TRUE):
   1. Staff can issue a refund for a billing session and view refund history
@@ -116,12 +116,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 164-01: TBD
+- [ ] 164-02: TBD
 
-### Phase 7: Drivers & Wallets
+### Phase 165: Drivers & Wallets
 **Goal**: Staff can look up any driver, view their full profile, and perform wallet operations
-**Depends on**: Phase 2
+**Depends on**: Phase 160
 **Requirements**: DRIV-01, DRIV-02, DRIV-03, DRIV-04, DRIV-05, DRIV-06, DRIV-07, DRIV-08, DRIV-09, DRIV-10
 **Success Criteria** (what must be TRUE):
   1. Staff can search for drivers by name and view a paginated driver listing
@@ -132,12 +132,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 165-01: TBD
+- [ ] 165-02: TBD
 
-### Phase 8: Events & Championships
+### Phase 166: Events & Championships
 **Goal**: Staff can create and manage events, championships, and time trials
-**Depends on**: Phase 2
+**Depends on**: Phase 160
 **Requirements**: EVNT-01, EVNT-02, EVNT-03, EVNT-04, EVNT-05, EVNT-06, EVNT-07
 **Success Criteria** (what must be TRUE):
   1. Staff can create a new event and edit an existing event
@@ -147,12 +147,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
+- [ ] 166-01: TBD
+- [ ] 166-02: TBD
 
-### Phase 9: Game Management
+### Phase 167: Game Management
 **Goal**: Staff can launch, stop, and manage games on pods, and browse available AC content
-**Depends on**: Phase 4
+**Depends on**: Phase 162
 **Requirements**: GAME-01, GAME-02, GAME-03, GAME-04, GAME-05, GAME-06, GAME-07
 **Success Criteria** (what must be TRUE):
   1. Staff can launch a game on a specific pod and stop or relaunch it
@@ -162,12 +162,12 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
+- [ ] 167-01: TBD
+- [ ] 167-02: TBD
 
-### Phase 10: Operations & System Health
+### Phase 168: Operations & System Health
 **Goal**: Staff have visibility into system operations, scheduling, and health across all services
-**Depends on**: Phase 2
+**Depends on**: Phase 160
 **Requirements**: OPS-03, OPS-04, OPS-05, OPS-06
 **Success Criteria** (what must be TRUE):
   1. Staff can view scheduler status and settings
@@ -177,13 +177,13 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 10-01: TBD
-- [ ] 10-02: TBD
+- [ ] 168-01: TBD
+- [ ] 168-02: TBD
 
-### Phase 11: Control Room Overview
+### Phase 169: Control Room Overview
 **Goal**: Staff have a single mission-control view combining fleet, sessions, and health with quick action shortcuts
-**Depends on**: Phase 4, Phase 5, Phase 10
-**Requirements**: OPS-01, OPS-02, OPS-03 (reference only -- built in Phase 10)
+**Depends on**: Phase 162, Phase 163, Phase 168
+**Requirements**: OPS-01, OPS-02, OPS-03 (reference only -- built in Phase 168)
 **Success Criteria** (what must be TRUE):
   1. Staff can view a unified control room showing fleet status, active sessions, and system health in one screen
   2. Staff can perform common operations (wake pod, start session, etc.) via quick action buttons without navigating away
@@ -191,24 +191,24 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 11-01: TBD
-- [ ] 11-02: TBD
+- [ ] 169-01: TBD
+- [ ] 169-02: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11
+Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -> 166 -> 167 -> 168 -> 169
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Authentication & Session Security | 0/TBD | Not started | - |
-| 2. Shared Infrastructure | 0/TBD | Not started | - |
-| 3. Fleet Monitoring | 0/TBD | Not started | - |
-| 4. Fleet Actions & Deployment | 0/TBD | Not started | - |
-| 5. Billing & Active Sessions | 0/TBD | Not started | - |
-| 6. Billing Management | 0/TBD | Not started | - |
-| 7. Drivers & Wallets | 0/TBD | Not started | - |
-| 8. Events & Championships | 0/TBD | Not started | - |
-| 9. Game Management | 0/TBD | Not started | - |
-| 10. Operations & System Health | 0/TBD | Not started | - |
-| 11. Control Room Overview | 0/TBD | Not started | - |
+| 159. Authentication & Session Security | 0/TBD | Not started | - |
+| 160. Shared Infrastructure | 0/TBD | Not started | - |
+| 161. Fleet Monitoring | 0/TBD | Not started | - |
+| 162. Fleet Actions & Deployment | 0/TBD | Not started | - |
+| 163. Billing & Active Sessions | 0/TBD | Not started | - |
+| 164. Billing Management | 0/TBD | Not started | - |
+| 165. Drivers & Wallets | 0/TBD | Not started | - |
+| 166. Events & Championships | 0/TBD | Not started | - |
+| 167. Game Management | 0/TBD | Not started | - |
+| 168. Operations & System Health | 0/TBD | Not started | - |
+| 169. Control Room Overview | 0/TBD | Not started | - |
