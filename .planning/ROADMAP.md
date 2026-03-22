@@ -84,11 +84,11 @@ Plans:
   3. Staff can execute bulk actions (wake-all, shutdown-all, restart-all, lockdown-all) affecting the entire fleet
   4. Staff can toggle maintenance mode on a pod and see the mode reflected in the UI
   5. Admin can trigger a rolling deploy, view its progress, and see completion status
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 162-01: TBD
-- [ ] 162-02: TBD
+- [ ] 162-01-PLAN.md -- Pod action API functions, ConfirmDialog, action buttons on pod cards, bulk action bar
+- [ ] 162-02-PLAN.md -- Admin-only rolling deploy with progress tracking, remote exec on pod cards
 
 ### Phase 163: Billing & Active Sessions
 **Goal**: Staff can monitor all active billing sessions in real time and perform core session lifecycle actions
@@ -206,7 +206,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | 159. Authentication & Session Security | 3/3 | Complete    | 2026-03-22 |
 | 160. Shared Infrastructure | 3/3 | Complete    | 2026-03-22 |
 | 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
-| 162. Fleet Actions & Deployment | 0/TBD | Not started | - |
+| 162. Fleet Actions & Deployment | 0/2 | Not started | - |
 | 163. Billing & Active Sessions | 0/TBD | Not started | - |
 | 164. Billing Management | 0/TBD | Not started | - |
 | 165. Drivers & Wallets | 0/TBD | Not started | - |
