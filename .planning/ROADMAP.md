@@ -115,11 +115,11 @@ Plans:
   3. Staff can view a daily billing report summarizing revenue and session counts
   4. Staff can search and filter through billing session history
   5. Admin can create, edit, and delete billing rates
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 164-01: TBD
-- [ ] 164-02: TBD
+- [ ] 164-01-PLAN.md -- Session history with filters, refund modal, split billing view, sidebar link
+- [ ] 164-02-PLAN.md -- Daily billing reports page and admin-only rate management page
 
 ### Phase 165: Drivers & Wallets
 **Goal**: Staff can look up any driver, view their full profile, and perform wallet operations
@@ -208,7 +208,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
 | 162. Fleet Actions & Deployment | 2/2 | Complete    | 2026-03-22 |
 | 163. Billing & Active Sessions | 2/2 | Complete    | 2026-03-22 |
-| 164. Billing Management | 0/TBD | Not started | - |
+| 164. Billing Management | 0/2 | Not started | - |
 | 165. Drivers & Wallets | 0/TBD | Not started | - |
 | 166. Events & Championships | 0/TBD | Not started | - |
 | 167. Game Management | 0/TBD | Not started | - |
