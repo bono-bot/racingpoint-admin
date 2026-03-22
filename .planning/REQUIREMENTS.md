@@ -86,7 +86,7 @@
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: API client refactored into domain-specific modules
+- [x] **INFRA-01**: API client refactored into domain-specific modules
 - [ ] **INFRA-02**: Proper form infrastructure with validation (zod + react-hook-form)
 - [ ] **INFRA-03**: Toast notification system for action feedback (sonner)
 - [ ] **INFRA-04**: Consistent icon system (lucide-react)
@@ -132,7 +132,7 @@
 | AUTH-04 | Phase 159 | Complete |
 | AUTH-05 | Phase 159 | Pending |
 | AUTH-06 | Phase 159 | Complete |
-| INFRA-01 | Phase 160 | Pending |
+| INFRA-01 | Phase 160 | Complete |
 | INFRA-02 | Phase 160 | Pending |
 | INFRA-03 | Phase 160 | Pending |
 | INFRA-04 | Phase 160 | Pending |
