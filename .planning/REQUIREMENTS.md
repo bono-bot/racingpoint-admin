@@ -16,7 +16,7 @@
 
 ### Fleet Control
 
-- [ ] **FLEET-01**: Staff can view real-time fleet health (all 8 pods: status, version, uptime, connection)
+- [x] **FLEET-01**: Staff can view real-time fleet health (all 8 pods: status, version, uptime, connection)
 - [ ] **FLEET-02**: Staff can wake, shutdown, or restart individual pods
 - [ ] **FLEET-03**: Staff can lockdown or unlock individual pods
 - [ ] **FLEET-04**: Staff can enable or disable individual pods
@@ -137,7 +137,7 @@
 | INFRA-03 | Phase 160 | Complete |
 | INFRA-04 | Phase 160 | Complete |
 | INFRA-05 | Phase 160 | Complete |
-| FLEET-01 | Phase 161 | Pending |
+| FLEET-01 | Phase 161 | Complete |
 | FLEET-10 | Phase 161 | Pending |
 | FLEET-02 | Phase 162 | Pending |
 | FLEET-03 | Phase 162 | Pending |
