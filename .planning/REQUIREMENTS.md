@@ -17,11 +17,11 @@
 ### Fleet Control
 
 - [x] **FLEET-01**: Staff can view real-time fleet health (all 8 pods: status, version, uptime, connection)
-- [ ] **FLEET-02**: Staff can wake, shutdown, or restart individual pods
-- [ ] **FLEET-03**: Staff can lockdown or unlock individual pods
-- [ ] **FLEET-04**: Staff can enable or disable individual pods
-- [ ] **FLEET-05**: Staff can perform bulk fleet actions (wake-all, shutdown-all, restart-all, lockdown-all)
-- [ ] **FLEET-06**: Staff can set or clear maintenance mode on a pod
+- [x] **FLEET-02**: Staff can wake, shutdown, or restart individual pods
+- [x] **FLEET-03**: Staff can lockdown or unlock individual pods
+- [x] **FLEET-04**: Staff can enable or disable individual pods
+- [x] **FLEET-05**: Staff can perform bulk fleet actions (wake-all, shutdown-all, restart-all, lockdown-all)
+- [x] **FLEET-06**: Staff can set or clear maintenance mode on a pod
 - [ ] **FLEET-07**: Admin can trigger rolling deploy to fleet
 - [ ] **FLEET-08**: Admin can view deploy status
 - [ ] **FLEET-09**: Admin can execute remote commands on individual pods
@@ -139,11 +139,11 @@
 | INFRA-05 | Phase 160 | Complete |
 | FLEET-01 | Phase 161 | Complete |
 | FLEET-10 | Phase 161 | Complete |
-| FLEET-02 | Phase 162 | Pending |
-| FLEET-03 | Phase 162 | Pending |
-| FLEET-04 | Phase 162 | Pending |
-| FLEET-05 | Phase 162 | Pending |
-| FLEET-06 | Phase 162 | Pending |
+| FLEET-02 | Phase 162 | Complete |
+| FLEET-03 | Phase 162 | Complete |
+| FLEET-04 | Phase 162 | Complete |
+| FLEET-05 | Phase 162 | Complete |
+| FLEET-06 | Phase 162 | Complete |
 | FLEET-07 | Phase 162 | Pending |
 | FLEET-08 | Phase 162 | Pending |
 | FLEET-09 | Phase 162 | Pending |
