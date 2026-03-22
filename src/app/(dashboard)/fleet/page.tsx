@@ -1,12 +1,12 @@
 'use client';
 
 import useSWR from 'swr';
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { toast } from 'sonner';
 import { fleetApi } from '@/lib/api/fleet';
 import { useAuth } from '@/hooks/useAuth';
 import ConfirmDialog from '@/components/ConfirmDialog';
-import type { PodFleetStatus, FleetHealthResponse, ActivityEntry } from '@/lib/api/fleet';
+import type { PodFleetStatus, FleetHealthResponse, ActivityEntry, DeployStatus, ExecResult } from '@/lib/api/fleet';
 
 function formatUptime(secs: number | null): string {
   if (secs === null || secs === undefined) return 'N/A';
@@ -31,9 +31,11 @@ function podStatus(pod: PodFleetStatus): { color: string; textColor: string; lab
 function PodCard({
   pod,
   onAction,
+  isAdmin,
 }: {
   pod: PodFleetStatus;
   onAction: (label: string, fn: () => Promise<void>, needsConfirm: boolean) => void;
+  isAdmin: boolean;
 }) {
   const status = podStatus(pod);
   const disabled = !pod.pod_id;
@@ -144,6 +146,9 @@ function PodCard({
           )}
         </div>
       </div>
+
+      {/* Remote Exec (admin-only) */}
+      {isAdmin && pod.pod_id && <RemoteExecSection podId={pod.pod_id} />}
     </div>
   );
 }
@@ -176,6 +181,157 @@ function BulkActionBar({ onAction }: { onAction: (label: string, fn: () => Promi
       >
         Lockdown All
       </button>
+    </div>
+  );
+}
+
+const DEPLOY_POD_STYLES: Record<string, string> = {
+  pending: 'bg-neutral-700 text-neutral-300',
+  deploying: 'bg-blue-900/40 text-blue-400 animate-pulse',
+  success: 'bg-emerald-900/40 text-emerald-400',
+  failed: 'bg-red-900/40 text-red-400',
+};
+
+function DeploySection() {
+  const [deploying, setDeploying] = useState(false);
+  const [deployState, setDeployState] = useState<DeployStatus | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = useCallback(() => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => stopPolling();
+  }, [stopPolling]);
+
+  async function startDeploy() {
+    try {
+      setDeploying(true);
+      await fleetApi.rollingDeploy();
+      // Start polling deploy status
+      pollRef.current = setInterval(async () => {
+        try {
+          const status = await fleetApi.deployStatus();
+          setDeployState(status);
+          const active = status.pods.some(p => p.status === 'pending' || p.status === 'deploying');
+          if (!active) {
+            stopPolling();
+            setDeploying(false);
+            const failed = status.pods.filter(p => p.status === 'failed').length;
+            if (failed > 0) {
+              toast.error(`Deploy completed with ${failed} failed pod(s)`);
+            } else {
+              toast.success('Rolling deploy completed successfully');
+            }
+          }
+        } catch {
+          stopPolling();
+          setDeploying(false);
+          toast.error('Failed to fetch deploy status');
+        }
+      }, 3000);
+    } catch (e) {
+      setDeploying(false);
+      toast.error('Deploy failed: ' + (e as Error).message);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-3 mb-6 pb-4 border-b border-rp-border">
+      <div className="flex items-center gap-3">
+        <span className="text-sm font-medium text-neutral-400">Deploy</span>
+        <button
+          disabled={deploying}
+          onClick={startDeploy}
+          className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-1.5 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {deploying ? 'Deploying...' : 'Deploy'}
+        </button>
+      </div>
+      {deployState && deployState.pods.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {deployState.pods.map(p => (
+            <span
+              key={p.pod_id}
+              className={`text-xs px-2 py-1 rounded ${DEPLOY_POD_STYLES[p.status] || DEPLOY_POD_STYLES.pending}`}
+            >
+              {p.pod_number != null ? `Pod ${p.pod_number}` : p.pod_id}: {p.status}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RemoteExecSection({ podId }: { podId: string }) {
+  const [open, setOpen] = useState(false);
+  const [command, setCommand] = useState('');
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<ExecResult | null>(null);
+
+  async function runCommand() {
+    if (!command.trim()) return;
+    setRunning(true);
+    setResult(null);
+    try {
+      const res = await fleetApi.execOnPod(podId, command);
+      setResult(res);
+    } catch (e) {
+      setResult({ stdout: '', stderr: (e as Error).message, exit_code: -1 });
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  return (
+    <div className="mt-2 pt-2 border-t border-rp-border">
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-xs text-neutral-400 hover:text-white transition-colors"
+      >
+        {open ? '▾ Remote Exec' : '▸ Remote Exec'}
+      </button>
+      {open && (
+        <div className="mt-2 space-y-2">
+          <div className="flex gap-1.5">
+            <input
+              type="text"
+              value={command}
+              onChange={e => setCommand(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && !running) runCommand(); }}
+              placeholder="Enter command..."
+              className="bg-rp-black border border-rp-border rounded text-sm px-2 py-1 w-full text-white placeholder:text-neutral-500"
+            />
+            <button
+              disabled={running || !command.trim()}
+              onClick={runCommand}
+              className="bg-blue-600 text-white text-xs px-2 py-1 rounded whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {running ? 'Running...' : 'Run'}
+            </button>
+          </div>
+          {result && (
+            <div>
+              {result.stdout && (
+                <pre className="bg-rp-black text-emerald-400 text-xs p-2 rounded max-h-32 overflow-auto">
+                  <code>{result.stdout}</code>
+                </pre>
+              )}
+              {result.stderr && (
+                <pre className="bg-rp-black text-red-400 text-xs p-2 rounded max-h-32 overflow-auto mt-1">
+                  <code>{result.stderr}</code>
+                </pre>
+              )}
+              <p className="text-xs text-neutral-500 mt-1">Exit code: {result.exit_code}</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -296,11 +452,14 @@ export default function FleetPage() {
       {/* Bulk Action Bar */}
       <BulkActionBar onAction={handleAction} />
 
+      {/* Deploy Section (admin-only) */}
+      {isAdmin && <DeploySection />}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {!data && !error
           ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
           : data?.pods.map(pod => (
-              <PodCard key={pod.pod_number} pod={pod} onAction={handleAction} />
+              <PodCard key={pod.pod_number} pod={pod} onAction={handleAction} isAdmin={isAdmin} />
             ))
         }
       </div>
