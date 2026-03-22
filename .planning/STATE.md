@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v20.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 161-01-PLAN.md
-last_updated: "2026-03-22T14:03:08Z"
-last_activity: 2026-03-22 -- Completed Plan 01 fleet health dashboard with pod grid
+stopped_at: Completed 161-02-PLAN.md
+last_updated: "2026-03-22T14:08:22Z"
+last_activity: 2026-03-22 -- Completed Plan 02 activity log with pod filter and pagination
 progress:
   total_phases: 11
-  completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
+  completed_phases: 3
+  total_plans: 8
+  completed_plans: 8
   percent: 70
 ---
 
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 
 ## Current Position
 
-Phase: 3 of 11 (Fleet Monitoring)
-Plan: 1 of 2 in current phase (completed)
+Phase: 3 of 11 (Fleet Monitoring) -- COMPLETE
+Plan: 2 of 2 in current phase (completed)
 Status: Executing
-Last activity: 2026-03-22 -- Completed Plan 01 fleet health dashboard with pod grid
+Last activity: 2026-03-22 -- Completed Plan 02 activity log with pod filter and pagination
 
-Progress: [███████░░░] 70%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [███████░░░] 70%
 | Phase 160 P02 | 2min | 2 tasks | 9 files |
 | Phase 160 P03 | 2.5min | 2 tasks | 3 files |
 | Phase 161 P01 | 2.25min | 2 tasks | 4 files |
+| Phase 161 P02 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,8 @@ Recent decisions affecting current work:
 - [Phase 160]: Used $ZodType from zod/v4/core for zodResolver compatibility
 - [161-01]: Fleet nav is a separate sidebar section after Operations (not nested inside)
 - [161-01]: 5-second SWR polling interval for fleet health refresh
+- [161-02]: Pod filter uses pod_id from health data, not hardcoded values
+- [161-02]: Activity table (not cards) for data density; category badge colors standardized
 
 ### Pending Todos
 
@@ -88,6 +91,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T14:03:08Z
-Stopped at: Completed 161-01-PLAN.md
+Last session: 2026-03-22T14:08:22Z
+Stopped at: Completed 161-02-PLAN.md
 Resume file: None

@@ -25,7 +25,7 @@
 - [ ] **FLEET-07**: Admin can trigger rolling deploy to fleet
 - [ ] **FLEET-08**: Admin can view deploy status
 - [ ] **FLEET-09**: Admin can execute remote commands on individual pods
-- [ ] **FLEET-10**: Staff can view pod activity log
+- [x] **FLEET-10**: Staff can view pod activity log
 
 ### Billing & Sessions
 
@@ -138,7 +138,7 @@
 | INFRA-04 | Phase 160 | Complete |
 | INFRA-05 | Phase 160 | Complete |
 | FLEET-01 | Phase 161 | Complete |
-| FLEET-10 | Phase 161 | Pending |
+| FLEET-10 | Phase 161 | Complete |
 | FLEET-02 | Phase 162 | Pending |
 | FLEET-03 | Phase 162 | Pending |
 | FLEET-04 | Phase 162 | Pending |
