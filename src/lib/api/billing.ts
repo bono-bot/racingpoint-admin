@@ -45,6 +45,17 @@ export interface SplitBillingInfo {
   }>;
 }
 
+export interface DailyReport {
+  total_revenue_paise: number;
+  session_count: number;
+  avg_duration_seconds: number;
+  by_rate: Array<{
+    rate_name: string;
+    count: number;
+    revenue_paise: number;
+  }>;
+}
+
 export const billingApi = {
   getActive: (): Promise<ActiveSession[]> =>
     rcFetch('/billing/active'),
@@ -91,4 +102,16 @@ export const billingApi = {
 
   getSessionSplits: (id: string): Promise<SplitBillingInfo | null> =>
     rcFetch(`/billing/sessions/${id}/splits`).catch(() => null),
+
+  getDailyReport: (date: string): Promise<DailyReport> =>
+    rcFetch(`/billing/reports/daily?date=${date}`),
+
+  createRate: (data: { name: string; duration_minutes: number; price_paise: number }): Promise<BillingRate> =>
+    rcFetch('/billing/rates', { method: 'POST', body: JSON.stringify(data) }),
+
+  updateRate: (id: string, data: Partial<{ name: string; duration_minutes: number; price_paise: number; active: boolean }>): Promise<BillingRate> =>
+    rcFetch(`/billing/rates/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+
+  deleteRate: (id: string): Promise<void> =>
+    rcFetch(`/billing/rates/${id}`, { method: 'DELETE' }),
 };
