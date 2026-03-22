@@ -99,11 +99,11 @@ Plans:
   2. Staff can start a new billing session from the dashboard
   3. Staff can stop, pause, resume, and extend an active billing session
   4. Staff can view the event timeline for any individual session
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 163-01: TBD
-- [ ] 163-02: TBD
+- [ ] 163-01-PLAN.md -- Billing API module, active sessions table with live countdown timers, sidebar link
+- [ ] 163-02-PLAN.md -- Start session modal, inline action buttons, quick-extend, expandable event timeline
 
 ### Phase 164: Billing Management
 **Goal**: Staff can handle refunds, view reports and history, and admins can manage billing rates
@@ -207,7 +207,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | 160. Shared Infrastructure | 3/3 | Complete    | 2026-03-22 |
 | 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
 | 162. Fleet Actions & Deployment | 2/2 | Complete    | 2026-03-22 |
-| 163. Billing & Active Sessions | 0/TBD | Not started | - |
+| 163. Billing & Active Sessions | 0/2 | Not started | - |
 | 164. Billing Management | 0/TBD | Not started | - |
 | 165. Drivers & Wallets | 0/TBD | Not started | - |
 | 166. Events & Championships | 0/TBD | Not started | - |
