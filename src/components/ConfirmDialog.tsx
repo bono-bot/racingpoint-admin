@@ -8,6 +8,7 @@ interface ConfirmDialogProps {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  variant?: 'danger' | 'warning';
   danger?: boolean;
   loading?: boolean;
   onConfirm: () => void;
@@ -20,6 +21,7 @@ export default function ConfirmDialog({
   message,
   confirmLabel = 'Confirm',
   cancelLabel = 'Cancel',
+  variant,
   danger = false,
   loading = false,
   onConfirm,
@@ -63,9 +65,11 @@ export default function ConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer disabled:opacity-50 ${
-              danger
-                ? 'bg-red-600 hover:bg-red-500 text-white'
-                : 'bg-rp-red hover:bg-rp-red-light text-white'
+              variant === 'warning'
+                ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
+                : (danger || variant === 'danger')
+                  ? 'bg-red-600 hover:bg-red-500 text-white'
+                  : 'bg-rp-red hover:bg-rp-red-light text-white'
             }`}
           >
             {loading ? (

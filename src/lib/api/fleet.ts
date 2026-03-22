@@ -44,4 +44,20 @@ export const fleetApi = {
   getActivity: (limit = 100): Promise<ActivityEntry[]> => rcFetch('/activity?limit=' + limit),
   getPodActivity: (podId: string, limit = 100): Promise<ActivityEntry[]> =>
     rcFetch('/pods/' + podId + '/activity?limit=' + limit),
+
+  // Pod actions
+  wakePod: (podId: string) => rcFetch('/pods/' + podId + '/wake', { method: 'POST' }),
+  shutdownPod: (podId: string) => rcFetch('/pods/' + podId + '/shutdown', { method: 'POST' }),
+  restartPod: (podId: string) => rcFetch('/pods/' + podId + '/restart', { method: 'POST' }),
+  lockdownPod: (podId: string) => rcFetch('/pods/' + podId + '/lockdown', { method: 'POST' }),
+  unlockPod: (podId: string) => rcFetch('/pods/' + podId + '/lockdown', { method: 'DELETE' }),
+  enablePod: (podId: string) => rcFetch('/pods/' + podId + '/enable', { method: 'POST' }),
+  disablePod: (podId: string) => rcFetch('/pods/' + podId + '/disable', { method: 'POST' }),
+  clearMaintenance: (podId: string) => rcFetch('/pods/' + podId + '/clear-maintenance', { method: 'POST' }),
+
+  // Bulk actions
+  wakeAll: () => rcFetch('/pods/wake-all', { method: 'POST' }),
+  shutdownAll: () => rcFetch('/pods/shutdown-all', { method: 'POST' }),
+  restartAll: () => rcFetch('/pods/restart-all', { method: 'POST' }),
+  lockdownAll: () => rcFetch('/pods/lockdown-all', { method: 'POST' }),
 };
