@@ -29,7 +29,7 @@
 
 ### Billing & Sessions
 
-- [ ] **BILL-01**: Staff can view all active billing sessions with real-time status and timers
+- [x] **BILL-01**: Staff can view all active billing sessions with real-time status and timers
 - [ ] **BILL-02**: Staff can start a new billing session from the dashboard
 - [ ] **BILL-03**: Staff can stop an active billing session
 - [ ] **BILL-04**: Staff can pause and resume an active billing session
@@ -147,7 +147,7 @@
 | FLEET-07 | Phase 162 | Complete |
 | FLEET-08 | Phase 162 | Complete |
 | FLEET-09 | Phase 162 | Complete |
-| BILL-01 | Phase 163 | Pending |
+| BILL-01 | Phase 163 | Complete |
 | BILL-02 | Phase 163 | Pending |
 | BILL-03 | Phase 163 | Pending |
 | BILL-04 | Phase 163 | Pending |
