@@ -36,11 +36,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Opening any dashboard URL while logged out redirects to the login page
   4. API proxy routes reject requests without a valid session token
   5. Admin users see management options that staff users do not
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 159-01: TBD
-- [ ] 159-02: TBD
+- [ ] 159-01-PLAN.md -- Auth foundation: install jose, auth library, config, login/logout/me API routes
+- [ ] 159-02-PLAN.md -- Middleware + proxy lockdown + route group restructure
+- [ ] 159-03-PLAN.md -- PIN pad login UI, AuthProvider, session expiry, AdminLayout updates
 
 ### Phase 160: Shared Infrastructure
 **Goal**: Common UI and data patterns are in place so feature phases can build CRUD views and mutation flows without reinventing plumbing
@@ -201,7 +202,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 159. Authentication & Session Security | 0/TBD | Not started | - |
+| 159. Authentication & Session Security | 0/3 | Planning complete | - |
 | 160. Shared Infrastructure | 0/TBD | Not started | - |
 | 161. Fleet Monitoring | 0/TBD | Not started | - |
 | 162. Fleet Actions & Deployment | 0/TBD | Not started | - |
