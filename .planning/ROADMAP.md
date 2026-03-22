@@ -208,7 +208,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
 | 162. Fleet Actions & Deployment | 2/2 | Complete    | 2026-03-22 |
 | 163. Billing & Active Sessions | 2/2 | Complete    | 2026-03-22 |
-| 164. Billing Management | 2/2 | Complete   | 2026-03-22 |
+| 164. Billing Management | 2/2 | Complete    | 2026-03-22 |
 | 165. Drivers & Wallets | 0/TBD | Not started | - |
 | 166. Events & Championships | 0/TBD | Not started | - |
 | 167. Game Management | 0/TBD | Not started | - |
