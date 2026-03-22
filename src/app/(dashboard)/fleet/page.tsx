@@ -2,7 +2,10 @@
 
 import useSWR from 'swr';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { fleetApi } from '@/lib/api/fleet';
+import { useAuth } from '@/hooks/useAuth';
+import ConfirmDialog from '@/components/ConfirmDialog';
 import type { PodFleetStatus, FleetHealthResponse, ActivityEntry } from '@/lib/api/fleet';
 
 function formatUptime(secs: number | null): string {
@@ -25,8 +28,15 @@ function podStatus(pod: PodFleetStatus): { color: string; textColor: string; lab
   return { color: 'bg-red-400', textColor: 'text-red-400', label: 'Offline' };
 }
 
-function PodCard({ pod }: { pod: PodFleetStatus }) {
+function PodCard({
+  pod,
+  onAction,
+}: {
+  pod: PodFleetStatus;
+  onAction: (label: string, fn: () => Promise<void>, needsConfirm: boolean) => void;
+}) {
   const status = podStatus(pod);
+  const disabled = !pod.pod_id;
 
   return (
     <div className="bg-rp-card border border-rp-border rounded-lg p-4">
@@ -50,6 +60,122 @@ function PodCard({ pod }: { pod: PodFleetStatus }) {
           </span>
         </p>
       </div>
+
+      {/* Action buttons */}
+      <div className="mt-3 pt-3 border-t border-rp-border space-y-2">
+        {/* Row 1: Wake / Shutdown / Restart */}
+        <div className="flex gap-1.5">
+          <button
+            disabled={disabled}
+            onClick={() => onAction('Wake Pod ' + pod.pod_number, () => fleetApi.wakePod(pod.pod_id!), false)}
+            className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Wake
+          </button>
+          <button
+            disabled={disabled}
+            onClick={() => onAction('Shutdown Pod ' + pod.pod_number, () => fleetApi.shutdownPod(pod.pod_id!), true)}
+            className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Shutdown
+          </button>
+          <button
+            disabled={disabled}
+            onClick={() => onAction('Restart Pod ' + pod.pod_number, () => fleetApi.restartPod(pod.pod_id!), true)}
+            className="text-xs px-2 py-1 rounded text-yellow-400 hover:bg-yellow-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Restart
+          </button>
+        </div>
+
+        {/* Row 2: Lockdown/Unlock + Enable/Disable */}
+        <div className="flex gap-1.5">
+          {pod.in_maintenance ? (
+            <button
+              disabled={disabled}
+              onClick={() => onAction('Unlock Pod ' + pod.pod_number, () => fleetApi.unlockPod(pod.pod_id!), false)}
+              className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Unlock
+            </button>
+          ) : (
+            <button
+              disabled={disabled}
+              onClick={() => onAction('Lockdown Pod ' + pod.pod_number, () => fleetApi.lockdownPod(pod.pod_id!), true)}
+              className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Lockdown
+            </button>
+          )}
+          <button
+            disabled={disabled}
+            onClick={() => onAction('Enable Pod ' + pod.pod_number, () => fleetApi.enablePod(pod.pod_id!), false)}
+            className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Enable
+          </button>
+          <button
+            disabled={disabled}
+            onClick={() => onAction('Disable Pod ' + pod.pod_number, () => fleetApi.disablePod(pod.pod_id!), false)}
+            className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Disable
+          </button>
+        </div>
+
+        {/* Row 3: Maintenance toggle */}
+        <div>
+          {pod.in_maintenance ? (
+            <button
+              disabled={disabled}
+              onClick={() => onAction('Clear Maintenance Pod ' + pod.pod_number, () => fleetApi.clearMaintenance(pod.pod_id!), false)}
+              className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Clear Maintenance
+            </button>
+          ) : (
+            <button
+              disabled={disabled}
+              onClick={() => onAction('Set Maintenance Pod ' + pod.pod_number, () => fleetApi.lockdownPod(pod.pod_id!), false)}
+              className="text-xs px-2 py-1 rounded text-yellow-400 hover:bg-yellow-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              Set Maintenance
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BulkActionBar({ onAction }: { onAction: (label: string, fn: () => Promise<void>, needsConfirm: boolean) => void }) {
+  return (
+    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-rp-border">
+      <span className="text-sm font-medium text-neutral-400">Fleet Actions</span>
+      <button
+        onClick={() => onAction('Wake All Pods', () => fleetApi.wakeAll(), false)}
+        className="text-sm px-3 py-1.5 rounded bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 transition-colors"
+      >
+        Wake All
+      </button>
+      <button
+        onClick={() => onAction('Shutdown All Pods', () => fleetApi.shutdownAll(), true)}
+        className="text-sm px-3 py-1.5 rounded bg-red-600/20 text-red-400 hover:bg-red-600/30 transition-colors"
+      >
+        Shutdown All
+      </button>
+      <button
+        onClick={() => onAction('Restart All Pods', () => fleetApi.restartAll(), true)}
+        className="text-sm px-3 py-1.5 rounded bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30 transition-colors"
+      >
+        Restart All
+      </button>
+      <button
+        onClick={() => onAction('Lockdown All Pods', () => fleetApi.lockdownAll(), true)}
+        className="text-sm px-3 py-1.5 rounded bg-red-600/20 text-red-400 hover:bg-red-600/30 transition-colors"
+      >
+        Lockdown All
+      </button>
     </div>
   );
 }
@@ -93,8 +219,10 @@ function SkeletonCard() {
 }
 
 export default function FleetPage() {
+  const { isAdmin } = useAuth();
   const [podFilter, setPodFilter] = useState('');
   const [limit, setLimit] = useState(100);
+  const [confirm, setConfirm] = useState<{ title: string; message: string; action: () => Promise<void> } | null>(null);
 
   const { data, error, mutate } = useSWR<FleetHealthResponse>(
     '/fleet/health',
@@ -107,6 +235,28 @@ export default function FleetPage() {
     () => podFilter ? fleetApi.getPodActivity(podFilter, limit) : fleetApi.getActivity(limit),
     { refreshInterval: 5000 }
   );
+
+  async function execAction(label: string, fn: () => Promise<void>) {
+    try {
+      await fn();
+      toast.success(label + ' completed');
+      mutate();
+    } catch (e) {
+      toast.error(label + ' failed: ' + (e as Error).message);
+    }
+  }
+
+  function handleAction(label: string, fn: () => Promise<void>, needsConfirm: boolean) {
+    if (needsConfirm) {
+      setConfirm({
+        title: label,
+        message: `Are you sure you want to ${label.toLowerCase()}? This action cannot be undone.`,
+        action: () => execAction(label, fn),
+      });
+    } else {
+      execAction(label, fn);
+    }
+  }
 
   const onlineCount = data?.pods.filter(p => p.ws_connected && p.http_reachable && !p.in_maintenance).length ?? 0;
   const totalPods = data?.pods.length ?? 8;
@@ -143,10 +293,15 @@ export default function FleetPage() {
         </div>
       )}
 
+      {/* Bulk Action Bar */}
+      <BulkActionBar onAction={handleAction} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {!data && !error
           ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
-          : data?.pods.map(pod => <PodCard key={pod.pod_number} pod={pod} />)
+          : data?.pods.map(pod => (
+              <PodCard key={pod.pod_number} pod={pod} onAction={handleAction} />
+            ))
         }
       </div>
 
@@ -218,6 +373,22 @@ export default function FleetPage() {
           )}
         </>
       )}
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        open={!!confirm}
+        title={confirm?.title ?? ''}
+        message={confirm?.message ?? ''}
+        confirmLabel="Confirm"
+        danger
+        onConfirm={async () => {
+          if (confirm) {
+            await confirm.action();
+            setConfirm(null);
+          }
+        }}
+        onCancel={() => setConfirm(null)}
+      />
     </div>
   );
 }
