@@ -30,6 +30,12 @@ const navSections: NavSection[] = [
     ],
   },
   {
+    title: 'Fleet',
+    items: [
+      { href: '/fleet', label: 'Fleet Health' },
+    ],
+  },
+  {
     title: 'Racing',
     items: [
       { href: '/leaderboard', label: 'Leaderboard' },
