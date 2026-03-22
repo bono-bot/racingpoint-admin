@@ -36,6 +36,15 @@ export interface BillingRate {
   active: boolean;
 }
 
+export interface SplitBillingInfo {
+  total_paise: number;
+  splits: Array<{
+    driver_name: string;
+    amount_paise: number;
+    paid: boolean;
+  }>;
+}
+
 export const billingApi = {
   getActive: (): Promise<ActiveSession[]> =>
     rcFetch('/billing/active'),
@@ -63,4 +72,23 @@ export const billingApi = {
 
   getRates: (): Promise<BillingRate[]> =>
     rcFetch('/billing/rates'),
+
+  refundSession: (id: string, data: { amount_paise?: number; reason?: string }): Promise<void> =>
+    rcFetch(`/billing/${id}/refund`, { method: 'POST', body: JSON.stringify(data) }),
+
+  getHistory: (params: {
+    offset?: number;
+    limit?: number;
+    status?: string;
+    pod_id?: string;
+    driver_name?: string;
+    from?: string;
+    to?: string;
+  }): Promise<{ sessions: ActiveSession[]; total: number }> =>
+    rcFetch(`/billing/sessions?${new URLSearchParams(
+      Object.entries(params).filter(([, v]) => v != null && v !== '').map(([k, v]) => [k, String(v)])
+    ).toString()}`),
+
+  getSessionSplits: (id: string): Promise<SplitBillingInfo | null> =>
+    rcFetch(`/billing/sessions/${id}/splits`).catch(() => null),
 };
