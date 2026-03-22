@@ -13,7 +13,7 @@ Transform the existing 27-page Next.js admin dashboard from an open, partial-cov
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 159: Authentication & Session Security** - Lock down the dashboard with RC admin login, JWT sessions, and protected routes (completed 2026-03-22)
-- [ ] **Phase 160: Shared Infrastructure** - Form validation, toast notifications, icon system, and API client refactor
+- [x] **Phase 160: Shared Infrastructure** - Form validation, toast notifications, icon system, and API client refactor (completed 2026-03-22)
 - [ ] **Phase 161: Fleet Monitoring** - Real-time fleet health dashboard showing all 8 pods with status and activity
 - [ ] **Phase 162: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy
 - [ ] **Phase 163: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers
@@ -204,7 +204,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 159. Authentication & Session Security | 3/3 | Complete    | 2026-03-22 |
-| 160. Shared Infrastructure | 2/3 | In Progress|  |
+| 160. Shared Infrastructure | 3/3 | Complete   | 2026-03-22 |
 | 161. Fleet Monitoring | 0/TBD | Not started | - |
 | 162. Fleet Actions & Deployment | 0/TBD | Not started | - |
 | 163. Billing & Active Sessions | 0/TBD | Not started | - |
