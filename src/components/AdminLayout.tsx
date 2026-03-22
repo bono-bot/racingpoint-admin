@@ -24,6 +24,7 @@ const navSections: NavSection[] = [
     items: [
       { href: '/sessions', label: 'Sessions' },
       { href: '/billing', label: 'Active Billing' },
+      { href: '/billing/history', label: 'Billing History' },
       { href: '/bookings', label: 'Bookings' },
       { href: '/calendar', label: 'Calendar' },
       { href: '/customers', label: 'Customers' },
