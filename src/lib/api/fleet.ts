@@ -1,5 +1,18 @@
 import { rcFetch } from './base';
 
+export interface DeployStatus {
+  status: string;
+  pods: Array<{ pod_id: string; pod_number?: number; status: string }>;
+  started_at?: string;
+  completed_at?: string;
+}
+
+export interface ExecResult {
+  stdout: string;
+  stderr: string;
+  exit_code: number;
+}
+
 export interface PodFleetStatus {
   pod_number: number;
   pod_id: string | null;
@@ -60,4 +73,13 @@ export const fleetApi = {
   shutdownAll: () => rcFetch('/pods/shutdown-all', { method: 'POST' }),
   restartAll: () => rcFetch('/pods/restart-all', { method: 'POST' }),
   lockdownAll: () => rcFetch('/pods/lockdown-all', { method: 'POST' }),
+
+  // Deploy
+  rollingDeploy: () => rcFetch('/deploy/rolling', { method: 'POST' }),
+  deployStatus: (): Promise<DeployStatus> => rcFetch('/deploy/status'),
+  deployPod: (podId: string) => rcFetch('/deploy/' + podId, { method: 'POST' }),
+
+  // Remote exec
+  execOnPod: (podId: string, command: string): Promise<ExecResult> =>
+    rcFetch('/pods/' + podId + '/exec', { method: 'POST', body: JSON.stringify({ command }) }),
 };
