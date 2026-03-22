@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 159: Authentication & Session Security** - Lock down the dashboard with RC admin login, JWT sessions, and protected routes (completed 2026-03-22)
 - [x] **Phase 160: Shared Infrastructure** - Form validation, toast notifications, icon system, and API client refactor (completed 2026-03-22)
 - [x] **Phase 161: Fleet Monitoring** - Real-time fleet health dashboard showing all 8 pods with status and activity (completed 2026-03-22)
-- [ ] **Phase 162: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy
+- [x] **Phase 162: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy (completed 2026-03-22)
 - [ ] **Phase 163: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers
 - [ ] **Phase 164: Billing Management** - Refunds, split billing, daily reports, session history, rate management
 - [ ] **Phase 165: Drivers & Wallets** - Driver profiles, search, wallet operations, memberships, badges
@@ -206,7 +206,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | 159. Authentication & Session Security | 3/3 | Complete    | 2026-03-22 |
 | 160. Shared Infrastructure | 3/3 | Complete    | 2026-03-22 |
 | 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
-| 162. Fleet Actions & Deployment | 1/2 | In progress | - |
+| 162. Fleet Actions & Deployment | 2/2 | Complete   | 2026-03-22 |
 | 163. Billing & Active Sessions | 0/TBD | Not started | - |
 | 164. Billing Management | 0/TBD | Not started | - |
 | 165. Drivers & Wallets | 0/TBD | Not started | - |

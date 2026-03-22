@@ -22,9 +22,9 @@
 - [x] **FLEET-04**: Staff can enable or disable individual pods
 - [x] **FLEET-05**: Staff can perform bulk fleet actions (wake-all, shutdown-all, restart-all, lockdown-all)
 - [x] **FLEET-06**: Staff can set or clear maintenance mode on a pod
-- [ ] **FLEET-07**: Admin can trigger rolling deploy to fleet
-- [ ] **FLEET-08**: Admin can view deploy status
-- [ ] **FLEET-09**: Admin can execute remote commands on individual pods
+- [x] **FLEET-07**: Admin can trigger rolling deploy to fleet
+- [x] **FLEET-08**: Admin can view deploy status
+- [x] **FLEET-09**: Admin can execute remote commands on individual pods
 - [x] **FLEET-10**: Staff can view pod activity log
 
 ### Billing & Sessions
@@ -144,9 +144,9 @@
 | FLEET-04 | Phase 162 | Complete |
 | FLEET-05 | Phase 162 | Complete |
 | FLEET-06 | Phase 162 | Complete |
-| FLEET-07 | Phase 162 | Pending |
-| FLEET-08 | Phase 162 | Pending |
-| FLEET-09 | Phase 162 | Pending |
+| FLEET-07 | Phase 162 | Complete |
+| FLEET-08 | Phase 162 | Complete |
+| FLEET-09 | Phase 162 | Complete |
 | BILL-01 | Phase 163 | Pending |
 | BILL-02 | Phase 163 | Pending |
 | BILL-03 | Phase 163 | Pending |
