@@ -7,12 +7,12 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: Admin can log in via RaceControl `/auth/admin-login` with credentials
-- [ ] **AUTH-02**: User session persists across browser refresh via JWT in httpOnly cookie
+- [x] **AUTH-01**: Admin can log in via RaceControl `/auth/admin-login` with credentials
+- [x] **AUTH-02**: User session persists across browser refresh via JWT in httpOnly cookie
 - [ ] **AUTH-03**: Unauthenticated users are redirected to login page
 - [ ] **AUTH-04**: RC proxy routes are protected — only authenticated requests forwarded
 - [ ] **AUTH-05**: Role-based access control distinguishes admin vs staff permissions
-- [ ] **AUTH-06**: User can log out and session is invalidated
+- [x] **AUTH-06**: User can log out and session is invalidated
 
 ### Fleet Control
 
@@ -126,12 +126,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 159 | Pending |
-| AUTH-02 | Phase 159 | Pending |
+| AUTH-01 | Phase 159 | Complete |
+| AUTH-02 | Phase 159 | Complete |
 | AUTH-03 | Phase 159 | Pending |
 | AUTH-04 | Phase 159 | Pending |
 | AUTH-05 | Phase 159 | Pending |
-| AUTH-06 | Phase 159 | Pending |
+| AUTH-06 | Phase 159 | Complete |
 | INFRA-01 | Phase 160 | Pending |
 | INFRA-02 | Phase 160 | Pending |
 | INFRA-03 | Phase 160 | Pending |
