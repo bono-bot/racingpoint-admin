@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 161: Fleet Monitoring** - Real-time fleet health dashboard showing all 8 pods with status and activity (completed 2026-03-22)
 - [x] **Phase 162: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy (completed 2026-03-22)
 - [x] **Phase 163: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers (completed 2026-03-22)
-- [ ] **Phase 164: Billing Management** - Refunds, split billing, daily reports, session history, rate management
+- [x] **Phase 164: Billing Management** - Refunds, split billing, daily reports, session history, rate management (completed 2026-03-22)
 - [ ] **Phase 165: Drivers & Wallets** - Driver profiles, search, wallet operations, memberships, badges
 - [ ] **Phase 166: Events & Championships** - Event CRUD, championship management, time trials
 - [ ] **Phase 167: Game Management** - Launch/stop/relaunch games on pods, game history, AC content browser
@@ -208,7 +208,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
 | 162. Fleet Actions & Deployment | 2/2 | Complete    | 2026-03-22 |
 | 163. Billing & Active Sessions | 2/2 | Complete    | 2026-03-22 |
-| 164. Billing Management | 1/2 | In Progress|  |
+| 164. Billing Management | 2/2 | Complete   | 2026-03-22 |
 | 165. Drivers & Wallets | 0/TBD | Not started | - |
 | 166. Events & Championships | 0/TBD | Not started | - |
 | 167. Game Management | 0/TBD | Not started | - |

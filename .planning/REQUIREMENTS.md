@@ -37,8 +37,8 @@
 - [x] **BILL-06**: Staff can issue a refund for a billing session
 - [x] **BILL-07**: Staff can view refund history for a session
 - [x] **BILL-08**: Staff can view split billing options for a session
-- [ ] **BILL-09**: Staff can view daily billing report
-- [ ] **BILL-10**: Admin can manage billing rates (CRUD)
+- [x] **BILL-09**: Staff can view daily billing report
+- [x] **BILL-10**: Admin can manage billing rates (CRUD)
 - [x] **BILL-11**: Staff can view session event timeline (per session)
 - [x] **BILL-12**: Staff can view billing session history with search and filters
 
@@ -156,8 +156,8 @@
 | BILL-06 | Phase 164 | Complete |
 | BILL-07 | Phase 164 | Complete |
 | BILL-08 | Phase 164 | Complete |
-| BILL-09 | Phase 164 | Pending |
-| BILL-10 | Phase 164 | Pending |
+| BILL-09 | Phase 164 | Complete |
+| BILL-10 | Phase 164 | Complete |
 | BILL-12 | Phase 164 | Complete |
 | DRIV-01 | Phase 165 | Pending |
 | DRIV-02 | Phase 165 | Pending |
