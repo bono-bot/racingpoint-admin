@@ -68,11 +68,11 @@ Plans:
   1. Staff can view a dashboard showing all 8 pods with their status, version, uptime, and connection state
   2. Pod data refreshes automatically via polling without manual page reload
   3. Staff can view a chronological activity log for pod events
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 161-01: TBD
-- [ ] 161-02: TBD
+- [ ] 161-01-PLAN.md -- Fleet API types, health fetch function, sidebar nav, 4x2 pod card grid with SWR polling
+- [ ] 161-02-PLAN.md -- Activity log table with pod filter dropdown and Load more pagination
 
 ### Phase 162: Fleet Actions & Deployment
 **Goal**: Staff can control pods individually and in bulk, set maintenance mode, and admins can deploy updates across the fleet
@@ -205,7 +205,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 |-------|----------------|--------|-----------|
 | 159. Authentication & Session Security | 3/3 | Complete    | 2026-03-22 |
 | 160. Shared Infrastructure | 3/3 | Complete    | 2026-03-22 |
-| 161. Fleet Monitoring | 0/TBD | Not started | - |
+| 161. Fleet Monitoring | 0/2 | Not started | - |
 | 162. Fleet Actions & Deployment | 0/TBD | Not started | - |
 | 163. Billing & Active Sessions | 0/TBD | Not started | - |
 | 164. Billing Management | 0/TBD | Not started | - |
