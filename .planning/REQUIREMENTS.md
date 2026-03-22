@@ -34,13 +34,13 @@
 - [x] **BILL-03**: Staff can stop an active billing session
 - [x] **BILL-04**: Staff can pause and resume an active billing session
 - [x] **BILL-05**: Staff can extend an active billing session
-- [ ] **BILL-06**: Staff can issue a refund for a billing session
-- [ ] **BILL-07**: Staff can view refund history for a session
-- [ ] **BILL-08**: Staff can view split billing options for a session
+- [x] **BILL-06**: Staff can issue a refund for a billing session
+- [x] **BILL-07**: Staff can view refund history for a session
+- [x] **BILL-08**: Staff can view split billing options for a session
 - [ ] **BILL-09**: Staff can view daily billing report
 - [ ] **BILL-10**: Admin can manage billing rates (CRUD)
 - [x] **BILL-11**: Staff can view session event timeline (per session)
-- [ ] **BILL-12**: Staff can view billing session history with search and filters
+- [x] **BILL-12**: Staff can view billing session history with search and filters
 
 ### Drivers & Wallets
 
@@ -153,12 +153,12 @@
 | BILL-04 | Phase 163 | Complete |
 | BILL-05 | Phase 163 | Complete |
 | BILL-11 | Phase 163 | Complete |
-| BILL-06 | Phase 164 | Pending |
-| BILL-07 | Phase 164 | Pending |
-| BILL-08 | Phase 164 | Pending |
+| BILL-06 | Phase 164 | Complete |
+| BILL-07 | Phase 164 | Complete |
+| BILL-08 | Phase 164 | Complete |
 | BILL-09 | Phase 164 | Pending |
 | BILL-10 | Phase 164 | Pending |
-| BILL-12 | Phase 164 | Pending |
+| BILL-12 | Phase 164 | Complete |
 | DRIV-01 | Phase 165 | Pending |
 | DRIV-02 | Phase 165 | Pending |
 | DRIV-03 | Phase 165 | Pending |

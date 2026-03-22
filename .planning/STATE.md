@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v20.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 163-02-PLAN.md
+stopped_at: Completed 164-01-PLAN.md
 last_updated: "2026-03-22T16:26:38.207Z"
-last_activity: 2026-03-22 -- Completed Plan 01 fleet actions, bulk bar, confirm dialog
+last_activity: 2026-03-22 -- Completed Plan 01 billing history, refund modal, split view
 progress:
   total_phases: 11
   completed_phases: 5
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 
 ## Current Position
 
-Phase: 4 of 11 (Fleet Actions & Deployment) -- IN PROGRESS
+Phase: 6 of 11 (Billing Management) -- IN PROGRESS
 Plan: 1 of 2 in current phase (completed)
 Status: Executing
-Last activity: 2026-03-22 -- Completed Plan 01 fleet actions, bulk bar, confirm dialog
+Last activity: 2026-03-22 -- Completed Plan 01 billing history, refund modal, split view
 
 Progress: [█████████░] 90%
 
@@ -59,6 +59,7 @@ Progress: [█████████░] 90%
 | Phase 162 P02 | 2.5min | 2 tasks | 2 files |
 | Phase 163 P01 | 2min | 2 tasks | 3 files |
 | Phase 163 P02 | 3min | 2 tasks | 1 files |
+| Phase 164 P01 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,8 @@ Recent decisions affecting current work:
 - [Phase 162]: RemoteExecSection is isolated per pod card with its own state
 - [Phase 163]: 1s local countdown tick between 5s SWR polls for smooth timer UX
 - [Phase 163]: Lazy-load session events on row expand to minimize API calls
+- [164-01]: Copied fmt/statusBadge/fmtTime helpers locally to avoid cross-file refactoring
+- [164-01]: Added refunded status color (orange) in statusBadge for history differentiation
 
 ### Pending Todos
 
@@ -101,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T16:25:59.897Z
-Stopped at: Completed 163-02-PLAN.md
+Last session: 2026-03-22T17:15:19Z
+Stopped at: Completed 164-01-PLAN.md
 Resume file: None
