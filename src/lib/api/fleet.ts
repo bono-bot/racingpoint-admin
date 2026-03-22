@@ -25,9 +25,23 @@ export interface FleetHealthResponse {
   timestamp: string;
 }
 
+export interface ActivityEntry {
+  id: string;
+  pod_id: string;
+  pod_number: number;
+  timestamp: string;
+  category: string;
+  action: string;
+  details: string;
+  source: string;
+}
+
 export const fleetApi = {
   listPods: () => rcFetch('/pods'),
   setPodScreen: (podId: string, blank: boolean) =>
     rcFetch(`/pods/${podId}/screen`, { method: 'POST', body: JSON.stringify({ blank }) }),
   getHealth: (): Promise<FleetHealthResponse> => rcFetch('/fleet/health'),
+  getActivity: (limit = 100): Promise<ActivityEntry[]> => rcFetch('/activity?limit=' + limit),
+  getPodActivity: (podId: string, limit = 100): Promise<ActivityEntry[]> =>
+    rcFetch('/pods/' + podId + '/activity?limit=' + limit),
 };
