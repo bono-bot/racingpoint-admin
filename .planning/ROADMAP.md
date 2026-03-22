@@ -53,11 +53,12 @@ Plans:
   3. Successful mutations display a toast notification confirming the action
   4. Icons render consistently across all existing and new pages
   5. Tailwind utility classes merge correctly without style conflicts
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 160-01: TBD
-- [ ] 160-02: TBD
+- [ ] 160-01-PLAN.md -- Install 8 libraries, upgrade cn() to clsx+tailwind-merge, replace Toast with sonner
+- [ ] 160-02-PLAN.md -- Refactor monolithic api.ts into domain-specific modules with backward compat
+- [ ] 160-03-PLAN.md -- Create form infrastructure (useZodForm + FormField) and icon module
 
 ### Phase 161: Fleet Monitoring
 **Goal**: Staff can see the live status of all 8 racing pods at a glance and review recent pod activity
@@ -203,7 +204,7 @@ Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 159. Authentication & Session Security | 3/3 | Complete    | 2026-03-22 |
-| 160. Shared Infrastructure | 0/TBD | Not started | - |
+| 160. Shared Infrastructure | 0/3 | Not started | - |
 | 161. Fleet Monitoring | 0/TBD | Not started | - |
 | 162. Fleet Actions & Deployment | 0/TBD | Not started | - |
 | 163. Billing & Active Sessions | 0/TBD | Not started | - |
