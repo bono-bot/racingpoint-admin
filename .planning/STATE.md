@@ -1,64 +1,39 @@
----
-gsd_state_version: 1.0
-milestone: v20.1
-milestone_name: API Hardening
-status: defining_requirements
-stopped_at: null
-last_updated: "2026-03-23T16:30:00.000Z"
-last_activity: 2026-03-23 -- Milestone v20.1 started
-progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
----
-
-# Project State
+# Project State: API Hardening (v20.1)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-23)
 
-**Core value:** Staff can manage every aspect of Racing Point operations from a single authenticated dashboard
-**Current focus:** v20.1 API Hardening — defining requirements
+**Core value:** No Next.js app deploy goes live with missing pages, and runtime backend failures degrade gracefully instead of crashing
+**Current focus:** Phase 176 - Self-Verifying Health Endpoints
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-23 — Milestone v20.1 started
+Phase: 1 of 4 (Self-Verifying Health Endpoints)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-03-23 — Roadmap created
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 2.5 min
-- Total execution time: 0.08 hours
+- Total plans completed: 0
+- Average duration: -
+- Total execution time: 0 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 159 (Auth) | 2/3 | 5min | 2.5min |
+| - | - | - | - |
 
 **Recent Trend:**
-- Last 5 plans: none
-- Trend: N/A
+- Last 5 plans: -
+- Trend: -
 
 *Updated after each plan completion*
-| Phase 160 P01 | 2.5min | 2 tasks | 4 files |
-| Phase 160 P02 | 2min | 2 tasks | 9 files |
-| Phase 160 P03 | 2.5min | 2 tasks | 3 files |
-| Phase 161 P01 | 2.25min | 2 tasks | 4 files |
-| Phase 161 P02 | 2min | 2 tasks | 2 files |
-| Phase 162 P01 | 4min | 2 tasks | 3 files |
-| Phase 162 P02 | 2.5min | 2 tasks | 2 files |
-| Phase 163 P01 | 2min | 2 tasks | 3 files |
-| Phase 163 P02 | 3min | 2 tasks | 1 files |
-| Phase 164 P01 | 3min | 2 tasks | 3 files |
-| Phase 164 P02 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -67,32 +42,11 @@ Last activity: 2026-03-23 — Milestone v20.1 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [Roadmap]: Auth must be Phase 1 -- proxy is currently open, security-critical
-- [Roadmap]: Fleet monitoring before billing -- higher daily operational value
-- [Roadmap]: Control room last -- composite view needs all component parts built first
-- [Roadmap]: Data migration deferred to v2 -- RC APIs must be battle-tested first
-- [159-01]: jose for JWT, secure:false (LAN-only), RC_URL fail-fast (no localhost fallback)
-- [159-02]: Inlined constants in Edge middleware to avoid import issues
-- [159-02]: Defense-in-depth: proxy independently rejects unauthenticated requests
-- [159-02]: Route groups: (auth) for login, (dashboard) for sidebar pages
-- [160-01]: Kept useToast() as backward-compatible shim for sonner migration
-- [Phase 160]: Kept unified api object via spread in index.ts for zero-change backward compatibility
-- [Phase 160]: Used $ZodType from zod/v4/core for zodResolver compatibility
-- [161-01]: Fleet nav is a separate sidebar section after Operations (not nested inside)
-- [161-01]: 5-second SWR polling interval for fleet health refresh
-- [161-02]: Pod filter uses pod_id from health data, not hardcoded values
-- [161-02]: Activity table (not cards) for data density; category badge colors standardized
-- [162-01]: Reused existing ConfirmDialog default export with added variant prop for backward compatibility
-- [162-01]: useAuth threaded through FleetPage for future RBAC gating in Plan 02
-- [Phase 162]: Deploy polling uses 3s interval with automatic stop when all pods complete
-- [Phase 162]: RemoteExecSection is isolated per pod card with its own state
-- [Phase 163]: 1s local countdown tick between 5s SWR polls for smooth timer UX
-- [Phase 163]: Lazy-load session events on row expand to minimize API calls
-- [164-01]: Copied fmt/statusBadge/fmtTime helpers locally to avoid cross-file refactoring
-- [164-01]: Added refunded status color (orange) in statusBadge for history differentiation
-- [164-02]: Admin gate pattern with useAuth().isAdmin for rate management page
-- [164-02]: Inline edit table pattern with editingId state for rate CRUD
-- [164-02]: Price input in rupees with paise conversion on submit for staff UX
+- Self-verifying health endpoints chosen over external monitoring (LAN-only apps)
+- Unified deploy script replaces manual 3-step process that kept being done wrong
+- Admin health endpoint partially started (src/app/api/health/route.ts has route scanning)
+- Deploy script drafted (deploy-staging/deploy-nextjs.sh)
+- Racecontrol existing WhatsApp alerter infrastructure reused for MON-02/MON-05
 
 ### Pending Todos
 
@@ -100,12 +54,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- RC `/auth/admin-login` response format unknown -- need to verify if JWT or opaque token (affects Phase 1 implementation)
-- Role-based access specifics (admin vs staff permissions) need business input from Uday
-- RC fleet/billing API contracts need exploration before Phases 3-5
+- Cross-project: health endpoints needed in 3 apps (admin, kiosk, web) -- coordinate deploys
+- Racecontrol backend changes needed for DEPLOY-05 (deploy log endpoint) and MON-04/MON-05 (health probes)
 
 ## Session Continuity
 
-Last session: 2026-03-22T17:21:17Z
-Stopped at: Completed 164-02-PLAN.md
+Last session: 2026-03-23
+Stopped at: Roadmap created, ready to plan Phase 176
 Resume file: None

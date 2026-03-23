@@ -51,28 +51,28 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEPLOY-01 | TBD | Pending |
-| DEPLOY-02 | TBD | Pending |
-| DEPLOY-03 | TBD | Pending |
-| DEPLOY-04 | TBD | Pending |
-| DEPLOY-05 | TBD | Pending |
-| DEPLOY-06 | TBD | Pending |
-| RUNTIME-01 | TBD | Pending |
-| RUNTIME-02 | TBD | Pending |
-| RUNTIME-03 | TBD | Pending |
-| RUNTIME-04 | TBD | Pending |
-| RUNTIME-05 | TBD | Pending |
-| MON-01 | TBD | Pending |
-| MON-02 | TBD | Pending |
-| MON-03 | TBD | Pending |
-| MON-04 | TBD | Pending |
-| MON-05 | TBD | Pending |
+| DEPLOY-01 | Phase 176 | Pending |
+| DEPLOY-02 | Phase 176 | Pending |
+| DEPLOY-03 | Phase 177 | Pending |
+| DEPLOY-04 | Phase 177 | Pending |
+| DEPLOY-05 | Phase 177 | Pending |
+| DEPLOY-06 | Phase 177 | Pending |
+| RUNTIME-01 | Phase 178 | Pending |
+| RUNTIME-02 | Phase 178 | Pending |
+| RUNTIME-03 | Phase 178 | Pending |
+| RUNTIME-04 | Phase 178 | Pending |
+| RUNTIME-05 | Phase 178 | Pending |
+| MON-01 | Phase 179 | Pending |
+| MON-02 | Phase 179 | Pending |
+| MON-03 | Phase 179 | Pending |
+| MON-04 | Phase 179 | Pending |
+| MON-05 | Phase 179 | Pending |
 
 **Coverage:**
 - v20.1 requirements: 16 total
-- Mapped to phases: 0
-- Unmapped: 16
+- Mapped to phases: 16
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-23*
-*Last updated: 2026-03-23 after initial definition*
+*Last updated: 2026-03-23 after roadmap creation (phases 176-179)*

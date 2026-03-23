@@ -1,216 +1,95 @@
-# Roadmap: Racing Point Admin Dashboard (v20.0)
+# Roadmap: API Hardening (v20.1)
 
 ## Overview
 
-Transform the existing 27-page Next.js admin dashboard from an open, partial-coverage tool into a fully authenticated, full-coverage operations center for Racing Point eSports. The journey starts with locking down access (auth), laying shared infrastructure (forms, toasts, icons), then building out each operational domain in order of daily-use value: fleet control, billing, drivers, events, games, ops tools, and finally the composite control room view that ties everything together.
+Eliminate recurring stale/broken Next.js deployments across all 3 apps (admin, kiosk, web) and add runtime resilience for backend failures. The journey starts with self-verifying health endpoints (so apps know when they're broken), then automates the deploy pipeline with verification gates and rollback, then hardens the runtime API layer with circuit breakers and graceful degradation, and finally adds monitoring and alerting so problems are caught before staff notice.
+
+Cross-project milestone: touches racingpoint-admin, racecontrol/kiosk, racecontrol/web, and racecontrol Rust backend.
 
 ## Phases
 
 **Phase Numbering:**
-- Global numbering continues from racecontrol roadmap (phases 159-169)
-- Decimal phases (159.1, 159.2): Urgent insertions (marked with INSERTED)
+- Continues global numbering: v20.0 = 159-169, v21.0 = 170-175, v20.1 = 176-179
+- Decimal phases (176.1, 176.2): Urgent insertions (marked with INSERTED)
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 159: Authentication & Session Security** - Lock down the dashboard with RC admin login, JWT sessions, and protected routes (completed 2026-03-22)
-- [x] **Phase 160: Shared Infrastructure** - Form validation, toast notifications, icon system, and API client refactor (completed 2026-03-22)
-- [x] **Phase 161: Fleet Monitoring** - Real-time fleet health dashboard showing all 8 pods with status and activity (completed 2026-03-22)
-- [x] **Phase 162: Fleet Actions & Deployment** - Pod control actions, bulk operations, maintenance mode, rolling deploy (completed 2026-03-22)
-- [x] **Phase 163: Billing & Active Sessions** - Live billing sessions with start/stop/pause/extend and real-time timers (completed 2026-03-22)
-- [x] **Phase 164: Billing Management** - Refunds, split billing, daily reports, session history, rate management (completed 2026-03-22)
-- [ ] **Phase 165: Drivers & Wallets** - Driver profiles, search, wallet operations, memberships, badges
-- [ ] **Phase 166: Events & Championships** - Event CRUD, championship management, time trials
-- [ ] **Phase 167: Game Management** - Launch/stop/relaunch games on pods, game history, AC content browser
-- [ ] **Phase 168: Operations & System Health** - Scheduler, ops stats, audit log, system health monitoring
-- [ ] **Phase 169: Control Room Overview** - Composite mission control view with quick actions and alerts
+- [ ] **Phase 176: Self-Verifying Health Endpoints** - Each Next.js app reports its own page manifest and flags missing pages as degraded
+- [ ] **Phase 177: Deploy Automation & Verification** - Unified deploy script with build, upload, verify, audit log, and auto-rollback
+- [ ] **Phase 178: Runtime Resilience** - Circuit breaker, retry with backoff, connection indicator, and graceful degradation
+- [ ] **Phase 179: Health Monitoring & Alerting** - Admin health dashboard, racecontrol probes, WhatsApp alerts on degradation
 
 ## Phase Details
 
-### Phase 159: Authentication & Session Security
-**Goal**: Staff must log in before accessing any dashboard functionality; unauthenticated users see only the login page
+### Phase 176: Self-Verifying Health Endpoints
+**Goal**: Every Next.js app can report exactly which pages it has and which are missing, so deploys are verifiable
 **Depends on**: Nothing (first phase)
-**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06
+**Requirements**: DEPLOY-01, DEPLOY-02
 **Success Criteria** (what must be TRUE):
-  1. Staff can log in with admin credentials and see the dashboard
-  2. Closing and reopening the browser preserves the logged-in session
-  3. Opening any dashboard URL while logged out redirects to the login page
-  4. API proxy routes reject requests without a valid session token
-  5. Admin users see management options that staff users do not
-**Plans**: 3 plans
-
-Plans:
-- [ ] 159-01-PLAN.md -- Auth foundation: install jose, auth library, config, login/logout/me API routes
-- [ ] 159-02-PLAN.md -- Middleware + proxy lockdown + route group restructure
-- [ ] 159-03-PLAN.md -- PIN pad login UI, AuthProvider, session expiry, AdminLayout updates
-
-### Phase 160: Shared Infrastructure
-**Goal**: Common UI and data patterns are in place so feature phases can build CRUD views and mutation flows without reinventing plumbing
-**Depends on**: Phase 159
-**Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05
-**Success Criteria** (what must be TRUE):
-  1. API calls are organized by domain module (fleet, billing, drivers, etc.) not a single monolith
-  2. A form with validation errors shows inline messages and prevents submission
-  3. Successful mutations display a toast notification confirming the action
-  4. Icons render consistently across all existing and new pages
-  5. Tailwind utility classes merge correctly without style conflicts
-**Plans**: 3 plans
-
-Plans:
-- [ ] 160-01-PLAN.md -- Install 8 libraries, upgrade cn() to clsx+tailwind-merge, replace Toast with sonner
-- [ ] 160-02-PLAN.md -- Refactor monolithic api.ts into domain-specific modules with backward compat
-- [ ] 160-03-PLAN.md -- Create form infrastructure (useZodForm + FormField) and icon module
-
-### Phase 161: Fleet Monitoring
-**Goal**: Staff can see the live status of all 8 racing pods at a glance and review recent pod activity
-**Depends on**: Phase 160
-**Requirements**: FLEET-01, FLEET-10
-**Success Criteria** (what must be TRUE):
-  1. Staff can view a dashboard showing all 8 pods with their status, version, uptime, and connection state
-  2. Pod data refreshes automatically via polling without manual page reload
-  3. Staff can view a chronological activity log for pod events
-**Plans**: 2 plans
-
-Plans:
-- [ ] 161-01-PLAN.md -- Fleet API types, health fetch function, sidebar nav, 4x2 pod card grid with SWR polling
-- [ ] 161-02-PLAN.md -- Activity log table with pod filter dropdown and Load more pagination
-
-### Phase 162: Fleet Actions & Deployment
-**Goal**: Staff can control pods individually and in bulk, set maintenance mode, and admins can deploy updates across the fleet
-**Depends on**: Phase 161
-**Requirements**: FLEET-02, FLEET-03, FLEET-04, FLEET-05, FLEET-06, FLEET-07, FLEET-08, FLEET-09
-**Success Criteria** (what must be TRUE):
-  1. Staff can wake, shutdown, or restart any individual pod from the fleet dashboard
-  2. Staff can lockdown/unlock and enable/disable individual pods
-  3. Staff can execute bulk actions (wake-all, shutdown-all, restart-all, lockdown-all) affecting the entire fleet
-  4. Staff can toggle maintenance mode on a pod and see the mode reflected in the UI
-  5. Admin can trigger a rolling deploy, view its progress, and see completion status
-**Plans**: 2 plans
-
-Plans:
-- [ ] 162-01-PLAN.md -- Pod action API functions, ConfirmDialog, action buttons on pod cards, bulk action bar
-- [ ] 162-02-PLAN.md -- Admin-only rolling deploy with progress tracking, remote exec on pod cards
-
-### Phase 163: Billing & Active Sessions
-**Goal**: Staff can monitor all active billing sessions in real time and perform core session lifecycle actions
-**Depends on**: Phase 160
-**Requirements**: BILL-01, BILL-02, BILL-03, BILL-04, BILL-05, BILL-11
-**Success Criteria** (what must be TRUE):
-  1. Staff can see all active billing sessions with live countdown timers and status
-  2. Staff can start a new billing session from the dashboard
-  3. Staff can stop, pause, resume, and extend an active billing session
-  4. Staff can view the event timeline for any individual session
-**Plans**: 2 plans
-
-Plans:
-- [ ] 163-01-PLAN.md -- Billing API module, active sessions table with live countdown timers, sidebar link
-- [ ] 163-02-PLAN.md -- Start session modal, inline action buttons, quick-extend, expandable event timeline
-
-### Phase 164: Billing Management
-**Goal**: Staff can handle refunds, view reports and history, and admins can manage billing rates
-**Depends on**: Phase 163
-**Requirements**: BILL-06, BILL-07, BILL-08, BILL-09, BILL-10, BILL-12
-**Success Criteria** (what must be TRUE):
-  1. Staff can issue a refund for a billing session and view refund history
-  2. Staff can view split billing options for a session
-  3. Staff can view a daily billing report summarizing revenue and session counts
-  4. Staff can search and filter through billing session history
-  5. Admin can create, edit, and delete billing rates
-**Plans**: 2 plans
-
-Plans:
-- [ ] 164-01-PLAN.md -- Session history with filters, refund modal, split billing view, sidebar link
-- [ ] 164-02-PLAN.md -- Daily billing reports page and admin-only rate management page
-
-### Phase 165: Drivers & Wallets
-**Goal**: Staff can look up any driver, view their full profile, and perform wallet operations
-**Depends on**: Phase 160
-**Requirements**: DRIV-01, DRIV-02, DRIV-03, DRIV-04, DRIV-05, DRIV-06, DRIV-07, DRIV-08, DRIV-09, DRIV-10
-**Success Criteria** (what must be TRUE):
-  1. Staff can search for drivers by name and view a paginated driver listing
-  2. Staff can open a driver profile showing stats, laps, sessions, and badges
-  3. Staff can view a driver's wallet balance and top-up, debit, or refund the wallet
-  4. Staff can view the full wallet transaction history for any driver
-  5. Admin can configure wallet bonus tiers; staff can view membership status and badge/streak details
+  1. Hitting `/api/health` on admin, kiosk, or web returns a JSON manifest listing all expected pages and which are available
+  2. If any expected page is missing from the build, `/api/health` returns HTTP 503 with status "degraded" and lists the missing pages
+  3. A fully deployed app with all pages present returns HTTP 200 with status "healthy"
 **Plans**: TBD
 
 Plans:
-- [ ] 165-01: TBD
-- [ ] 165-02: TBD
+- [ ] 176-01-PLAN.md: TBD
+- [ ] 176-02-PLAN.md: TBD
 
-### Phase 166: Events & Championships
-**Goal**: Staff can create and manage events, championships, and time trials
-**Depends on**: Phase 160
-**Requirements**: EVNT-01, EVNT-02, EVNT-03, EVNT-04, EVNT-05, EVNT-06, EVNT-07
+### Phase 177: Deploy Automation & Verification
+**Goal**: Deploying any Next.js app is a single command that builds, packages, uploads, verifies, logs the result, and auto-rolls-back on failure
+**Depends on**: Phase 176
+**Requirements**: DEPLOY-03, DEPLOY-04, DEPLOY-05, DEPLOY-06
 **Success Criteria** (what must be TRUE):
-  1. Staff can create a new event and edit an existing event
-  2. Staff can link racing sessions to events
-  3. Staff can create a championship, manage its rounds, and view standings
-  4. Staff can create and manage time trials
+  1. Running the deploy script for any app builds standalone output, packages it with .next/static, uploads to server, extracts, and restarts the service
+  2. After deploy, the script hits `/api/health` and refuses to mark the deploy as successful if any pages are missing
+  3. Every deploy attempt (success or fail) is logged to racecontrol with app name, timestamp, page count before/after, deployer, and result
+  4. If post-deploy health returns degraded, the script automatically restores the previous working deploy without manual intervention
 **Plans**: TBD
 
 Plans:
-- [ ] 166-01: TBD
-- [ ] 166-02: TBD
+- [ ] 177-01-PLAN.md: TBD
+- [ ] 177-02-PLAN.md: TBD
 
-### Phase 167: Game Management
-**Goal**: Staff can launch, stop, and manage games on pods, and browse available AC content
-**Depends on**: Phase 162
-**Requirements**: GAME-01, GAME-02, GAME-03, GAME-04, GAME-05, GAME-06, GAME-07
+### Phase 178: Runtime Resilience
+**Goal**: When the backend goes down, Next.js apps degrade gracefully instead of showing errors or crashing
+**Depends on**: Phase 176
+**Requirements**: RUNTIME-01, RUNTIME-02, RUNTIME-03, RUNTIME-04, RUNTIME-05
 **Success Criteria** (what must be TRUE):
-  1. Staff can launch a game on a specific pod and stop or relaunch it
-  2. Staff can see which games are currently running across all pods
-  3. Staff can view game history showing past sessions
-  4. Staff can browse available Assetto Corsa content (cars, tracks) and manage presets
+  1. When the backend is unreachable, the API client stops sending requests after 3 consecutive failures (circuit breaker opens)
+  2. After a cooldown period, the circuit breaker sends a single probe request and re-opens the circuit if it succeeds
+  3. Transient API failures are retried up to 3 times with exponential backoff (1s/2s/4s) before surfacing the error
+  4. A persistent connection status indicator is visible on every page showing backend state (connected/degraded/offline)
+  5. Pages continue to function with cached or stale data when the backend is down, showing an "offline" state rather than crashing
 **Plans**: TBD
 
 Plans:
-- [ ] 167-01: TBD
-- [ ] 167-02: TBD
+- [ ] 178-01-PLAN.md: TBD
+- [ ] 178-02-PLAN.md: TBD
 
-### Phase 168: Operations & System Health
-**Goal**: Staff have visibility into system operations, scheduling, and health across all services
-**Depends on**: Phase 160
-**Requirements**: OPS-03, OPS-04, OPS-05, OPS-06
+### Phase 179: Health Monitoring & Alerting
+**Goal**: Staff and AI can see the health of all 3 apps in one place, and WhatsApp alerts fire automatically when something breaks
+**Depends on**: Phase 176, Phase 177
+**Requirements**: MON-01, MON-02, MON-03, MON-04, MON-05
 **Success Criteria** (what must be TRUE):
-  1. Staff can view scheduler status and settings
-  2. Staff can view an ops stats dashboard with operational metrics
-  3. Staff can view an activity/audit log of system events
-  4. Staff can check system health for RaceControl, Gateway, and fleet connectivity
+  1. Admin dashboard has a health overview page showing all 3 apps with their status, page counts, and last deploy timestamp
+  2. The health overview auto-refreshes and shows a historical timeline of deploys and health status changes
+  3. A WhatsApp alert fires within 60 seconds when any app's health endpoint returns degraded or becomes unreachable
+  4. Racecontrol periodically probes all 3 app health endpoints and logs the results (connection status, page counts)
 **Plans**: TBD
 
 Plans:
-- [ ] 168-01: TBD
-- [ ] 168-02: TBD
-
-### Phase 169: Control Room Overview
-**Goal**: Staff have a single mission-control view combining fleet, sessions, and health with quick action shortcuts
-**Depends on**: Phase 162, Phase 163, Phase 168
-**Requirements**: OPS-01, OPS-02, OPS-03 (reference only -- built in Phase 168)
-**Success Criteria** (what must be TRUE):
-  1. Staff can view a unified control room showing fleet status, active sessions, and system health in one screen
-  2. Staff can perform common operations (wake pod, start session, etc.) via quick action buttons without navigating away
-  3. The control room auto-refreshes all panels via polling
-**Plans**: TBD
-
-Plans:
-- [ ] 169-01: TBD
-- [ ] 169-02: TBD
+- [ ] 179-01-PLAN.md: TBD
+- [ ] 179-02-PLAN.md: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 159 -> 160 -> 161 -> 162 -> 163 -> 164 -> 165 -> 166 -> 167 -> 168 -> 169
+Phases execute in numeric order: 176 -> 177 -> 178 -> 179
+(Note: Phase 178 depends on 176 only, so 177 and 178 could theoretically run in parallel)
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 159. Authentication & Session Security | 3/3 | Complete    | 2026-03-22 |
-| 160. Shared Infrastructure | 3/3 | Complete    | 2026-03-22 |
-| 161. Fleet Monitoring | 2/2 | Complete    | 2026-03-22 |
-| 162. Fleet Actions & Deployment | 2/2 | Complete    | 2026-03-22 |
-| 163. Billing & Active Sessions | 2/2 | Complete    | 2026-03-22 |
-| 164. Billing Management | 2/2 | Complete    | 2026-03-22 |
-| 165. Drivers & Wallets | 0/TBD | Not started | - |
-| 166. Events & Championships | 0/TBD | Not started | - |
-| 167. Game Management | 0/TBD | Not started | - |
-| 168. Operations & System Health | 0/TBD | Not started | - |
-| 169. Control Room Overview | 0/TBD | Not started | - |
+| 176. Self-Verifying Health Endpoints | 0/TBD | Not started | - |
+| 177. Deploy Automation & Verification | 0/TBD | Not started | - |
+| 178. Runtime Resilience | 0/TBD | Not started | - |
+| 179. Health Monitoring & Alerting | 0/TBD | Not started | - |
