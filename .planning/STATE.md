@@ -1,36 +1,34 @@
 ---
 gsd_state_version: 1.0
-milestone: v20.0
-milestone_name: milestone
-status: executing
-stopped_at: Completed 164-02-PLAN.md
-last_updated: "2026-03-22T17:25:48.029Z"
-last_activity: 2026-03-22 -- Completed Plan 02 billing reports and rate management
+milestone: v20.1
+milestone_name: API Hardening
+status: defining_requirements
+stopped_at: null
+last_updated: "2026-03-23T16:30:00.000Z"
+last_activity: 2026-03-23 -- Milestone v20.1 started
 progress:
-  total_phases: 11
-  completed_phases: 6
-  total_plans: 14
-  completed_plans: 14
-  percent: 92
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-22)
+See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** Staff can manage every aspect of Racing Point operations from a single authenticated dashboard
-**Current focus:** Phase 4: Fleet Actions & Deployment
+**Current focus:** v20.1 API Hardening — defining requirements
 
 ## Current Position
 
-Phase: 6 of 11 (Billing Management) -- COMPLETE
-Plan: 2 of 2 in current phase (completed)
-Status: Executing
-Last activity: 2026-03-22 -- Completed Plan 02 billing reports and rate management
-
-Progress: [█████████░] 92%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-23 — Milestone v20.1 started
 
 ## Performance Metrics
 
