@@ -74,6 +74,10 @@ export class CircuitBreaker {
     }
   }
 
+  setOnStateChange(callback: ((state: CircuitState) => void) | undefined): void {
+    this.onStateChange = callback;
+  }
+
   reset(): void {
     this.failureCount = 0;
     this.lastFailureTime = 0;
