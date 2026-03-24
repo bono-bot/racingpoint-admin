@@ -55,7 +55,8 @@ function resultColor(result: string): string {
   switch (result) {
     case 'success': return 'bg-green-500/10 text-green-400';
     case 'failed': return 'bg-red-500/10 text-red-400';
-    case 'rolled_back': return 'bg-yellow-500/10 text-yellow-400';
+    case 'rolled_back':
+    case 'rollback': return 'bg-yellow-500/10 text-yellow-400';
     default: return 'bg-neutral-500/10 text-neutral-400';
   }
 }

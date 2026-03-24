@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { billingApi } from '@/lib/api/billing';
 import { fleetApi } from '@/lib/api/fleet';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { useConnection } from '@/contexts/ConnectionContext';
 import type { ActiveSession, SessionEvent, BillingRate } from '@/lib/api/billing';
 import type { PodFleetStatus } from '@/lib/api/fleet';
 
@@ -211,6 +212,8 @@ function StartSessionModal({ open, onClose, onSuccess }: {
 /* ---------- Main Billing Page ---------- */
 
 export default function BillingPage() {
+  const { status: connStatus } = useConnection();
+  const isOffline = connStatus === 'offline';
   const { data, error, mutate } = useSWR<ActiveSession[]>(
     '/billing/active',
     () => billingApi.getActive(),
@@ -347,7 +350,9 @@ export default function BillingPage() {
         </div>
         <button
           onClick={() => setShowStartModal(true)}
-          className="bg-rp-red hover:bg-rp-red-light text-white text-sm px-4 py-2 rounded-lg transition-colors"
+          disabled={isOffline}
+          title={isOffline ? 'Backend offline' : undefined}
+          className="bg-rp-red hover:bg-rp-red-light text-white text-sm px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Start Session
         </button>
@@ -358,7 +363,9 @@ export default function BillingPage() {
           <p className="text-rp-grey text-lg mb-4">No active sessions</p>
           <button
             onClick={() => setShowStartModal(true)}
-            className="bg-rp-red hover:bg-rp-red-light text-white text-sm px-6 py-2.5 rounded-lg transition-colors"
+            disabled={isOffline}
+            title={isOffline ? 'Backend offline' : undefined}
+            className="bg-rp-red hover:bg-rp-red-light text-white text-sm px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Start Session
           </button>
@@ -423,7 +430,8 @@ export default function BillingPage() {
                               <>
                                 <button
                                   onClick={() => handleAction(session.id, 'paused', () => billingApi.pauseSession(session.id))}
-                                  disabled={busy}
+                                  disabled={busy || isOffline}
+                                  title={isOffline ? 'Backend offline' : undefined}
                                   className="text-xs px-2 py-1 rounded text-yellow-400 hover:bg-yellow-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                 >
                                   {busyLabel === 'paused' ? 'Pausing...' : 'Pause'}
@@ -434,7 +442,7 @@ export default function BillingPage() {
                                     const mins = parseInt(e.target.value, 10);
                                     if (mins) handleAction(session.id, 'extended', () => billingApi.extendSession(session.id, mins));
                                   }}
-                                  disabled={busy}
+                                  disabled={busy || isOffline}
                                   className="bg-rp-card border border-rp-border rounded text-xs px-1 py-0.5 text-white disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none"
                                 >
                                   <option value="">Extend...</option>
@@ -447,7 +455,8 @@ export default function BillingPage() {
                             {session.status === 'paused_manual' && (
                               <button
                                 onClick={() => handleAction(session.id, 'resumed', () => billingApi.resumeSession(session.id))}
-                                disabled={busy}
+                                disabled={busy || isOffline}
+                                title={isOffline ? 'Backend offline' : undefined}
                                 className="text-xs px-2 py-1 rounded text-green-400 hover:bg-green-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                               >
                                 {busyLabel === 'resumed' ? 'Resuming...' : 'Resume'}
@@ -456,7 +465,8 @@ export default function BillingPage() {
                             {(session.status === 'active' || session.status === 'paused_manual') && (
                               <button
                                 onClick={() => setConfirmStop({ id: session.id, driverName: session.driver_name, podNumber: session.pod_number })}
-                                disabled={busy}
+                                disabled={busy || isOffline}
+                                title={isOffline ? 'Backend offline' : undefined}
                                 className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                               >
                                 Stop
