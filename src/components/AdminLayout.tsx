@@ -31,7 +31,7 @@ const navSections: NavSection[] = [
       { href: '/billing/rates', label: 'Billing Rates' },
       { href: '/bookings', label: 'Bookings' },
       { href: '/calendar', label: 'Calendar' },
-      { href: '/customers', label: 'Customers' },
+      { href: '/customers', label: 'Drivers' },
       { href: '/waivers', label: 'Waivers' },
     ],
   },
@@ -46,6 +46,7 @@ const navSections: NavSection[] = [
     items: [
       { href: '/leaderboard', label: 'Leaderboard' },
       { href: '/tournaments', label: 'Tournaments' },
+      { href: '/games', label: 'Games' },
       { href: '/kiosk', label: 'Kiosk Control' },
     ],
   },
