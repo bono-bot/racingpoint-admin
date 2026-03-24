@@ -9,10 +9,10 @@
 
 - [x] **DEPLOY-01**: Each Next.js app's `/api/health` reports all expected pages vs available pages at runtime
 - [x] **DEPLOY-02**: Health endpoint returns `503 "degraded"` when any expected page is missing
-- [ ] **DEPLOY-03**: Unified deploy script builds, packages (with .next/static), uploads, extracts, and verifies all routes
-- [ ] **DEPLOY-04**: Deploy script refuses to complete if post-deploy health check shows missing pages
+- [x] **DEPLOY-03**: Unified deploy script builds, packages (with .next/static), uploads, extracts, and verifies all routes
+- [x] **DEPLOY-04**: Deploy script refuses to complete if post-deploy health check shows missing pages
 - [x] **DEPLOY-05**: Every deploy is logged to racecontrol (app, timestamp, page count before/after, deployer, success/fail)
-- [ ] **DEPLOY-06**: AI auto-rollback: if post-deploy health returns degraded, automatically restore previous working deploy
+- [x] **DEPLOY-06**: AI auto-rollback: if post-deploy health returns degraded, automatically restore previous working deploy
 
 ### Runtime Resilience
 
@@ -53,10 +53,10 @@
 |-------------|-------|--------|
 | DEPLOY-01 | Phase 176 | Complete |
 | DEPLOY-02 | Phase 176 | Complete |
-| DEPLOY-03 | Phase 177 | Pending |
-| DEPLOY-04 | Phase 177 | Pending |
+| DEPLOY-03 | Phase 177 | Complete |
+| DEPLOY-04 | Phase 177 | Complete |
 | DEPLOY-05 | Phase 177 | Complete |
-| DEPLOY-06 | Phase 177 | Pending |
+| DEPLOY-06 | Phase 177 | Complete |
 | RUNTIME-01 | Phase 178 | Pending |
 | RUNTIME-02 | Phase 178 | Pending |
 | RUNTIME-03 | Phase 178 | Pending |

@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v20.1
 milestone_name: milestone
-status: in-progress
-stopped_at: Completed 177-01-PLAN.md
-last_updated: "2026-03-24T03:40:09Z"
+status: completed
+stopped_at: Completed 177-02-PLAN.md
+last_updated: "2026-03-24T03:45:42.438Z"
 last_activity: 2026-03-24 — Phase 177 Plan 01 complete (deploy audit log endpoint)
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 75
 ---
 
@@ -52,6 +52,7 @@ Progress: [███████░░░] 75%
 - Trend: Steady
 
 *Updated after each plan completion*
+| Phase 177 P02 | 4min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Recent decisions affecting current work:
 - [Phase 176]: Removed /login exclusion from extra filter in kiosk and web (unnecessary)
 - [Phase 177]: Deploy-log routes in service_routes() with no auth (LAN-only deploy script)
 - [Phase 177]: Fire-and-forget tokio::spawn for deploy log DB insert (activity_log.rs pattern)
+- [Phase 177]: SCP upload replaces python http.server for deploy (simpler, no background process)
+- [Phase 177]: Deploy logging is best-effort (non-fatal if racecontrol unreachable)
 
 ### Pending Todos
 
@@ -81,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24
-Stopped at: Completed 177-01-PLAN.md
+Last session: 2026-03-24T03:45:42.435Z
+Stopped at: Completed 177-02-PLAN.md
 Resume file: None
