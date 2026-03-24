@@ -163,6 +163,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               )}
             </div>
           )}
+          <Link href="/settings/health" className={cn(
+            'block px-3 py-1.5 rounded-lg text-sm transition-colors',
+            pathname === '/settings/health' ? 'bg-rp-red/10 text-rp-red' : 'text-rp-grey hover:text-neutral-300'
+          )}>
+            System Health
+          </Link>
           <Link href="/settings" className={cn(
             'block px-3 py-1.5 rounded-lg text-sm transition-colors',
             pathname === '/settings' ? 'bg-rp-red/10 text-rp-red' : 'text-rp-grey hover:text-neutral-300'
