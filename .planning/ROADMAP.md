@@ -14,7 +14,7 @@ Cross-project milestone: touches racingpoint-admin, racecontrol/kiosk, racecontr
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 176: Self-Verifying Health Endpoints** - Each Next.js app reports its own page manifest and flags missing pages as degraded
+- [x] **Phase 176: Self-Verifying Health Endpoints** - Each Next.js app reports its own page manifest and flags missing pages as degraded (completed 2026-03-24)
 - [ ] **Phase 177: Deploy Automation & Verification** - Unified deploy script with build, upload, verify, audit log, and auto-rollback
 - [ ] **Phase 178: Runtime Resilience** - Circuit breaker, retry with backoff, connection indicator, and graceful degradation
 - [ ] **Phase 179: Health Monitoring & Alerting** - Admin health dashboard, racecontrol probes, WhatsApp alerts on degradation
@@ -89,7 +89,7 @@ Phases execute in numeric order: 176 -> 177 -> 178 -> 179
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 176. Self-Verifying Health Endpoints | 0/2 | Planning complete | - |
+| 176. Self-Verifying Health Endpoints | 2/2 | Complete   | 2026-03-24 |
 | 177. Deploy Automation & Verification | 0/TBD | Not started | - |
 | 178. Runtime Resilience | 0/TBD | Not started | - |
 | 179. Health Monitoring & Alerting | 0/TBD | Not started | - |

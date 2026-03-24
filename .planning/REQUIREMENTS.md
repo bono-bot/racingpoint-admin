@@ -7,8 +7,8 @@
 
 ### Deploy Hardening
 
-- [ ] **DEPLOY-01**: Each Next.js app's `/api/health` reports all expected pages vs available pages at runtime
-- [ ] **DEPLOY-02**: Health endpoint returns `503 "degraded"` when any expected page is missing
+- [x] **DEPLOY-01**: Each Next.js app's `/api/health` reports all expected pages vs available pages at runtime
+- [x] **DEPLOY-02**: Health endpoint returns `503 "degraded"` when any expected page is missing
 - [ ] **DEPLOY-03**: Unified deploy script builds, packages (with .next/static), uploads, extracts, and verifies all routes
 - [ ] **DEPLOY-04**: Deploy script refuses to complete if post-deploy health check shows missing pages
 - [ ] **DEPLOY-05**: Every deploy is logged to racecontrol (app, timestamp, page count before/after, deployer, success/fail)
@@ -51,8 +51,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEPLOY-01 | Phase 176 | Pending |
-| DEPLOY-02 | Phase 176 | Pending |
+| DEPLOY-01 | Phase 176 | Complete |
+| DEPLOY-02 | Phase 176 | Complete |
 | DEPLOY-03 | Phase 177 | Pending |
 | DEPLOY-04 | Phase 177 | Pending |
 | DEPLOY-05 | Phase 177 | Pending |
