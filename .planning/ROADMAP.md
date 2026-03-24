@@ -32,8 +32,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 176-01-PLAN.md — Update admin health endpoint EXPECTED_PAGES to match actual app pages
-- [ ] 176-02-PLAN.md — Create kiosk and web self-verifying health endpoints
+- [x] 176-01-PLAN.md — Update admin health endpoint EXPECTED_PAGES to match actual app pages
+- [x] 176-02-PLAN.md — Create kiosk and web self-verifying health endpoints
 
 ### Phase 177: Deploy Automation & Verification
 **Goal**: Deploying any Next.js app is a single command that builds, packages, uploads, verifies, logs the result, and auto-rolls-back on failure
@@ -44,11 +44,11 @@ Plans:
   2. After deploy, the script hits `/api/health` and refuses to mark the deploy as successful if any pages are missing
   3. Every deploy attempt (success or fail) is logged to racecontrol with app name, timestamp, page count before/after, deployer, and result
   4. If post-deploy health returns degraded, the script automatically restores the previous working deploy without manual intervention
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 177-01-PLAN.md: TBD
-- [ ] 177-02-PLAN.md: TBD
+- [ ] 177-01-PLAN.md — Racecontrol deploy-log endpoint (POST/GET /api/v1/deploy-log)
+- [ ] 177-02-PLAN.md — Complete deploy script with backup, rollback, health gate, and audit logging
 
 ### Phase 178: Runtime Resilience
 **Goal**: When the backend goes down, Next.js apps degrade gracefully instead of showing errors or crashing
@@ -90,6 +90,6 @@ Phases execute in numeric order: 176 -> 177 -> 178 -> 179
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 176. Self-Verifying Health Endpoints | 2/2 | Complete    | 2026-03-24 |
-| 177. Deploy Automation & Verification | 0/TBD | Not started | - |
+| 177. Deploy Automation & Verification | 0/2 | Not started | - |
 | 178. Runtime Resilience | 0/TBD | Not started | - |
 | 179. Health Monitoring & Alerting | 0/TBD | Not started | - |
