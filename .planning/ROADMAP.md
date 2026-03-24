@@ -29,11 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. Hitting `/api/health` on admin, kiosk, or web returns a JSON manifest listing all expected pages and which are available
   2. If any expected page is missing from the build, `/api/health` returns HTTP 503 with status "degraded" and lists the missing pages
   3. A fully deployed app with all pages present returns HTTP 200 with status "healthy"
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 176-01-PLAN.md: TBD
-- [ ] 176-02-PLAN.md: TBD
+- [ ] 176-01-PLAN.md — Update admin health endpoint EXPECTED_PAGES to match actual app pages
+- [ ] 176-02-PLAN.md — Create kiosk and web self-verifying health endpoints
 
 ### Phase 177: Deploy Automation & Verification
 **Goal**: Deploying any Next.js app is a single command that builds, packages, uploads, verifies, logs the result, and auto-rolls-back on failure
@@ -89,7 +89,7 @@ Phases execute in numeric order: 176 -> 177 -> 178 -> 179
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 176. Self-Verifying Health Endpoints | 0/TBD | Not started | - |
+| 176. Self-Verifying Health Endpoints | 0/2 | Planning complete | - |
 | 177. Deploy Automation & Verification | 0/TBD | Not started | - |
 | 178. Runtime Resilience | 0/TBD | Not started | - |
 | 179. Health Monitoring & Alerting | 0/TBD | Not started | - |
