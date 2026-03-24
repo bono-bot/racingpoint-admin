@@ -145,20 +145,18 @@ Staff can manage every aspect of Racing Point operations — pods, billing, driv
 | Migrate SQLite data to RaceControl | Single source of truth, eliminates dual-database complexity | -- Pending |
 | Control room + back office hybrid UX | Daily ops need real-time overview; management needs CRUD depth | -- Pending |
 | Keep polling for real-time updates | Matches existing codebase pattern, avoids WebSocket complexity in v1 | -- Pending |
-| Self-verifying health endpoints | Stale deploys caused 404s on 24/33 pages across 3 apps — health must report missing routes | -- Pending |
-| Unified deploy script | Manual 3-step Next.js standalone deploy keeps being done wrong — automate with verification | -- Pending |
+| Self-verifying health endpoints | Stale deploys caused 404s on 24/33 pages across 3 apps — health must report missing routes | ✓ Good — v20.1 |
+| Unified deploy script | Manual 3-step Next.js standalone deploy keeps being done wrong — automate with verification | ✓ Good — v20.1 |
+| Circuit breaker + graceful degradation | Backend outages crashed all pages — need cached data fallback | ✓ Good — v20.1 |
+| Health monitoring dashboard | No single view of all app health — staff discover issues from customers | ✓ Good — v20.1 |
 
-## Current Milestone: v20.1 API Hardening
+## Shipped: v20.1 API Hardening (2026-03-24)
 
-**Goal:** Eliminate recurring stale/broken Next.js deployments across all 3 apps (admin, kiosk, web) and add runtime resilience for backend failures.
+**Delivered:** Self-verifying health endpoints (all 3 apps), unified deploy script with rollback, circuit breaker + retry, connection status indicator, System Health dashboard, WhatsApp alerting on degradation.
 
-**Target features:**
-- Self-verifying health endpoints with route manifests (all 3 apps)
-- Unified deploy script with built-in verification gates
-- Runtime API circuit breakers and graceful degradation
-- Connection status indicators for backend availability
-- Monitoring: health dashboard, 404 alerting, deploy audit trail
-- Auto-retry with backoff for transient API failures
+**4 phases, 8 plans, 16 requirements — all satisfied.**
+
+See `.planning/milestones/v20.1-ROADMAP.md` for full details.
 
 ---
-*Last updated: 2026-03-23 after v20.1 API Hardening milestone start*
+*Last updated: 2026-03-24 after v20.1 API Hardening milestone shipped*
