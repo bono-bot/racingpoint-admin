@@ -24,6 +24,88 @@ interface Membership {
   expires_at: string;
 }
 
+function MembersList() {
+  const [members, setMembers] = useState<Membership[]>([]);
+  const [membersLoading, setMembersLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadMembers() {
+      try {
+        const res = await fetch('/api/rc/customer/membership/active');
+        if (res.ok) {
+          const data = await res.json();
+          setMembers(data.memberships || data || []);
+        }
+      } catch { /* graceful fallback */ }
+      setMembersLoading(false);
+    }
+    loadMembers();
+  }, []);
+
+  if (membersLoading) return <div className="text-center text-rp-grey py-8">Loading members...</div>;
+
+  if (members.length === 0) {
+    return (
+      <div className="text-center text-rp-grey py-8">
+        No active members yet — members appear when customers subscribe via the PWA.
+      </div>
+    );
+  }
+
+  const now = new Date();
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left text-rp-grey border-b border-rp-border">
+            <th className="pb-3 font-medium">Driver</th>
+            <th className="pb-3 font-medium">Tier</th>
+            <th className="pb-3 font-medium">Hours</th>
+            <th className="pb-3 font-medium">Status</th>
+            <th className="pb-3 font-medium">Started</th>
+            <th className="pb-3 font-medium">Expires</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-rp-border">
+          {members.map(m => {
+            const expiresAt = new Date(m.expires_at);
+            const daysLeft = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            const statusColor = m.status === 'active' && daysLeft > 7
+              ? 'text-emerald-400 bg-emerald-400/10'
+              : m.status === 'active' && daysLeft <= 7
+              ? 'text-yellow-400 bg-yellow-400/10'
+              : 'text-red-400 bg-red-400/10';
+            const pct = m.hours_included > 0 ? Math.min(100, (m.hours_used / m.hours_included) * 100) : 0;
+
+            return (
+              <tr key={m.id} className="hover:bg-rp-card/50">
+                <td className="py-3 text-white font-medium">{m.driver_name}</td>
+                <td className="py-3 text-neutral-300">{m.tier_name}</td>
+                <td className="py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-20 h-1.5 bg-rp-border rounded-full overflow-hidden">
+                      <div className="h-full bg-rp-red rounded-full" style={{ width: `${pct}%` }} />
+                    </div>
+                    <span className="text-neutral-400 text-xs">{m.hours_used}/{m.hours_included}h</span>
+                  </div>
+                </td>
+                <td className="py-3">
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColor}`}>
+                    {m.status === 'active' && daysLeft <= 7 ? `${daysLeft}d left` : m.status}
+                  </span>
+                </td>
+                <td className="py-3 text-neutral-400">{new Date(m.started_at).toLocaleDateString()}</td>
+                <td className="py-3 text-neutral-400">{expiresAt.toLocaleDateString()}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function MembershipsPage() {
   const [tiers, setTiers] = useState<MembershipTier[]>([]);
   const [memberships, setMemberships] = useState<Membership[]>([]);
@@ -98,9 +180,7 @@ export default function MembershipsPage() {
           </div>
         )
       ) : (
-        <div className="text-center text-rp-grey py-8">
-          Member list will populate once customers subscribe via the PWA.
-        </div>
+        <MembersList />
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 interface WalletTxn {
   id: string;
@@ -27,6 +27,24 @@ interface TxnReport {
   transactions: WalletTxn[];
   summary: Summary;
   error?: string;
+}
+
+interface DriverOption {
+  id: string;
+  name: string;
+  phone: string | null;
+  wallet_balance_paise: number;
+}
+
+interface DriversListResponse {
+  drivers: DriverOption[];
+  error?: string;
+}
+
+interface TopupResponse {
+  success?: boolean;
+  error?: string;
+  balance_paise?: number;
 }
 
 function fmt(paise: number) {
@@ -73,18 +91,129 @@ function methodBadge(txnType: string) {
   return null;
 }
 
+const TOPUP_METHODS = [
+  { value: 'topup_cash', label: 'Cash' },
+  { value: 'topup_upi', label: 'UPI' },
+  { value: 'topup_card', label: 'Card' },
+] as const;
+
 export default function WalletTransactionsPage() {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [report, setReport] = useState<TxnReport | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Driver filter state
+  const [drivers, setDrivers] = useState<DriverOption[]>([]);
+  const [driversLoading, setDriversLoading] = useState(true);
+  const [selectedDriverId, setSelectedDriverId] = useState<string>('');
+  const [driverSearch, setDriverSearch] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  // Top-up modal state
+  const [showTopup, setShowTopup] = useState(false);
+  const [topupAmount, setTopupAmount] = useState('');
+  const [topupMethod, setTopupMethod] = useState<string>('topup_cash');
+  const [topupNotes, setTopupNotes] = useState('');
+  const [topupLoading, setTopupLoading] = useState(false);
+  const [topupError, setTopupError] = useState('');
+
+  // Fetch driver list on mount
   useEffect(() => {
+    setDriversLoading(true);
+    fetch('/api/rc/customer/drivers')
+      .then(r => r.json())
+      .then((d: DriversListResponse) => {
+        setDrivers(d.drivers || []);
+        setDriversLoading(false);
+      })
+      .catch(() => {
+        setDriversLoading(false);
+      });
+  }, []);
+
+  const selectedDriver = drivers.find(d => d.id === selectedDriverId);
+
+  // Fetch transactions (with optional driver_id filter)
+  const fetchTransactions = useCallback(() => {
     setLoading(true);
-    fetch(`/api/rc/wallet/transactions?date=${date}`)
+    const params = new URLSearchParams({ date });
+    if (selectedDriverId) params.set('driver_id', selectedDriverId);
+    fetch(`/api/rc/wallet/transactions?${params.toString()}`)
       .then(r => r.json())
       .then((d: TxnReport) => { setReport(d); setLoading(false); })
       .catch(() => setLoading(false));
-  }, [date]);
+  }, [date, selectedDriverId]);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
+
+  // Filter dropdown options
+  const filteredDrivers = driverSearch.trim()
+    ? drivers.filter(d =>
+        d.name.toLowerCase().includes(driverSearch.toLowerCase()) ||
+        (d.phone && d.phone.includes(driverSearch))
+      )
+    : drivers;
+
+  // Handle driver selection
+  function selectDriver(driverId: string) {
+    setSelectedDriverId(driverId);
+    const d = drivers.find(dr => dr.id === driverId);
+    setDriverSearch(d ? d.name : '');
+    setShowDropdown(false);
+  }
+
+  function clearDriver() {
+    setSelectedDriverId('');
+    setDriverSearch('');
+  }
+
+  // Top-up handler
+  async function handleTopup() {
+    if (!selectedDriverId || !topupAmount) return;
+    const amountPaise = Math.round(parseFloat(topupAmount) * 100);
+    if (isNaN(amountPaise) || amountPaise <= 0) {
+      setTopupError('Enter a valid amount');
+      return;
+    }
+
+    setTopupLoading(true);
+    setTopupError('');
+    try {
+      const res = await fetch(`/api/rc/wallet/topup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          driver_id: selectedDriverId,
+          amount_paise: amountPaise,
+          txn_type: topupMethod,
+          notes: topupNotes || undefined,
+        }),
+      });
+      const data: TopupResponse = await res.json();
+      if (!res.ok || data.error) {
+        setTopupError(data.error || `Topup failed (${res.status})`);
+      } else {
+        // Refresh transactions and driver balance
+        setShowTopup(false);
+        setTopupAmount('');
+        setTopupNotes('');
+        fetchTransactions();
+        // Update driver balance in local state
+        if (data.balance_paise !== undefined) {
+          setDrivers(prev => prev.map(d =>
+            d.id === selectedDriverId ? { ...d, wallet_balance_paise: data.balance_paise as number } : d
+          ));
+        }
+      }
+    } catch {
+      setTopupError('Network error — could not reach server');
+    } finally {
+      setTopupLoading(false);
+    }
+  }
 
   // Payment method breakdown
   const methodBreakdown = report?.transactions.reduce((acc, t) => {
@@ -105,6 +234,151 @@ export default function WalletTransactionsPage() {
           className="bg-rp-card border border-rp-border rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-rp-red"
         />
       </div>
+
+      {/* Driver Filter */}
+      <div className="mb-6 flex items-center gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <label className="block text-xs text-rp-grey mb-1">Filter by Driver</label>
+          <input
+            type="text"
+            value={driverSearch}
+            onChange={e => { setDriverSearch(e.target.value); setShowDropdown(true); }}
+            onFocus={() => setShowDropdown(true)}
+            placeholder={driversLoading ? 'Loading drivers...' : 'Search by name or phone...'}
+            disabled={driversLoading}
+            className="w-full bg-rp-card border border-rp-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-rp-grey focus:outline-none focus:border-rp-red"
+          />
+          {showDropdown && filteredDrivers.length > 0 && (
+            <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-rp-card border border-rp-border rounded-lg max-h-60 overflow-y-auto shadow-xl">
+              {filteredDrivers.slice(0, 20).map(d => (
+                <button
+                  key={d.id}
+                  onClick={() => selectDriver(d.id)}
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-white/[0.05] flex items-center justify-between"
+                >
+                  <div>
+                    <span className="text-white">{d.name}</span>
+                    {d.phone && <span className="text-rp-grey ml-2 text-xs">{d.phone}</span>}
+                  </div>
+                  <span className="text-xs text-rp-grey">{fmt(d.wallet_balance_paise)}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {selectedDriverId && (
+          <>
+            <button
+              onClick={clearDriver}
+              className="mt-5 text-sm text-rp-grey hover:text-white transition-colors"
+            >
+              Clear
+            </button>
+            <button
+              onClick={() => setShowTopup(true)}
+              className="mt-5 px-4 py-2 bg-rp-red/10 text-rp-red rounded-lg text-sm font-medium hover:bg-rp-red/20 transition-colors"
+            >
+              Top Up
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Click outside to close dropdown */}
+      {showDropdown && (
+        <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
+      )}
+
+      {/* Selected Driver Wallet Balance */}
+      {selectedDriver && (
+        <div className="mb-6 bg-rp-card border border-rp-border rounded-xl p-5 flex items-center justify-between">
+          <div>
+            <p className="text-xs text-rp-grey mb-1">Selected Driver</p>
+            <p className="text-white font-bold text-lg">{selectedDriver.name}</p>
+            {selectedDriver.phone && <p className="text-rp-grey text-sm">{selectedDriver.phone}</p>}
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-rp-grey mb-1">Wallet Balance</p>
+            <p className="text-2xl font-bold text-green-400">{fmt(selectedDriver.wallet_balance_paise)}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Top Up Modal */}
+      {showTopup && selectedDriver && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-rp-card border border-rp-border rounded-xl p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-lg font-bold mb-1">Top Up Wallet</h2>
+            <p className="text-rp-grey text-sm mb-4">Adding funds for {selectedDriver.name}</p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Amount (INR)</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={topupAmount}
+                  onChange={e => setTopupAmount(e.target.value)}
+                  placeholder="500"
+                  className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-rp-grey focus:outline-none focus:border-rp-red"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Payment Method</label>
+                <div className="flex gap-2">
+                  {TOPUP_METHODS.map(m => (
+                    <button
+                      key={m.value}
+                      onClick={() => setTopupMethod(m.value)}
+                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        topupMethod === m.value
+                          ? 'bg-rp-red/10 text-rp-red border border-rp-red/30'
+                          : 'bg-rp-black border border-rp-border text-rp-grey hover:text-white'
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Notes (optional)</label>
+                <input
+                  type="text"
+                  value={topupNotes}
+                  onChange={e => setTopupNotes(e.target.value)}
+                  placeholder="e.g. Walk-in cash topup"
+                  className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-rp-grey focus:outline-none focus:border-rp-red"
+                />
+              </div>
+
+              {topupError && (
+                <p className="text-red-400 text-sm">{topupError}</p>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => { setShowTopup(false); setTopupError(''); }}
+                className="px-4 py-2 rounded-lg text-sm text-rp-grey hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleTopup}
+                disabled={topupLoading || !topupAmount}
+                className="px-4 py-2 bg-rp-red text-white rounded-lg text-sm font-medium hover:bg-rp-red/80 transition-colors disabled:opacity-50"
+              >
+                {topupLoading ? 'Processing...' : 'Confirm Top Up'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {loading && (
         <div className="text-center text-rp-grey py-12">Loading transactions...</div>
@@ -166,10 +440,15 @@ export default function WalletTransactionsPage() {
 
           {/* Transactions Table */}
           <div>
-            <h2 className="text-sm font-semibold text-rp-grey uppercase tracking-wider mb-3">All Transactions</h2>
+            <h2 className="text-sm font-semibold text-rp-grey uppercase tracking-wider mb-3">
+              {selectedDriver ? `Transactions for ${selectedDriver.name}` : 'All Transactions'}
+            </h2>
             {report.transactions.length === 0 ? (
               <div className="text-center text-rp-grey py-12 bg-rp-card border border-rp-border rounded-xl">
-                No transactions on {date}
+                {selectedDriver
+                  ? `No transactions for ${selectedDriver.name} on ${date}`
+                  : `No transactions on ${date}`
+                }
               </div>
             ) : (
               <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden">
