@@ -64,7 +64,11 @@ export default function EmployeesPage() {
           hire_date: new Date().toISOString().slice(0, 10),
         }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Failed to add employee' }));
+        toast(err.error || 'Failed to add employee', 'error');
+        return;
+      }
       toast(`${form.name} added successfully`, 'success');
       setForm({ name: '', phone: '', pin: '', role: 'staff', department: '' });
       setShowAdd(false);

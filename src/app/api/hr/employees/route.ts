@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
+import { COOKIE_NAME } from '@/lib/auth-config';
 import crypto from 'crypto';
+
+const RC_URL = process.env.RC_URL;
 
 export async function GET() {
   const db = getDb();
@@ -13,6 +16,30 @@ export async function POST(req: NextRequest) {
   const { name, phone, pin, role, department, hire_date } = body;
   if (!name || !phone || !pin) {
     return NextResponse.json({ error: 'name, phone, pin required' }, { status: 400 });
+  }
+
+  // Create staff member in racecontrol (single source of truth for PIN auth)
+  if (RC_URL) {
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    if (!token) {
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    }
+    try {
+      const rcRes = await fetch(`${RC_URL}/api/v1/staff`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name, phone, pin }),
+      });
+      const rcData: { error?: string; status?: string; id?: string } = await rcRes.json();
+      if (rcData.error && !rcData.error.includes('UNIQUE constraint')) {
+        return NextResponse.json({ error: `Racecontrol: ${rcData.error}` }, { status: 400 });
+      }
+    } catch {
+      return NextResponse.json({ error: 'Cannot reach racecontrol server — staff not created' }, { status: 502 });
+    }
   }
 
   const pin_hash = crypto.createHash('sha256').update(pin).digest('hex');
