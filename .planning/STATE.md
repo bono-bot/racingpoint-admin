@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v20.1
 milestone_name: milestone
 status: in_progress
-stopped_at: Completed 178-01-PLAN.md
-last_updated: "2026-03-24T03:58:00Z"
-last_activity: 2026-03-24 — Phase 178 Plan 01 complete (circuit breaker + retry)
+stopped_at: Completed 178-02-PLAN.md
+last_updated: "2026-03-24T04:02:30Z"
+last_activity: 2026-03-24 — Phase 178 Plan 02 complete (connection status UI + SWR provider)
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
-  percent: 75
+  completed_plans: 6
+  percent: 100
 ---
 
 # Project State: API Hardening (v20.1)
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-23)
 ## Current Position
 
 Phase: 3 of 4 (Runtime Resilience)
-Plan: 1 of 2 in current phase
-Status: Plan 178-01 complete
-Last activity: 2026-03-24 — Phase 178 Plan 01 complete (circuit breaker + retry)
+Plan: 2 of 2 in current phase (COMPLETE)
+Status: Phase 178 complete
+Last activity: 2026-03-24 — Phase 178 Plan 02 complete (connection status UI + SWR provider)
 
-Progress: [████████░░] 83%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [████████░░] 83%
 *Updated after each plan completion*
 | Phase 177 P02 | 4min | 1 tasks | 1 files |
 | Phase 178 P01 | 2min | 2 tasks | 3 files |
+| Phase 178 P02 | 2min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,9 @@ Recent decisions affecting current work:
 - [Phase 178]: Singleton circuit breaker shared across apiFetch/rcFetch (single backend = single circuit)
 - [Phase 178]: CB wraps retry so all 3 retries fail = 1 circuit failure count
 - [Phase 178]: Kept implicit return types to preserve caller compat (17+ callers)
+- [Phase 178]: Added setOnStateChange public setter to CircuitBreaker for React subscription
+- [Phase 178]: SWR keepPreviousData=true for graceful degradation (pages show cached data on failure)
+- [Phase 178]: SWR retry stops when circuit open, slow-polls otherwise (no request flood)
 
 ### Pending Todos
 
@@ -88,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T03:58:00Z
-Stopped at: Completed 178-01-PLAN.md
+Last session: 2026-03-24T04:02:30Z
+Stopped at: Completed 178-02-PLAN.md
 Resume file: None

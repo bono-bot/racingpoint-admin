@@ -19,8 +19,8 @@
 - [x] **RUNTIME-01**: API client detects backend unavailability and stops sending requests (circuit breaker)
 - [x] **RUNTIME-02**: Circuit breaker auto-recovers with probe requests after cooldown period
 - [x] **RUNTIME-03**: Failed API calls retry with exponential backoff (3 attempts, 1s/2s/4s) before showing error
-- [ ] **RUNTIME-04**: Persistent connection status indicator shows backend state (connected/degraded/offline)
-- [ ] **RUNTIME-05**: Pages degrade gracefully when backend is down (show cached data or "offline" state, not crash)
+- [x] **RUNTIME-04**: Persistent connection status indicator shows backend state (connected/degraded/offline)
+- [x] **RUNTIME-05**: Pages degrade gracefully when backend is down (show cached data or "offline" state, not crash)
 
 ### Monitoring
 
@@ -60,8 +60,8 @@
 | RUNTIME-01 | Phase 178 | Complete |
 | RUNTIME-02 | Phase 178 | Complete |
 | RUNTIME-03 | Phase 178 | Complete |
-| RUNTIME-04 | Phase 178 | Pending |
-| RUNTIME-05 | Phase 178 | Pending |
+| RUNTIME-04 | Phase 178 | Complete |
+| RUNTIME-05 | Phase 178 | Complete |
 | MON-01 | Phase 179 | Pending |
 | MON-02 | Phase 179 | Pending |
 | MON-03 | Phase 179 | Pending |

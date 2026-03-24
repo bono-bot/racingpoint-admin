@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 176: Self-Verifying Health Endpoints** - Each Next.js app reports its own page manifest and flags missing pages as degraded (completed 2026-03-24)
 - [x] **Phase 177: Deploy Automation & Verification** - Unified deploy script with build, upload, verify, audit log, and auto-rollback (completed 2026-03-24)
-- [ ] **Phase 178: Runtime Resilience** - Circuit breaker, retry with backoff, connection indicator, and graceful degradation
+- [x] **Phase 178: Runtime Resilience** - Circuit breaker, retry with backoff, connection indicator, and graceful degradation (completed 2026-03-24)
 - [ ] **Phase 179: Health Monitoring & Alerting** - Admin health dashboard, racecontrol probes, WhatsApp alerts on degradation
 
 ## Phase Details
@@ -91,5 +91,5 @@ Phases execute in numeric order: 176 -> 177 -> 178 -> 179
 |-------|----------------|--------|-----------|
 | 176. Self-Verifying Health Endpoints | 2/2 | Complete    | 2026-03-24 |
 | 177. Deploy Automation & Verification | 2/2 | Complete    | 2026-03-24 |
-| 178. Runtime Resilience | 1/2 | In Progress|  |
+| 178. Runtime Resilience | 2/2 | Complete   | 2026-03-24 |
 | 179. Health Monitoring & Alerting | 0/TBD | Not started | - |
