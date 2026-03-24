@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
+import ConfirmDialog from '@/components/ConfirmDialog';
 
 interface Tournament {
   id: string;
@@ -30,6 +31,13 @@ interface Match {
   status: string;
 }
 
+interface Registration {
+  id: string;
+  driver_id: string;
+  driver_name: string;
+  registered_at: string;
+}
+
 const statusColors: Record<string, string> = {
   upcoming: 'bg-blue-500/20 text-blue-400',
   registration: 'bg-emerald-500/20 text-emerald-400',
@@ -44,21 +52,26 @@ export default function TournamentsPage() {
   const [showForm, setShowForm] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
   const [matches, setMatches] = useState<Match[]>([]);
+  const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [regLoading, setRegLoading] = useState(false);
+  const [matchResultTarget, setMatchResultTarget] = useState<Match | null>(null);
+  const [selectedWinner, setSelectedWinner] = useState<string | null>(null);
+  const [resultLoading, setResultLoading] = useState(false);
   const [form, setForm] = useState({
     name: '', description: '', track: '', car: '', format: 'single_elimination',
     max_participants: '16', entry_fee_paise: '0', prize_pool_paise: '0', event_date: '',
   });
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const data = await api.getTournaments();
       setTournaments(data.tournaments || []);
     } catch { setError('Failed to load tournaments'); }
     setLoading(false);
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const handleCreate = async () => {
     try {
@@ -82,18 +95,40 @@ export default function TournamentsPage() {
   const handleGenerateBracket = async (id: string) => {
     try {
       await api.generateBracket(id);
-      alert('Bracket generated!');
-      loadMatches(id);
+      loadTournamentDetail(id);
     } catch { alert('Failed to generate bracket'); }
   };
 
-  const loadMatches = async (id: string) => {
+  const loadTournamentDetail = async (id: string) => {
     setSelected(id);
+    setRegLoading(true);
     try {
-      const data = await api.getTournamentMatches(id);
-      setMatches(data.matches || []);
-    } catch { setMatches([]); }
+      const [matchData, regData] = await Promise.all([
+        api.getTournamentMatches(id),
+        api.getTournamentRegistrations(id),
+      ]);
+      setMatches(matchData.matches || []);
+      setRegistrations(regData.registrations || []);
+    } catch {
+      setMatches([]);
+      setRegistrations([]);
+    }
+    setRegLoading(false);
   };
+
+  const handleRecordResult = async () => {
+    if (!matchResultTarget || !selectedWinner || !selected) return;
+    setResultLoading(true);
+    try {
+      await api.recordMatchResult(selected, matchResultTarget.id, selectedWinner);
+      setMatchResultTarget(null);
+      setSelectedWinner(null);
+      loadTournamentDetail(selected);
+    } catch { alert('Failed to record match result'); }
+    setResultLoading(false);
+  };
+
+  const rounds = Array.from(new Set(matches.map(m => m.round))).sort((a, b) => a - b);
 
   return (
     <div>
@@ -128,8 +163,8 @@ export default function TournamentsPage() {
               <select value={form.format} onChange={e => setForm({ ...form, format: e.target.value })}
                 className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white mt-1">
                 <option value="single_elimination">Single Elimination</option>
-                <option value="time_attack">Time Attack</option>
                 <option value="round_robin">Round Robin</option>
+                <option value="time_attack">Time Attack</option>
               </select>
             </div>
             <div>
@@ -192,6 +227,9 @@ export default function TournamentsPage() {
                 <div><span className="text-rp-grey">Entry: </span><span className="text-white">{t.entry_fee_paise ? `₹${(t.entry_fee_paise / 100).toFixed(0)}` : 'Free'}</span></div>
                 <div><span className="text-rp-grey">Prize: </span><span className="text-rp-red font-bold">{t.prize_pool_paise ? `₹${(t.prize_pool_paise / 100).toLocaleString()}` : '-'}</span></div>
                 {t.event_date && <div><span className="text-rp-grey">Date: </span><span className="text-white">{new Date(t.event_date).toLocaleDateString()}</span></div>}
+                {t.registration_count !== undefined && (
+                  <div><span className="text-rp-grey">Registrations: </span><span className="text-white">{t.registration_count}</span></div>
+                )}
               </div>
 
               <div className="flex gap-2">
@@ -201,39 +239,137 @@ export default function TournamentsPage() {
                     Generate Bracket
                   </button>
                 )}
-                <button onClick={() => loadMatches(t.id)}
+                <button onClick={() => loadTournamentDetail(t.id)}
                   className="bg-rp-card border border-rp-border hover:border-neutral-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
-                  {selected === t.id ? 'Refresh Matches' : 'View Matches'}
+                  {selected === t.id ? 'Refresh' : 'View Details'}
                 </button>
               </div>
 
-              {selected === t.id && matches.length > 0 && (
-                <div className="mt-4 border-t border-rp-border pt-3">
-                  <h3 className="text-sm font-medium text-rp-grey mb-2">Bracket</h3>
-                  <div className="space-y-1">
-                    {Array.from(new Set(matches.map(m => m.round))).sort().map(round => (
-                      <div key={round}>
-                        <p className="text-xs text-rp-grey uppercase tracking-wider mb-1">Round {round}</p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                          {matches.filter(m => m.round === round).map(m => (
-                            <div key={m.id} className={`bg-rp-black rounded-lg p-2 text-xs border ${m.status === 'completed' ? 'border-emerald-500/30' : 'border-rp-border'}`}>
-                              <div className={`${m.winner_id === m.driver1_id ? 'text-emerald-400 font-bold' : 'text-white'}`}>
-                                {m.driver1_name || m.driver1_id || 'BYE'}
+              {/* Tournament Detail Panel */}
+              {selected === t.id && (
+                <div className="mt-4 border-t border-rp-border pt-4 space-y-4">
+                  {regLoading ? (
+                    <div className="text-rp-grey text-sm">Loading details...</div>
+                  ) : (
+                    <>
+                      {/* Registration List */}
+                      <div>
+                        <h3 className="text-sm font-medium text-rp-grey mb-2">
+                          Registrations ({registrations.length})
+                        </h3>
+                        {registrations.length === 0 ? (
+                          <p className="text-xs text-neutral-500">No registrations yet</p>
+                        ) : (
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            {registrations.map(r => (
+                              <div key={r.id} className="bg-rp-black border border-rp-border rounded-lg px-3 py-2">
+                                <p className="text-sm text-white font-medium">{r.driver_name}</p>
+                                <p className="text-xs text-neutral-500">
+                                  {new Date(r.registered_at).toLocaleDateString()}
+                                </p>
                               </div>
-                              <div className="text-rp-grey text-center">vs</div>
-                              <div className={`${m.winner_id === m.driver2_id ? 'text-emerald-400 font-bold' : 'text-white'}`}>
-                                {m.driver2_name || m.driver2_id || 'BYE'}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
+
+                      {/* Bracket / Matches */}
+                      {matches.length > 0 && (
+                        <div>
+                          <h3 className="text-sm font-medium text-rp-grey mb-2">Bracket</h3>
+                          <div className="space-y-3">
+                            {rounds.map(round => (
+                              <div key={round}>
+                                <p className="text-xs text-rp-grey uppercase tracking-wider mb-1">Round {round}</p>
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                  {matches.filter(m => m.round === round).sort((a, b) => a.match_order - b.match_order).map(m => (
+                                    <div
+                                      key={m.id}
+                                      className={`bg-rp-black rounded-lg p-2 text-xs border transition-colors ${
+                                        m.status === 'completed'
+                                          ? 'border-emerald-500/30'
+                                          : m.driver1_id && m.driver2_id
+                                            ? 'border-yellow-500/30 cursor-pointer hover:border-yellow-400'
+                                            : 'border-rp-border'
+                                      }`}
+                                      onClick={() => {
+                                        if (m.status !== 'completed' && m.driver1_id && m.driver2_id) {
+                                          setMatchResultTarget(m);
+                                          setSelectedWinner(null);
+                                        }
+                                      }}
+                                    >
+                                      <div className={`${m.winner_id === m.driver1_id ? 'text-emerald-400 font-bold' : 'text-white'}`}>
+                                        {m.driver1_name || m.driver1_id || 'BYE'}
+                                      </div>
+                                      <div className="text-rp-grey text-center">vs</div>
+                                      <div className={`${m.winner_id === m.driver2_id ? 'text-emerald-400 font-bold' : 'text-white'}`}>
+                                        {m.driver2_name || m.driver2_id || 'BYE'}
+                                      </div>
+                                      {m.status === 'completed' && (
+                                        <div className="text-center mt-1 text-emerald-400 text-[10px] uppercase">Done</div>
+                                      )}
+                                      {m.status !== 'completed' && m.driver1_id && m.driver2_id && (
+                                        <div className="text-center mt-1 text-yellow-400 text-[10px] uppercase">Click to record</div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Match Result Dialog */}
+      {matchResultTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60" onClick={() => setMatchResultTarget(null)}>
+          <div className="bg-rp-card border border-rp-border rounded-xl p-6 w-full max-w-sm shadow-2xl" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold mb-4">Record Match Result</h3>
+            <p className="text-sm text-neutral-400 mb-4">Select the winner:</p>
+            <div className="space-y-2 mb-6">
+              <button
+                onClick={() => setSelectedWinner(matchResultTarget.driver1_id)}
+                className={`w-full text-left px-4 py-3 rounded-lg border transition-colors ${
+                  selectedWinner === matchResultTarget.driver1_id
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                    : 'border-rp-border bg-rp-black text-white hover:border-neutral-600'
+                }`}
+              >
+                {matchResultTarget.driver1_name || matchResultTarget.driver1_id || 'Driver 1'}
+              </button>
+              <button
+                onClick={() => setSelectedWinner(matchResultTarget.driver2_id)}
+                className={`w-full text-left px-4 py-3 rounded-lg border transition-colors ${
+                  selectedWinner === matchResultTarget.driver2_id
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                    : 'border-rp-border bg-rp-black text-white hover:border-neutral-600'
+                }`}
+              >
+                {matchResultTarget.driver2_name || matchResultTarget.driver2_id || 'Driver 2'}
+              </button>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setMatchResultTarget(null)} className="px-4 py-2 text-sm text-neutral-400 hover:text-white">
+                Cancel
+              </button>
+              <button
+                onClick={handleRecordResult}
+                disabled={!selectedWinner || resultLoading}
+                className="px-4 py-2 text-sm font-medium bg-rp-red hover:bg-rp-red/90 text-white rounded-lg disabled:opacity-50"
+              >
+                {resultLoading ? 'Saving...' : 'Record Result'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
