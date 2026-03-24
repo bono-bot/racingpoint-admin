@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v20.0
 milestone_name: Admin Dashboard
-status: completed
-stopped_at: All phases 159-164 complete
-last_updated: "2026-03-24T15:00:00.000Z"
-last_activity: 2026-03-24 — v20.0 milestone closure (6 phases, 14 plans)
+status: in_progress
+stopped_at: Completed 167-01-PLAN.md
+last_updated: "2026-03-24T18:00:00.000Z"
+last_activity: 2026-03-24 — Enhanced bookings, tournaments, and time trials pages
 progress:
-  total_phases: 6
+  total_phases: 7
   completed_phases: 6
-  total_plans: 14
+  total_plans: 15
   completed_plans: 14
-  percent: 100
+  percent: 93
 ---
 
 # Project State: Admin Dashboard (v20.0)
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md
 
 **Core value:** Staff can manage every aspect of Racing Point operations from a single authenticated dashboard
-**Current focus:** Milestone complete — verifying and closing out
+**Current focus:** Events & Bookings Enhanced (Phase 167)
 
 ## Current Position
 
-Phase: 6 of 6 (Billing — Management)
-Plan: 2 of 2 in current phase
-Status: All phases complete
-Last activity: 2026-03-24 — v20.0 milestone closure
+Phase: 7 of 7 (Events & Bookings Enhanced)
+Plan: 1 of 1 in current phase
+Status: Plan 167-01 complete (pending git commits)
+Last activity: 2026-03-24 — Enhanced bookings, tournaments, and time trials pages
 
-Progress: [██████████] 100%
+Progress: [█████████░] 93%
 
 ## Shipped Milestones
 
@@ -49,19 +49,21 @@ Progress: [██████████] 100%
 - SWR polling for real-time updates (no WebSocket)
 - Self-verifying health endpoints for deploy verification
 - Circuit breaker + retry for runtime resilience
+- Used ConfirmDialog for booking cancellation instead of window.confirm
+- Match result recording via modal with winner selection buttons
+- Time trials displayed as card grid rather than table for visual differentiation
 
 ### Deferred to Future Milestones
 
 - AUTH-05: Role-based access control gating (infra exists, no permission gates)
 - Drivers & Wallets (profiles, wallet management, memberships, badges)
-- Events & Championships
 - Game Management (launch/stop on pods, AC content browser)
 - Scheduling & Operations
-- Data Migration (SQLite → RaceControl)
+- Data Migration (SQLite -> RaceControl)
 - Control Room Overview (mission control view)
 
 ## Session Continuity
 
 Last session: 2026-03-24
-Stopped at: Milestone closure
+Stopped at: Completed 167-01-PLAN.md (pending git commits)
 Resume file: None
