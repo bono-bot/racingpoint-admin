@@ -60,11 +60,11 @@ Plans:
   3. Transient API failures are retried up to 3 times with exponential backoff (1s/2s/4s) before surfacing the error
   4. A persistent connection status indicator is visible on every page showing backend state (connected/degraded/offline)
   5. Pages continue to function with cached or stale data when the backend is down, showing an "offline" state rather than crashing
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 178-01-PLAN.md: TBD
-- [ ] 178-02-PLAN.md: TBD
+- [ ] 178-01-PLAN.md — Circuit breaker module, retry with backoff, integrate into apiFetch/rcFetch
+- [ ] 178-02-PLAN.md — Connection context, status indicator, SWR global config, graceful degradation
 
 ### Phase 179: Health Monitoring & Alerting
 **Goal**: Staff and AI can see the health of all 3 apps in one place, and WhatsApp alerts fire automatically when something breaks
@@ -91,5 +91,5 @@ Phases execute in numeric order: 176 -> 177 -> 178 -> 179
 |-------|----------------|--------|-----------|
 | 176. Self-Verifying Health Endpoints | 2/2 | Complete    | 2026-03-24 |
 | 177. Deploy Automation & Verification | 2/2 | Complete    | 2026-03-24 |
-| 178. Runtime Resilience | 0/TBD | Not started | - |
+| 178. Runtime Resilience | 0/2 | Not started | - |
 | 179. Health Monitoring & Alerting | 0/TBD | Not started | - |
