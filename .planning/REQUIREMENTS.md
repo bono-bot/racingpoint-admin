@@ -24,9 +24,9 @@
 
 ### Monitoring
 
-- [ ] **MON-01**: Admin dashboard has a health overview page showing all 3 apps' status, page counts, last deploy
+- [x] **MON-01**: Admin dashboard has a health overview page showing all 3 apps' status, page counts, last deploy
 - [x] **MON-02**: WhatsApp alert fires when any app's health returns degraded (via racecontrol alerter)
-- [ ] **MON-03**: Health overview auto-refreshes and shows historical deploy timeline
+- [x] **MON-03**: Health overview auto-refreshes and shows historical deploy timeline
 - [x] **MON-04**: Racecontrol periodically probes all 3 Next.js app health endpoints and logs connection status
 - [x] **MON-05**: Racecontrol fires WhatsApp alert when any app health probe fails or returns degraded
 
@@ -62,9 +62,9 @@
 | RUNTIME-03 | Phase 178 | Complete |
 | RUNTIME-04 | Phase 178 | Complete |
 | RUNTIME-05 | Phase 178 | Complete |
-| MON-01 | Phase 179 | Pending |
+| MON-01 | Phase 179 | Complete |
 | MON-02 | Phase 179 | Complete |
-| MON-03 | Phase 179 | Pending |
+| MON-03 | Phase 179 | Complete |
 | MON-04 | Phase 179 | Complete |
 | MON-05 | Phase 179 | Complete |
 
