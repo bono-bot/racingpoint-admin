@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v20.1
 milestone_name: milestone
-status: completed
-stopped_at: Completed 177-02-PLAN.md
-last_updated: "2026-03-24T03:48:31.353Z"
-last_activity: 2026-03-24 — Phase 177 Plan 01 complete (deploy audit log endpoint)
+status: in_progress
+stopped_at: Completed 178-01-PLAN.md
+last_updated: "2026-03-24T03:58:00Z"
+last_activity: 2026-03-24 — Phase 178 Plan 01 complete (circuit breaker + retry)
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
   percent: 75
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** No Next.js app deploy goes live with missing pages, and runtime backend failures degrade gracefully instead of crashing
-**Current focus:** Phase 177 - Deploy Automation & Verification
+**Current focus:** Phase 178 - Runtime Resilience
 
 ## Current Position
 
-Phase: 2 of 4 (Deploy Automation & Verification)
+Phase: 3 of 4 (Runtime Resilience)
 Plan: 1 of 2 in current phase
-Status: Plan 177-01 complete
-Last activity: 2026-03-24 — Phase 177 Plan 01 complete (deploy audit log endpoint)
+Status: Plan 178-01 complete
+Last activity: 2026-03-24 — Phase 178 Plan 01 complete (circuit breaker + retry)
 
-Progress: [███████░░░] 75%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [███████░░░] 75%
 
 *Updated after each plan completion*
 | Phase 177 P02 | 4min | 1 tasks | 1 files |
+| Phase 178 P01 | 2min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,9 @@ Recent decisions affecting current work:
 - [Phase 177]: Fire-and-forget tokio::spawn for deploy log DB insert (activity_log.rs pattern)
 - [Phase 177]: SCP upload replaces python http.server for deploy (simpler, no background process)
 - [Phase 177]: Deploy logging is best-effort (non-fatal if racecontrol unreachable)
+- [Phase 178]: Singleton circuit breaker shared across apiFetch/rcFetch (single backend = single circuit)
+- [Phase 178]: CB wraps retry so all 3 retries fail = 1 circuit failure count
+- [Phase 178]: Kept implicit return types to preserve caller compat (17+ callers)
 
 ### Pending Todos
 
@@ -84,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T03:45:42.435Z
-Stopped at: Completed 177-02-PLAN.md
+Last session: 2026-03-24T03:58:00Z
+Stopped at: Completed 178-01-PLAN.md
 Resume file: None
