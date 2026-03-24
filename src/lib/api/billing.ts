@@ -79,7 +79,7 @@ export const billingApi = {
   getRates: (): Promise<BillingRate[]> =>
     rcFetch('/billing/rates'),
 
-  refundSession: (id: string, data: { amount_paise?: number; reason?: string }): Promise<void> =>
+  refundSession: (id: string, data: { amount_paise?: number; method: 'wallet' | 'cash' | 'upi'; reason?: string }): Promise<void> =>
     rcFetch(`/billing/${id}/refund`, { method: 'POST', body: JSON.stringify(data) }),
 
   getHistory: (params: {

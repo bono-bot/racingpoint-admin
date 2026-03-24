@@ -19,6 +19,8 @@ function statusBadge(status: string) {
     completed: 'bg-blue-900/40 text-blue-400 border-blue-800',
     cancelled: 'bg-red-900/40 text-red-400 border-red-800',
     paused_manual: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
+    paused_idle: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
+    ended_early: 'bg-amber-900/40 text-amber-400 border-amber-800',
     expired: 'bg-zinc-800 text-zinc-400 border-zinc-700',
     refunded: 'bg-orange-900/40 text-orange-400 border-orange-800',
   };
@@ -64,6 +66,7 @@ function RefundModal({ session, onClose, onSuccess }: {
   onSuccess: () => void;
 }) {
   const [partialAmount, setPartialAmount] = useState('');
+  const [method, setMethod] = useState<'wallet' | 'cash' | 'upi'>('wallet');
   const [reason, setReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [amountError, setAmountError] = useState('');
@@ -71,6 +74,7 @@ function RefundModal({ session, onClose, onSuccess }: {
   useEffect(() => {
     if (!session) return;
     setPartialAmount('');
+    setMethod('wallet');
     setReason('');
     setAmountError('');
   }, [session]);
@@ -99,6 +103,7 @@ function RefundModal({ session, onClose, onSuccess }: {
     try {
       await billingApi.refundSession(session!.id, {
         amount_paise: partialAmountPaise || undefined,
+        method,
         reason: reason || undefined,
       });
       toast.success('Refund processed');
@@ -141,6 +146,26 @@ function RefundModal({ session, onClose, onSuccess }: {
               className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rp-red"
             />
             {amountError && <p className="text-xs text-red-400 mt-1">{amountError}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm text-neutral-400 mb-1">Refund Method *</label>
+            <div className="flex gap-2">
+              {(['wallet', 'cash', 'upi'] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMethod(m)}
+                  className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
+                    method === m
+                      ? 'bg-rp-red/20 border-rp-red text-white'
+                      : 'bg-rp-black border-rp-border text-neutral-400 hover:text-white hover:border-neutral-500'
+                  }`}
+                >
+                  {m.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -256,6 +281,8 @@ export default function BillingHistoryPage() {
           <option value="refunded">Refunded</option>
           <option value="cancelled">Cancelled</option>
           <option value="paused_manual">Paused</option>
+          <option value="paused_idle">Paused (Idle)</option>
+          <option value="ended_early">Ended Early</option>
           <option value="expired">Expired</option>
         </select>
         <select

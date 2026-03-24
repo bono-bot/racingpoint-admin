@@ -43,6 +43,8 @@ function statusBadge(status: string) {
     completed: 'bg-blue-900/40 text-blue-400 border-blue-800',
     cancelled: 'bg-red-900/40 text-red-400 border-red-800',
     paused_manual: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
+    paused_idle: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
+    ended_early: 'bg-amber-900/40 text-amber-400 border-amber-800',
     expired: 'bg-zinc-800 text-zinc-400 border-zinc-700',
   };
   const c = colors[status] || 'bg-zinc-800 text-zinc-400 border-zinc-700';
@@ -452,7 +454,7 @@ export default function BillingPage() {
                                 </select>
                               </>
                             )}
-                            {session.status === 'paused_manual' && (
+                            {(session.status === 'paused_manual' || session.status === 'paused_idle') && (
                               <button
                                 onClick={() => handleAction(session.id, 'resumed', () => billingApi.resumeSession(session.id))}
                                 disabled={busy || isOffline}
@@ -462,7 +464,7 @@ export default function BillingPage() {
                                 {busyLabel === 'resumed' ? 'Resuming...' : 'Resume'}
                               </button>
                             )}
-                            {(session.status === 'active' || session.status === 'paused_manual') && (
+                            {(session.status === 'active' || session.status === 'paused_manual' || session.status === 'paused_idle') && (
                               <button
                                 onClick={() => setConfirmStop({ id: session.id, driverName: session.driver_name, podNumber: session.pod_number })}
                                 disabled={busy || isOffline}

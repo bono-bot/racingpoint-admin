@@ -4,7 +4,7 @@ import { withRetry } from './retry';
 export { circuitBreaker } from './circuit-breaker';
 export type { CircuitState } from './circuit-breaker';
 
-const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3100';
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://192.168.31.23:3100';
 const API_KEY = process.env.NEXT_PUBLIC_GATEWAY_API_KEY || 'rp-gateway-2026-secure-key';
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
@@ -29,6 +29,7 @@ export async function rcFetch(path: string, options: RequestInit = {}) {
     withRetry(async () => {
       const res = await fetch(`/api/rc${path}`, {
         ...options,
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           ...options.headers,
