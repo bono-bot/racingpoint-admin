@@ -75,11 +75,11 @@ Plans:
   2. The health overview auto-refreshes and shows a historical timeline of deploys and health status changes
   3. A WhatsApp alert fires within 60 seconds when any app's health endpoint returns degraded or becomes unreachable
   4. Racecontrol periodically probes all 3 app health endpoints and logs the results (connection status, page counts)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 179-01-PLAN.md: TBD
-- [ ] 179-02-PLAN.md: TBD
+- [ ] 179-01-PLAN.md — Racecontrol health probe task, WhatsApp alerting, GET /api/v1/app-health endpoint
+- [ ] 179-02-PLAN.md — Admin dashboard System Health page with 3-card grid and deploy timeline
 
 ## Progress
 
@@ -92,4 +92,4 @@ Phases execute in numeric order: 176 -> 177 -> 178 -> 179
 | 176. Self-Verifying Health Endpoints | 2/2 | Complete    | 2026-03-24 |
 | 177. Deploy Automation & Verification | 2/2 | Complete    | 2026-03-24 |
 | 178. Runtime Resilience | 2/2 | Complete    | 2026-03-24 |
-| 179. Health Monitoring & Alerting | 0/TBD | Not started | - |
+| 179. Health Monitoring & Alerting | 0/2 | Not started | - |
