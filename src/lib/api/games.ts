@@ -1,5 +1,28 @@
 import { rcFetch } from './base';
 
+export interface GameCatalogEntry {
+  id: string; // SimType enum value
+  name: string;
+  abbr: string;
+  installed_pod_count: number;
+}
+
+export interface ActiveGame {
+  pod_id: string;
+  pod_number: number;
+  sim_type: string;
+  driver_id: string;
+  driver_name: string;
+  started_at: string;
+}
+
+export interface LaunchGameParams {
+  pod_id: string;
+  sim_type: string;
+  driver_id: string;
+  session_id?: string;
+}
+
 export const gamesApi = {
   getKioskSettings: () => rcFetch('/kiosk/settings'),
   updateKioskSettings: (data: Record<string, string>) =>
@@ -21,4 +44,10 @@ export const gamesApi = {
     rcFetch('/pricing/rules', { method: 'POST', body: JSON.stringify(data) }),
   deletePricingRule: (id: string) =>
     rcFetch(`/pricing/rules/${id}`, { method: 'DELETE' }),
+  getGamesCatalog: () => rcFetch('/games/catalog') as Promise<{ games: GameCatalogEntry[] }>,
+  launchGame: (data: LaunchGameParams) =>
+    rcFetch('/games/launch', { method: 'POST', body: JSON.stringify(data) }),
+  stopGame: (podId: string) =>
+    rcFetch('/games/stop', { method: 'POST', body: JSON.stringify({ pod_id: podId }) }),
+  getActiveGames: () => rcFetch('/games/active') as Promise<ActiveGame[]>,
 };

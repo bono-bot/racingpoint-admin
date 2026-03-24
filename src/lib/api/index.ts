@@ -9,9 +9,10 @@ export { opsApi } from './ops';
 
 // Type re-exports
 export type { Booking, BookingsResponse } from './events';
-export type { Customer, CustomersResponse } from './drivers';
+export type { Driver, WalletBalance } from './drivers';
 export type { TranscribeSegment, TranscribeWord, TranscribeResponse } from './ops';
 export type { PodFleetStatus, FleetHealthResponse } from './fleet';
+export type { GameCatalogEntry, ActiveGame, LaunchGameParams } from './games';
 
 // Backward-compatible unified api object
 // Existing pages import { api } from '@/lib/api' and call api.getBookings(), etc.
