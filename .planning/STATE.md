@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v20.1
 milestone_name: milestone
-status: completed
-stopped_at: Completed 178-02-PLAN.md
-last_updated: "2026-03-24T04:06:06.662Z"
-last_activity: 2026-03-24 — Phase 178 Plan 02 complete (connection status UI + SWR provider)
+status: in-progress
+stopped_at: Completed 179-01-PLAN.md
+last_updated: "2026-03-24T04:19:08Z"
+last_activity: 2026-03-24 — Phase 179 Plan 01 complete (app health monitor + WhatsApp alerting)
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
-  percent: 100
+  total_plans: 8
+  completed_plans: 7
+  percent: 88
 ---
 
 # Project State: API Hardening (v20.1)
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-23)
 
 **Core value:** No Next.js app deploy goes live with missing pages, and runtime backend failures degrade gracefully instead of crashing
-**Current focus:** Phase 178 - Runtime Resilience
+**Current focus:** Phase 179 - Health Monitoring & Alerting
 
 ## Current Position
 
-Phase: 3 of 4 (Runtime Resilience)
-Plan: 2 of 2 in current phase (COMPLETE)
-Status: Phase 178 complete
-Last activity: 2026-03-24 — Phase 178 Plan 02 complete (connection status UI + SWR provider)
+Phase: 4 of 4 (Health Monitoring & Alerting)
+Plan: 1 of 2 in current phase
+Status: Phase 179 in progress
+Last activity: 2026-03-24 — Phase 179 Plan 01 complete (app health monitor + WhatsApp alerting)
 
-Progress: [██████████] 100%
+Progress: [████████░░] 88%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [██████████] 100%
 | Phase 177 P02 | 4min | 1 tasks | 1 files |
 | Phase 178 P01 | 2min | 2 tasks | 3 files |
 | Phase 178 P02 | 2min | 2 tasks | 5 files |
+| Phase 179 P01 | 3min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,9 @@ Recent decisions affecting current work:
 - [Phase 178]: Added setOnStateChange public setter to CircuitBreaker for React subscription
 - [Phase 178]: SWR keepPreviousData=true for graceful degradation (pages show cached data on failure)
 - [Phase 178]: SWR retry stops when circuit open, slow-polls otherwise (no request flood)
+- [Phase 179]: Reused existing send_whatsapp by making it pub(crate) rather than duplicating
+- [Phase 179]: Static LazyLock for health state (no AppState changes needed)
+- [Phase 179]: 5-min per-app cooldown on alerts, no cooldown on recovery notifications
 
 ### Pending Todos
 
@@ -92,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T04:02:30Z
-Stopped at: Completed 178-02-PLAN.md
+Last session: 2026-03-24T04:19:08Z
+Stopped at: Completed 179-01-PLAN.md
 Resume file: None
