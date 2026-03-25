@@ -44,6 +44,11 @@ function getAvailablePages(): string[] {
         pages.push(route);
       }
       // Recurse into subdirectories (billing/history, hr/hiring, etc.)
+      // Also match dynamic segments like [id], [number] as valid pages
+      if (entry.isDirectory() && entry.name.startsWith('[') && entry.name.endsWith(']')) {
+        pages.push(`${prefix}/${entry.name}`);
+        continue;
+      }
       if (entry.isDirectory() && !entry.name.startsWith('_') && entry.name !== 'api') {
         scan(path.join(dir, entry.name), `${prefix}/${entry.name}`);
       }
@@ -57,7 +62,7 @@ function getAvailablePages(): string[] {
 export async function GET() {
   const available = getAvailablePages();
   const missing = EXPECTED_PAGES.filter(p => !available.includes(p));
-  const extra = available.filter(p => !EXPECTED_PAGES.includes(p) && p !== '/login');
+  const extra = available.filter(p => !EXPECTED_PAGES.includes(p) && !p.startsWith('/_') && p !== '/login');
 
   const hasStatic = fs.existsSync(path.join(process.cwd(), '.next', 'static'));
 
