@@ -454,7 +454,7 @@ export default function BillingPage() {
                                 </select>
                               </>
                             )}
-                            {(session.status === 'paused_manual' || session.status === 'paused_idle') && (
+                            {(session.status === 'paused_manual' || session.status === 'paused_disconnect') && (
                               <button
                                 onClick={() => handleAction(session.id, 'resumed', () => billingApi.resumeSession(session.id))}
                                 disabled={busy || isOffline}
