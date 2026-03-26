@@ -202,7 +202,7 @@ export default function LiveOperationsPage() {
 
       // Calculate today summary
       const allToday = todaySessions.sessions;
-      const completedToday = allToday.filter(s => s.status === 'completed' || s.status === 'expired');
+      const completedToday = allToday.filter(s => s.status === 'completed' || s.status === 'ended_early');
       const totalRevenue = allToday.reduce((sum, s) => sum + s.price_paise, 0);
 
       setSummary({
