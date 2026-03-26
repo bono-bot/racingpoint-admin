@@ -19,7 +19,7 @@ function statusBadge(status: string) {
     completed: 'bg-blue-900/40 text-blue-400 border-blue-800',
     cancelled: 'bg-red-900/40 text-red-400 border-red-800',
     paused_manual: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
-    paused_idle: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
+    paused_disconnect: 'bg-yellow-900/40 text-yellow-400 border-yellow-800',
     ended_early: 'bg-amber-900/40 text-amber-400 border-amber-800',
     expired: 'bg-zinc-800 text-zinc-400 border-zinc-700',
     refunded: 'bg-orange-900/40 text-orange-400 border-orange-800',
@@ -281,7 +281,7 @@ export default function BillingHistoryPage() {
           <option value="refunded">Refunded</option>
           <option value="cancelled">Cancelled</option>
           <option value="paused_manual">Paused</option>
-          <option value="paused_idle">Paused (Idle)</option>
+          <option value="paused_disconnect">Paused (Idle)</option>
           <option value="ended_early">Ended Early</option>
           <option value="expired">Expired</option>
         </select>

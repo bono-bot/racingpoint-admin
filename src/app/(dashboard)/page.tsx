@@ -47,7 +47,7 @@ function getPodStatus(pod: PodFleetStatus, activeSessions: ActiveSession[]): Pod
     return { color: 'bg-yellow-400', label: 'Maintenance' };
   }
   const hasSession = activeSessions.some(
-    (s) => s.pod_number === pod.pod_number && (s.status === 'active' || s.status === 'paused_manual' || s.status === 'paused_idle')
+    (s) => s.pod_number === pod.pod_number && (s.status === 'active' || s.status === 'paused_manual' || s.status === 'paused_disconnect')
   );
   if (hasSession) {
     return { color: 'bg-blue-400', label: 'In Session' };
@@ -98,7 +98,7 @@ export default function ControlRoomPage() {
   const onlinePods = pods.filter((p) => p.ws_connected).length;
   const totalPods = pods.length || 8;
   const activeSessionCount = activeSessions.filter(
-    (s) => s.status === 'active' || s.status === 'paused_manual' || s.status === 'paused_idle'
+    (s) => s.status === 'active' || s.status === 'paused_manual' || s.status === 'paused_disconnect'
   ).length;
 
   // Revenue: sum of cost_paise from active sessions
@@ -215,7 +215,7 @@ export default function ControlRoomPage() {
           ) : (
             <div className="space-y-2 max-h-[260px] overflow-y-auto">
               {activeSessions
-                .filter((s) => s.status === 'active' || s.status === 'paused_manual' || s.status === 'paused_idle')
+                .filter((s) => s.status === 'active' || s.status === 'paused_manual' || s.status === 'paused_disconnect')
                 .map((session) => (
                   <Link
                     key={session.id}
