@@ -7,6 +7,8 @@ export { eventsApi } from './events';
 export { gamesApi } from './games';
 export { opsApi } from './ops';
 export { staffApi } from './staff';
+export { presetsApi } from './presets';
+export type { GamePreset, GamePresetWithReliability, CreatePresetRequest, UpdatePresetRequest } from './presets';
 
 // Type re-exports
 export type { Booking, BookingsResponse } from './events';

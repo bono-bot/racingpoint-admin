@@ -49,6 +49,7 @@ const navSections: NavSection[] = [
       { href: '/leaderboard', label: 'Leaderboard' },
       { href: '/tournaments', label: 'Tournaments' },
       { href: '/games', label: 'Games' },
+      { href: '/presets', label: 'Presets' },
       { href: '/kiosk', label: 'Kiosk Control' },
     ],
   },
