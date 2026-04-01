@@ -47,8 +47,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 177-01-PLAN.md — Racecontrol deploy-log endpoint (POST/GET /api/v1/deploy-log)
-- [ ] 177-02-PLAN.md — Complete deploy script with backup, rollback, health gate, and audit logging
+- [x] 177-01-PLAN.md — Racecontrol deploy-log endpoint (POST/GET /api/v1/deploy-log)
+- [x] 177-02-PLAN.md — Complete deploy script with backup, rollback, health gate, and audit logging
 
 ### Phase 178: Runtime Resilience
 **Goal**: When the backend goes down, Next.js apps degrade gracefully instead of showing errors or crashing
@@ -63,8 +63,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 178-01-PLAN.md — Circuit breaker module, retry with backoff, integrate into apiFetch/rcFetch
-- [ ] 178-02-PLAN.md — Connection context, status indicator, SWR global config, graceful degradation
+- [x] 178-01-PLAN.md — Circuit breaker module, retry with backoff, integrate into apiFetch/rcFetch
+- [x] 178-02-PLAN.md — Connection context, status indicator, SWR global config, graceful degradation
 
 ### Phase 179: Health Monitoring & Alerting
 **Goal**: Staff and AI can see the health of all 3 apps in one place, and WhatsApp alerts fire automatically when something breaks
@@ -78,8 +78,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 179-01-PLAN.md — Racecontrol health probe task, WhatsApp alerting, GET /api/v1/app-health endpoint
-- [ ] 179-02-PLAN.md — Admin dashboard System Health page with 3-card grid and deploy timeline
+- [x] 179-01-PLAN.md — Racecontrol health probe task, WhatsApp alerting, GET /api/v1/app-health endpoint
+- [x] 179-02-PLAN.md — Admin dashboard System Health page with 3-card grid and deploy timeline
 
 ## Progress
 

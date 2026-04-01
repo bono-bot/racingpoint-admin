@@ -78,6 +78,7 @@ const navSections: NavSection[] = [
   {
     title: 'HR',
     items: [
+      { href: '/staff/manage', label: 'Staff & PINs' },
       { href: '/hr', label: 'Employees' },
       { href: '/hr/hiring', label: 'Hiring' },
       { href: '/hr/attendance', label: 'Attendance' },
