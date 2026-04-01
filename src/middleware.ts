@@ -31,7 +31,11 @@ export async function middleware(req: NextRequest) {
 
   const token = req.cookies.get(COOKIE_NAME)?.value;
   if (!token) {
-    return NextResponse.redirect(new URL('/login', req.url));
+    const loginUrl = new URL('/login', req.url);
+    if (pathname !== '/') {
+      loginUrl.searchParams.set('redirect', pathname);
+    }
+    return NextResponse.redirect(loginUrl);
   }
 
   try {
@@ -45,7 +49,11 @@ export async function middleware(req: NextRequest) {
     return res;
   } catch {
     // Token expired or invalid -- clear cookie and redirect to login
-    const res = NextResponse.redirect(new URL('/login', req.url));
+    const loginUrl = new URL('/login', req.url);
+    if (pathname !== '/') {
+      loginUrl.searchParams.set('redirect', pathname);
+    }
+    const res = NextResponse.redirect(loginUrl);
     res.cookies.delete(COOKIE_NAME);
     return res;
   }

@@ -33,9 +33,9 @@ export default function PinPad({ onSubmit, disabled, error }: PinPadProps) {
   return (
     <div className="flex flex-col items-center gap-6">
       {/* PIN dots display */}
-      <div className="h-10 flex items-center justify-center gap-2">
+      <div className={`h-10 flex items-center justify-center gap-2 ${error ? 'animate-shake' : ''}`}>
         {pin.length === 0 ? (
-          <p className="text-rp-grey text-sm">Enter PIN</p>
+          <p className="text-rp-grey text-sm">{error ? '' : 'Enter PIN'}</p>
         ) : (
           Array.from({ length: pin.length }).map((_, i) => (
             <div key={i} className="w-3 h-3 rounded-full bg-rp-red" />

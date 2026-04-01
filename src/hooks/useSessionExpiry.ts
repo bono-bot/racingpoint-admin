@@ -16,6 +16,7 @@ export function useSessionExpiry() {
       const remaining = user.exp - Math.floor(Date.now() / 1000);
 
       if (remaining <= 0) {
+        toast('Session expired. Logging out...', 'info');
         logout();
       } else if (remaining <= 300 && !warnedRef.current) {
         warnedRef.current = true;

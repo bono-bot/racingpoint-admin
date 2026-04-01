@@ -29,20 +29,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then(res => {
-        if (res.ok) return res.json();
-        return null;
-      })
-      .then(data => {
-        if (data && data.sub) {
-          setUser(data);
+    let cancelled = false;
+    let retries = 2;
+
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (cancelled) return;
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.sub) {
+            setUser(data);
+            return;
+          }
         }
-      })
-      .catch(() => {
-        // Not authenticated — user stays null
-      });
-  }, []);
+        if (res.status === 401) {
+          // Token invalid — middleware will handle on next navigation
+          setUser(null);
+          return;
+        }
+        throw new Error('Failed to fetch user');
+      } catch {
+        if (cancelled) return;
+        if (retries > 0) {
+          retries--;
+          setTimeout(fetchUser, 1000);
+        } else {
+          setUser(null);
+          router.push('/login');
+        }
+      }
+    };
+
+    fetchUser();
+    return () => { cancelled = true; };
+  }, [router]);
 
   const logout = useCallback(async () => {
     try {
