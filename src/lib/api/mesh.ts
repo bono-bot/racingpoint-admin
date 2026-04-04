@@ -45,36 +45,40 @@ export interface MeshStats {
 
 export const meshApi = {
   async listSolutions(limit = 50): Promise<MeshSolution[]> {
-    const res = await rcFetch(`/api/v1/mesh/solutions?limit=${limit}`);
-    if (!res.ok) return [];
-    return res.json();
+    try {
+      return await rcFetch(`/mesh/solutions?limit=${limit}`);
+    } catch { return []; }
   },
 
   async getSolution(id: string): Promise<MeshSolution | null> {
-    const res = await rcFetch(`/api/v1/mesh/solutions/${id}`);
-    if (!res.ok) return null;
-    return res.json();
+    try {
+      return await rcFetch(`/mesh/solutions/${id}`);
+    } catch { return null; }
   },
 
   async listIncidents(limit = 50): Promise<MeshIncident[]> {
-    const res = await rcFetch(`/api/v1/mesh/incidents?limit=${limit}`);
-    if (!res.ok) return [];
-    return res.json();
+    try {
+      return await rcFetch(`/mesh/incidents?limit=${limit}`);
+    } catch { return []; }
   },
 
   async getStats(): Promise<MeshStats | null> {
-    const res = await rcFetch('/api/v1/mesh/stats');
-    if (!res.ok) return null;
-    return res.json();
+    try {
+      return await rcFetch('/mesh/stats');
+    } catch { return null; }
   },
 
   async promoteSolution(id: string): Promise<boolean> {
-    const res = await rcFetch(`/api/v1/mesh/solutions/${id}/promote`, { method: 'POST' });
-    return res.ok;
+    try {
+      await rcFetch(`/mesh/solutions/${id}/promote`, { method: 'POST' });
+      return true;
+    } catch { return false; }
   },
 
   async retireSolution(id: string): Promise<boolean> {
-    const res = await rcFetch(`/api/v1/mesh/solutions/${id}/retire`, { method: 'POST' });
-    return res.ok;
+    try {
+      await rcFetch(`/mesh/solutions/${id}/retire`, { method: 'POST' });
+      return true;
+    } catch { return false; }
   },
 };
