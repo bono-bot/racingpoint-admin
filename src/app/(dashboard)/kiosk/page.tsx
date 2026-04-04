@@ -92,8 +92,14 @@ export default function KioskControlPage() {
       ]);
       setSettings(settingsRes.settings || {});
       setExperiences(expRes.experiences || []);
-      const podList = (podsRes as { pods: PodInfo[] }).pods || [];
+      const podList = (podsRes as { pods: (PodInfo & { screen_blanked?: boolean })[] }).pods || [];
       setPods(podList.sort((a: PodInfo, b: PodInfo) => a.number - b.number));
+      // Initialize pod blanking state from server data
+      const blankState: Record<string, boolean> = {};
+      for (const p of podList) {
+        blankState[p.id] = p.screen_blanked ?? false;
+      }
+      setPodBlanking(blankState);
     } catch {
       setError('Failed to load kiosk data. Is rc-core running?');
     }
