@@ -13,5 +13,5 @@ export const COOKIE_OPTIONS = {
 // RC JWT role mapping: RC sends {sub: "admin", role: "staff"}
 // Dashboard treats this combination as admin access
 export function isAdmin(sub: string, role: string): boolean {
-  return sub === 'admin' && role === 'staff';
+  return sub === 'admin' && (role === 'superadmin' || role === 'staff');
 }

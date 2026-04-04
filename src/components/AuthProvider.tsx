@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/login');
   }, [router]);
 
-  const isAdmin = user?.sub === 'admin' && user?.role === 'staff';
+  const isAdmin = user?.sub === 'admin' && (user?.role === 'superadmin' || user?.role === 'staff');
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated: !!user, isAdmin, logout }}>

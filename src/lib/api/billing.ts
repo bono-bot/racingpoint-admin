@@ -40,13 +40,32 @@ export interface SplitBillingInfo {
   }>;
 }
 
+export interface DailyReportSession {
+  id: string;
+  driver_name: string;
+  pod_id: string;
+  pricing_tier_name: string;
+  price_paise: number;
+  original_price_paise: number;
+  discount_paise: number;
+  allocated_seconds: number;
+  driving_seconds: number;
+  status: string;
+  started_at: string;
+  ended_at: string;
+  staff_name: string | null;
+}
+
 export interface DailyReport {
+  date: string;
+  sessions: DailyReportSession[];
   total_revenue_paise: number;
-  session_count: number;
-  avg_duration_seconds: number;
-  by_rate: Array<{
-    rate_name: string;
-    count: number;
+  total_sessions: number;
+  total_driving_seconds: number;
+  total_discount_paise: number;
+  staff_summary: Array<{
+    staff_name: string;
+    session_count: number;
     revenue_paise: number;
   }>;
 }
@@ -101,7 +120,7 @@ export const billingApi = {
     rcFetch(`/billing/sessions/${id}/splits`).catch(() => null),
 
   getDailyReport: (date: string): Promise<DailyReport> =>
-    rcFetch(`/billing/reports/daily?date=${date}`),
+    rcFetch(`/billing/report/daily?date=${date}`),
 
   createRate: (data: { name: string; duration_minutes: number; price_paise: number }): Promise<BillingRate> =>
     rcFetch('/billing/rates', { method: 'POST', body: JSON.stringify(data) }),
