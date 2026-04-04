@@ -6,7 +6,7 @@ import ConfirmDialog from '@/components/ConfirmDialog';
 import { SkeletonCard, SkeletonTable } from '@/components/Skeleton';
 
 interface Employee {
-  id: number;
+  id: string;
   name: string;
   phone: string;
   email: string | null;
@@ -14,8 +14,9 @@ interface Employee {
   department: string;
   hire_date: string | null;
   status: string;
-  created_at: string;
-  updated_at: string;
+  last_login_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export default function EmployeesPage() {
@@ -26,7 +27,7 @@ export default function EmployeesPage() {
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
-  const [confirm, setConfirm] = useState<{ id: number; name: string; status: string } | null>(null);
+  const [confirm, setConfirm] = useState<{ id: string; name: string; status: string } | null>(null);
   const [form, setForm] = useState({
     name: '', phone: '', pin: '', role: 'staff', department: '',
   });
@@ -80,7 +81,7 @@ export default function EmployeesPage() {
     }
   }
 
-  async function toggleStatus(id: number, currentStatus: string) {
+  async function toggleStatus(id: string, currentStatus: string) {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     try {
       await fetch('/api/hr/employees', {

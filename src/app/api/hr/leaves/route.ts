@@ -7,9 +7,9 @@ export async function GET(req: NextRequest) {
 
   const db = getDb();
   let query = `
-    SELECT lr.*, e.name as employee_name
+    SELECT lr.*, COALESCE(e.name, lr.employee_id) as employee_name
     FROM leave_requests lr
-    JOIN employees e ON lr.employee_id = e.id
+    LEFT JOIN employees e ON CAST(lr.employee_id AS TEXT) = CAST(e.id AS TEXT)
   `;
   const params: string[] = [];
 
