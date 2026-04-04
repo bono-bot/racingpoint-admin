@@ -53,7 +53,9 @@ export interface DailyReport {
 
 export const billingApi = {
   getActive: (): Promise<ActiveSession[]> =>
-    rcFetch('/billing/active'),
+    rcFetch('/billing/active').then((data: { sessions: ActiveSession[] } | ActiveSession[]) =>
+      Array.isArray(data) ? data : data.sessions ?? [],
+    ),
 
   getSession: (id: string): Promise<ActiveSession> =>
     rcFetch(`/billing/sessions/${id}`),

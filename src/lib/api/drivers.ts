@@ -20,7 +20,10 @@ export interface WalletBalance {
 }
 
 export const driversApi = {
-  getDrivers: () => rcFetch('/drivers') as Promise<Driver[]>,
+  getDrivers: (): Promise<Driver[]> =>
+    rcFetch('/drivers').then((data: { drivers: Driver[] } | Driver[]) =>
+      Array.isArray(data) ? data : data.drivers ?? [],
+    ),
   getDriver: (id: string) => rcFetch(`/drivers/${id}`) as Promise<Driver>,
   createDriver: (data: { name: string; phone?: string; email?: string }) =>
     rcFetch('/drivers', { method: 'POST', body: JSON.stringify(data) }) as Promise<Driver>,

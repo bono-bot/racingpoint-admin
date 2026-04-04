@@ -49,5 +49,8 @@ export const gamesApi = {
     rcFetch('/games/launch', { method: 'POST', body: JSON.stringify(data) }),
   stopGame: (podId: string) =>
     rcFetch('/games/stop', { method: 'POST', body: JSON.stringify({ pod_id: podId }) }),
-  getActiveGames: () => rcFetch('/games/active') as Promise<ActiveGame[]>,
+  getActiveGames: (): Promise<ActiveGame[]> =>
+    rcFetch('/games/active').then((data: { games: ActiveGame[] } | ActiveGame[]) =>
+      Array.isArray(data) ? data : data.games ?? [],
+    ),
 };
