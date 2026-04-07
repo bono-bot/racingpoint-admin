@@ -53,10 +53,9 @@ function PodCard({
   const status = podStatus(pod);
   const disabled = !pod.pod_id;
   const isMaintenance = !!pod.in_maintenance;
-  const podAny = pod as unknown as Record<string, unknown>;
-  const isFreedom = !!podAny.freedom_mode;
-  const isScreenBlanked = !!podAny.screen_blanked;
-  const gameState = podAny.game_state as string | undefined;
+  const isFreedom = !!pod.freedom_mode;
+  const isScreenBlanked = !!pod.screen_blanked;
+  const gameState = pod.game_state;
   const isGameRunning = gameState === 'running' || gameState === 'loading';
   const isOnline = pod.ws_connected && pod.http_reachable;
 
