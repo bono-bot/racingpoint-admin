@@ -7,6 +7,11 @@ import { format, subDays } from 'date-fns';
 import { billingApi } from '@/lib/api/billing';
 import type { ActiveSession, SessionEvent, SplitBillingInfo } from '@/lib/api/billing';
 
+/** Extends ActiveSession with currency_type from Phase 339 wallet separation */
+interface SessionWithCurrency extends ActiveSession {
+  currency_type?: 'rupee' | 'credit' | null;
+}
+
 /* ---------- Helpers ---------- */
 
 function fmt(paise: number) {
@@ -56,6 +61,24 @@ function eventDotColor(eventType: string) {
     case 'stop': return 'bg-red-400';
     default: return 'bg-zinc-400';
   }
+}
+
+function currencyBadge(currencyType: string | null | undefined) {
+  if (currencyType === 'rupee') {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-green-900/30 text-green-400 border-green-800">
+        rupee
+      </span>
+    );
+  }
+  if (currencyType === 'credit') {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-blue-900/30 text-blue-400 border-blue-800">
+        credit
+      </span>
+    );
+  }
+  return <span className="text-rp-grey text-xs">-</span>;
 }
 
 /* ---------- Refund Modal ---------- */
@@ -242,7 +265,7 @@ export default function BillingHistoryPage() {
     }
   }, [expandedSession, sessionEvents, sessionSplits]);
 
-  const colCount = 9;
+  const colCount = 10;
 
   return (
     <div>
@@ -344,6 +367,7 @@ export default function BillingHistoryPage() {
                   <th className="px-4 py-2.5 font-medium">Rate</th>
                   <th className="px-4 py-2.5 font-medium">Duration</th>
                   <th className="px-4 py-2.5 font-medium text-center">Status</th>
+                  <th className="px-4 py-2.5 font-medium">Currency</th>
                   <th className="px-4 py-2.5 font-medium text-right">Price</th>
                   <th className="px-4 py-2.5 font-medium">Actions</th>
                 </tr>
@@ -381,6 +405,7 @@ export default function BillingHistoryPage() {
                         <td className="px-4 py-2.5">{session.pricing_tier_name}</td>
                         <td className="px-4 py-2.5 tabular-nums text-neutral-400">{fmtElapsed(session.driving_seconds)}</td>
                         <td className="px-4 py-2.5 text-center">{statusBadge(session.status)}</td>
+                        <td className="px-4 py-2.5">{currencyBadge((session as SessionWithCurrency).currency_type)}</td>
                         <td className="px-4 py-2.5 text-right tabular-nums font-medium">{fmt(session.price_paise)}</td>
                         <td className="px-4 py-2.5">
                           {(session.status === 'completed' || session.status === 'active') && (
