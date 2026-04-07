@@ -124,6 +124,13 @@ const TOPUP_METHODS = [
   { value: 'topup_card', label: 'Card' },
 ] as const;
 
+const ADJUST_REASONS = [
+  { value: 'bonus', label: 'Bonus' },
+  { value: 'correction', label: 'Correction' },
+  { value: 'penalty', label: 'Penalty' },
+  { value: 'other', label: 'Other' },
+] as const;
+
 export default function WalletTransactionsPage() {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [report, setReport] = useState<TxnReport | null>(null);
@@ -157,6 +164,15 @@ export default function WalletTransactionsPage() {
 
   // Wallet info for selected driver (provides max_cash_refund) — per D-09
   const [walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
+
+  // Credit Adjustment modal state — per D-15
+  const [showAdjust, setShowAdjust] = useState(false);
+  const [adjustMode, setAdjustMode] = useState<'add' | 'remove'>('add');
+  const [adjustAmount, setAdjustAmount] = useState('');
+  const [adjustReason, setAdjustReason] = useState('');
+  const [adjustNotes, setAdjustNotes] = useState('');
+  const [adjustLoading, setAdjustLoading] = useState(false);
+  const [adjustError, setAdjustError] = useState('');
 
   // Fetch driver list on mount
   useEffect(() => {
@@ -339,6 +355,13 @@ export default function WalletTransactionsPage() {
                 Cash Refund
               </button>
             )}
+            {/* Adjust Credits — per D-15 */}
+            <button
+              onClick={() => { setShowAdjust(true); setAdjustMode('add'); setAdjustAmount(''); setAdjustReason(''); setAdjustNotes(''); setAdjustError(''); }}
+              className="mt-5 px-4 py-2 bg-blue-600/10 text-blue-400 rounded-lg text-sm font-medium hover:bg-blue-600/20 transition-colors"
+            >
+              Adjust Credits
+            </button>
           </>
         )}
       </div>
@@ -509,6 +532,148 @@ export default function WalletTransactionsPage() {
                 className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-500 transition-colors disabled:opacity-50"
               >
                 Review Refund
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Credit Adjustment Modal — per D-15, D-16, D-19 */}
+      {showAdjust && selectedDriver && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-rp-card border border-rp-border rounded-xl p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-lg font-bold mb-1">Adjust Credits</h2>
+            <p className="text-rp-grey text-sm mb-4">Manual credit adjustment for {selectedDriver.name}</p>
+
+            {/* Add/Remove Toggle — per D-19 */}
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setAdjustMode('add')}
+                className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
+                  adjustMode === 'add'
+                    ? 'bg-green-600/20 border-green-600 text-green-400'
+                    : 'bg-rp-black border-rp-border text-rp-grey hover:text-white'
+                }`}
+              >
+                Add Credits
+              </button>
+              <button
+                onClick={() => setAdjustMode('remove')}
+                className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
+                  adjustMode === 'remove'
+                    ? 'bg-red-600/20 border-red-600 text-red-400'
+                    : 'bg-rp-black border-rp-border text-rp-grey hover:text-white'
+                }`}
+              >
+                Remove Credits
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Amount (INR)</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={adjustAmount}
+                  onChange={e => setAdjustAmount(e.target.value)}
+                  placeholder="Amount in rupees"
+                  className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-rp-grey focus:outline-none focus:border-rp-red"
+                />
+              </div>
+
+              {/* Reason dropdown — per D-16, D-20 (required) */}
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Reason *</label>
+                <select
+                  value={adjustReason}
+                  onChange={e => setAdjustReason(e.target.value)}
+                  className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-rp-red"
+                >
+                  <option value="">Select a reason...</option>
+                  {ADJUST_REASONS.map(r => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Notes (optional)</label>
+                <input
+                  type="text"
+                  value={adjustNotes}
+                  onChange={e => setAdjustNotes(e.target.value)}
+                  placeholder="Additional details..."
+                  className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-rp-grey focus:outline-none focus:border-rp-red"
+                />
+              </div>
+
+              {adjustError && <p className="text-red-400 text-sm">{adjustError}</p>}
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowAdjust(false)}
+                className="px-4 py-2 rounded-lg text-sm text-rp-grey hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  // Validation per D-20: reason required
+                  if (!adjustReason) {
+                    setAdjustError('Please select a reason');
+                    return;
+                  }
+                  const amountPaise = Math.round(parseFloat(adjustAmount) * 100);
+                  if (isNaN(amountPaise) || amountPaise <= 0) {
+                    setAdjustError('Enter a valid amount');
+                    return;
+                  }
+                  if (!selectedDriverId) return;  // NULL GUARD
+                  setAdjustError('');
+                  setAdjustLoading(true);
+                  try {
+                    if (adjustMode === 'add') {
+                      // Per D-17: adding credits calls topup with txn_type 'adjustment'
+                      await walletApi.topup(selectedDriverId, {
+                        amount_paise: amountPaise,
+                        txn_type: 'adjustment',
+                        notes: adjustNotes || `${adjustReason}: manual credit add`,
+                      });
+                      toast.success(`Added ${fmt(amountPaise)} credits to ${selectedDriver.name}`);
+                    } else {
+                      // Per D-18: removing credits calls debit with reason
+                      await walletApi.debit(selectedDriverId, {
+                        amount_paise: amountPaise,
+                        reason: adjustReason,
+                        notes: adjustNotes || `${adjustReason}: manual credit removal`,
+                      });
+                      toast.success(`Removed ${fmt(amountPaise)} credits from ${selectedDriver.name}`);
+                    }
+                    setShowAdjust(false);
+                    setAdjustAmount('');
+                    setAdjustReason('');
+                    setAdjustNotes('');
+                    fetchTransactions();
+                    // Refresh wallet info
+                    walletApi.getInfo(selectedDriverId).then(r => setWalletInfo(r.wallet)).catch(() => {});
+                  } catch (err) {
+                    setAdjustError((err as Error).message);
+                    toast.error('Adjustment failed: ' + (err as Error).message);
+                  } finally {
+                    setAdjustLoading(false);
+                  }
+                }}
+                disabled={adjustLoading || !adjustAmount || !adjustReason}
+                className={`px-4 py-2 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50 ${
+                  adjustMode === 'add'
+                    ? 'bg-green-600 hover:bg-green-500'
+                    : 'bg-red-600 hover:bg-red-500'
+                }`}
+              >
+                {adjustLoading ? 'Processing...' : adjustMode === 'add' ? 'Add Credits' : 'Remove Credits'}
               </button>
             </div>
           </div>
