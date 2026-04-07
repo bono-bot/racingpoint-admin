@@ -4,6 +4,7 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import { format } from 'date-fns';
 import { billingApi } from '@/lib/api/billing';
+import { walletApi } from '@/lib/api/wallet';
 
 function fmt(paise: number) {
   return `\u20B9${(paise / 100).toLocaleString('en-IN')}`;
@@ -23,6 +24,11 @@ export default function BillingReportsPage() {
   const { data, error, mutate } = useSWR(
     ['/billing/report/daily', date],
     () => billingApi.getDailyReport(date),
+  );
+
+  const { data: walletData } = useSWR(
+    ['/wallet/transactions', date],
+    () => walletApi.getTransactions(date),
   );
 
   if (error) {
@@ -103,6 +109,31 @@ export default function BillingReportsPage() {
               <p className="text-2xl font-bold tabular-nums">{fmt(data.total_discount_paise)}</p>
             </div>
           </div>
+
+          {/* Wallet Summary Cards — per D-01, D-02 */}
+          {walletData && (
+            <>
+              <h2 className="text-sm font-semibold text-rp-grey uppercase tracking-wider mb-3">Wallet Summary</h2>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-rp-card border border-rp-border rounded-xl p-5">
+                  <p className="text-sm text-neutral-400 mb-1">Rupee Deposits</p>
+                  <p className="text-2xl font-bold tabular-nums text-green-400">{fmt(walletData.summary.total_rupee_deposits)}</p>
+                </div>
+                <div className="bg-rp-card border border-rp-border rounded-xl p-5">
+                  <p className="text-sm text-neutral-400 mb-1">Bonus Credits</p>
+                  <p className="text-2xl font-bold tabular-nums text-purple-400">{fmt(walletData.summary.total_bonus_credits)}</p>
+                </div>
+                <div className="bg-rp-card border border-rp-border rounded-xl p-5">
+                  <p className="text-sm text-neutral-400 mb-1">Credits Spent</p>
+                  <p className="text-2xl font-bold tabular-nums text-red-400">{fmt(walletData.summary.total_debits_paise)}</p>
+                </div>
+                <div className="bg-rp-card border border-rp-border rounded-xl p-5">
+                  <p className="text-sm text-neutral-400 mb-1">Cash Refunds</p>
+                  <p className="text-2xl font-bold tabular-nums text-orange-400">{fmt(walletData.summary.total_cash_refunds)}</p>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Rate Breakdown Table */}
           <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden mb-6">
