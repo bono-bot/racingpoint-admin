@@ -29,6 +29,18 @@ function podStatus(pod: PodFleetStatus): { color: string; textColor: string; lab
   return { color: 'bg-red-400', textColor: 'text-red-400', label: 'Offline' };
 }
 
+function StateBadge({ active, label, activeColor, inactiveColor }: {
+  active: boolean; label: string; activeColor: string; inactiveColor?: string;
+}) {
+  return (
+    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+      active ? activeColor : (inactiveColor || 'bg-neutral-800/50 text-neutral-600')
+    }`}>
+      {label}
+    </span>
+  );
+}
+
 function PodCard({
   pod,
   onAction,
@@ -40,20 +52,47 @@ function PodCard({
 }) {
   const status = podStatus(pod);
   const disabled = !pod.pod_id;
+  const isMaintenance = !!pod.in_maintenance;
+  const podAny = pod as unknown as Record<string, unknown>;
+  const isFreedom = !!podAny.freedom_mode;
+  const isScreenBlanked = !!podAny.screen_blanked;
+  const gameState = podAny.game_state as string | undefined;
+  const isGameRunning = gameState === 'running' || gameState === 'loading';
+  const isOnline = pod.ws_connected && pod.http_reachable;
 
   return (
-    <div className="bg-rp-card border border-rp-border rounded-lg p-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className={`bg-rp-card border rounded-lg p-4 ${
+      isMaintenance ? 'border-yellow-500/50' :
+      isFreedom ? 'border-blue-500/50' :
+      isGameRunning ? 'border-purple-500/50' :
+      'border-rp-border'
+    }`}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-1">
         <span className="font-semibold">{podLabel(pod)}</span>
         <span className={`w-3 h-3 rounded-full inline-block ${status.color}`} />
       </div>
-      <p className={`text-sm font-medium mb-3 ${status.textColor}`}>{status.label}</p>
+      <p className={`text-sm font-medium mb-2 ${status.textColor}`}>{status.label}</p>
+
+      {/* State badges — at-a-glance view of what's ON */}
+      <div className="flex flex-wrap gap-1 mb-3">
+        <StateBadge active={isOnline} label={isOnline ? 'CONNECTED' : 'OFFLINE'}
+          activeColor="bg-emerald-900/40 text-emerald-400" inactiveColor="bg-red-900/40 text-red-400" />
+        <StateBadge active={isMaintenance} label="MAINTENANCE"
+          activeColor="bg-yellow-900/40 text-yellow-400" />
+        <StateBadge active={isFreedom} label="FREEDOM"
+          activeColor="bg-blue-900/40 text-blue-400" />
+        <StateBadge active={isGameRunning} label={gameState?.toUpperCase() || 'NO GAME'}
+          activeColor="bg-purple-900/40 text-purple-400" />
+        <StateBadge active={isScreenBlanked} label="BLANKED"
+          activeColor="bg-neutral-700 text-neutral-300" />
+      </div>
+
+      {/* Info */}
       <div className="space-y-1 text-sm text-neutral-400">
-        <p>Version: {pod.version ?? 'Unknown'}</p>
-        <p>Uptime: {formatUptime(pod.uptime_secs)}</p>
-        <p>Build: {pod.build_id ? pod.build_id.slice(0, 7) : '-'}</p>
+        <p>Build: {pod.build_id ? pod.build_id.slice(0, 7) : '-'} | Up: {formatUptime(pod.uptime_secs)}</p>
         <p>
-          Connection: WS:{' '}
+          WS:{' '}
           <span className={pod.ws_connected ? 'text-emerald-400' : 'text-red-400'}>
             {pod.ws_connected ? '\u2713' : '\u2717'}
           </span>{' '}
@@ -64,93 +103,73 @@ function PodCard({
         </p>
       </div>
 
-      {/* Action buttons */}
+      {/* Action buttons with state indicators */}
       <div className="mt-3 pt-3 border-t border-rp-border space-y-2">
-        {/* Row 1: Wake / Shutdown / Restart */}
+        {/* Row 1: Power controls */}
         <div className="flex gap-1.5">
-          <button
-            disabled={disabled}
+          <button disabled={disabled}
             onClick={() => onAction('Wake Pod ' + pod.pod_number, () => fleetApi.wakePod(pod.pod_id!), false)}
-            className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
+            className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             Wake
           </button>
-          <button
-            disabled={disabled}
+          <button disabled={disabled}
             onClick={() => onAction('Shutdown Pod ' + pod.pod_number, () => fleetApi.shutdownPod(pod.pod_id!), true)}
-            className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
+            className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             Shutdown
           </button>
-          <button
-            disabled={disabled}
+          <button disabled={disabled}
             onClick={() => onAction('Restart Pod ' + pod.pod_number, () => fleetApi.restartPod(pod.pod_id!), true)}
-            className="text-xs px-2 py-1 rounded text-yellow-400 hover:bg-yellow-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
+            className="text-xs px-2 py-1 rounded text-yellow-400 hover:bg-yellow-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             Restart
           </button>
         </div>
 
-        {/* Row 2: Lockdown/Unlock + Enable/Disable */}
+        {/* Row 2: Lockdown + Enable/Disable — with state coloring */}
         <div className="flex gap-1.5">
-          {pod.in_maintenance ? (
-            <button
-              disabled={disabled}
-              onClick={() => onAction('Unlock Pod ' + pod.pod_number, () => fleetApi.unlockPod(pod.pod_id!), false)}
-              className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Unlock
-            </button>
-          ) : (
-            <button
-              disabled={disabled}
-              onClick={() => onAction('Lockdown Pod ' + pod.pod_number, () => fleetApi.lockdownPod(pod.pod_id!), true)}
-              className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Lockdown
-            </button>
-          )}
-          <button
-            disabled={disabled}
+          <button disabled={disabled}
+            onClick={() => isMaintenance
+              ? onAction('Unlock Pod ' + pod.pod_number, () => fleetApi.unlockPod(pod.pod_id!), false)
+              : onAction('Lockdown Pod ' + pod.pod_number, () => fleetApi.lockdownPod(pod.pod_id!), true)}
+            className={`text-xs px-2 py-1 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+              isMaintenance
+                ? 'bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 ring-1 ring-yellow-500/50'
+                : 'text-red-400 hover:bg-red-400/10'
+            }`}>
+            {isMaintenance ? 'Unlock' : 'Lockdown'}
+          </button>
+          <button disabled={disabled}
             onClick={() => onAction('Enable Pod ' + pod.pod_number, () => fleetApi.enablePod(pod.pod_id!), false)}
-            className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
+            className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             Enable
           </button>
-          <button
-            disabled={disabled}
+          <button disabled={disabled}
             onClick={() => onAction('Disable Pod ' + pod.pod_number, () => fleetApi.disablePod(pod.pod_id!), false)}
-            className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
+            className="text-xs px-2 py-1 rounded text-red-400 hover:bg-red-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
             Disable
           </button>
         </div>
 
-        {/* Row 3: Maintenance toggle + Freedom Mode */}
+        {/* Row 3: Maintenance toggle + Freedom — filled when active */}
         <div className="flex gap-1.5">
-          {pod.in_maintenance ? (
-            <button
-              disabled={disabled}
-              onClick={() => onAction('Clear Maintenance Pod ' + pod.pod_number, () => fleetApi.clearMaintenance(pod.pod_id!), false)}
-              className="text-xs px-2 py-1 rounded text-emerald-400 hover:bg-emerald-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Clear Maintenance
-            </button>
-          ) : (
-            <button
-              disabled={disabled}
-              onClick={() => onAction('Set Maintenance Pod ' + pod.pod_number, () => fleetApi.lockdownPod(pod.pod_id!), false)}
-              className="text-xs px-2 py-1 rounded text-yellow-400 hover:bg-yellow-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Set Maintenance
-            </button>
-          )}
-          <button
-            disabled={disabled}
+          <button disabled={disabled}
+            onClick={() => isMaintenance
+              ? onAction('Clear Maintenance Pod ' + pod.pod_number, () => fleetApi.clearMaintenance(pod.pod_id!), false)
+              : onAction('Set Maintenance Pod ' + pod.pod_number, () => fleetApi.lockdownPod(pod.pod_id!), false)}
+            className={`text-xs px-2 py-1 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+              isMaintenance
+                ? 'bg-yellow-500/30 text-yellow-300 ring-1 ring-yellow-500/50 hover:bg-yellow-500/40'
+                : 'text-yellow-400 hover:bg-yellow-400/10'
+            }`}>
+            {isMaintenance ? 'Clear Maint.' : 'Maintenance'}
+          </button>
+          <button disabled={disabled}
             onClick={() => onAction('Freedom Mode Pod ' + pod.pod_number, () => fleetApi.freedomMode(pod.pod_id!), false)}
-            className="text-xs px-2 py-1 rounded text-blue-400 hover:bg-blue-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            Freedom
+            className={`text-xs px-2 py-1 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+              isFreedom
+                ? 'bg-blue-500/30 text-blue-300 ring-1 ring-blue-500/50 hover:bg-blue-500/40'
+                : 'text-blue-400 hover:bg-blue-400/10'
+            }`}>
+            {isFreedom ? 'Freedom ON' : 'Freedom'}
           </button>
         </div>
       </div>
