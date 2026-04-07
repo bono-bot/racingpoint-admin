@@ -8,6 +8,7 @@ interface WalletTxn {
   amount_paise: number;
   balance_after_paise: number;
   txn_type: string;
+  currency_type: 'rupee' | 'credit' | null;
   reference_id: string | null;
   notes: string | null;
   staff_id: string | null;
@@ -19,6 +20,9 @@ interface WalletTxn {
 interface Summary {
   total_credits_paise: number;
   total_debits_paise: number;
+  total_rupee_deposits: number;
+  total_bonus_credits: number;
+  total_cash_refunds: number;
   net_paise: number;
   count: number;
 }
@@ -89,6 +93,24 @@ function methodBadge(txnType: string) {
   if (txnType === 'topup_upi') return <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-blue-900/40 text-blue-400 border-blue-800">UPI</span>;
   if (txnType === 'topup_card') return <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-purple-900/40 text-purple-400 border-purple-800">Card</span>;
   return null;
+}
+
+function currencyBadge(currencyType: string | null) {
+  if (currencyType === 'rupee') {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-green-900/30 text-green-400 border-green-800">
+        rupee
+      </span>
+    );
+  }
+  if (currencyType === 'credit') {
+    return (
+      <span className="px-2 py-0.5 rounded-full text-[11px] font-medium border bg-blue-900/30 text-blue-400 border-blue-800">
+        credit
+      </span>
+    );
+  }
+  return <span className="text-rp-grey text-xs">-</span>;
 }
 
 const TOPUP_METHODS = [
@@ -461,6 +483,7 @@ export default function WalletTransactionsPage() {
                         <th className="px-4 py-2.5 font-medium">Customer</th>
                         <th className="px-4 py-2.5 font-medium">Type</th>
                         <th className="px-4 py-2.5 font-medium">Method</th>
+                        <th className="px-4 py-2.5 font-medium">Currency</th>
                         <th className="px-4 py-2.5 font-medium text-right">Amount</th>
                         <th className="px-4 py-2.5 font-medium text-right">Balance After</th>
                         <th className="px-4 py-2.5 font-medium">Staff</th>
@@ -480,6 +503,7 @@ export default function WalletTransactionsPage() {
                             </td>
                             <td className="px-4 py-2.5">{typeBadge(t.txn_type)}</td>
                             <td className="px-4 py-2.5">{methodBadge(t.txn_type)}</td>
+                            <td className="px-4 py-2.5">{currencyBadge(t.currency_type)}</td>
                             <td className={`px-4 py-2.5 text-right tabular-nums font-medium ${isCredit ? 'text-green-400' : 'text-red-400'}`}>
                               {isCredit ? '+' : '-'}{fmt(t.amount_paise)}
                             </td>
