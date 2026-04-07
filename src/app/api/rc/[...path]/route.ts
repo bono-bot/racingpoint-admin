@@ -30,8 +30,18 @@ async function proxy(req: NextRequest, { params }: { params: Promise<{ path: str
       cache: 'no-store',
     });
 
-    const data = await res.json();
-    return NextResponse.json(data, { status: res.status });
+    // Handle empty responses (e.g. freedom mode, billing/start return 200 with no body)
+    const text = await res.text();
+    if (!text || text.trim().length === 0) {
+      return NextResponse.json({ ok: true }, { status: res.status });
+    }
+    try {
+      const data = JSON.parse(text);
+      return NextResponse.json(data, { status: res.status });
+    } catch {
+      // Non-JSON response (HTML error page, plain text)
+      return NextResponse.json({ error: 'invalid response from server', raw: text.slice(0, 200) }, { status: 502 });
+    }
   } catch {
     return NextResponse.json({ error: 'rc-core unreachable' }, { status: 502 });
   }

@@ -44,6 +44,8 @@ export const fleetApi = {
   enablePod: (podId: string) => rcFetch('/pods/' + podId + '/enable', { method: 'POST' }),
   disablePod: (podId: string) => rcFetch('/pods/' + podId + '/disable', { method: 'POST' }),
   clearMaintenance: (podId: string) => rcFetch('/pods/' + podId + '/clear-maintenance', { method: 'POST' }),
+  freedomMode: (podId: string) => rcFetch('/pods/' + podId + '/freedom', { method: 'POST', body: JSON.stringify({}) }),
+  unrestrictPod: (podId: string) => rcFetch('/pods/' + podId + '/unrestrict', { method: 'POST' }),
 
   // Bulk actions
   wakeAll: () => rcFetch('/pods/wake-all', { method: 'POST' }),

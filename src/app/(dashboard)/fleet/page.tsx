@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { fleetApi } from '@/lib/api/fleet';
 import { useAuth } from '@/hooks/useAuth';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { podLabel } from '@/lib/utils';
 import type { PodFleetStatus, FleetHealthResponse, ActivityEntry, DeployStatus, ExecResult } from '@/lib/api/fleet';
 
 function formatUptime(secs: number | null | undefined): string {
@@ -43,7 +44,7 @@ function PodCard({
   return (
     <div className="bg-rp-card border border-rp-border rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="font-semibold">Pod {pod.pod_number}</span>
+        <span className="font-semibold">{podLabel(pod)}</span>
         <span className={`w-3 h-3 rounded-full inline-block ${status.color}`} />
       </div>
       <p className={`text-sm font-medium mb-3 ${status.textColor}`}>{status.label}</p>
@@ -125,8 +126,8 @@ function PodCard({
           </button>
         </div>
 
-        {/* Row 3: Maintenance toggle */}
-        <div>
+        {/* Row 3: Maintenance toggle + Freedom Mode */}
+        <div className="flex gap-1.5">
           {pod.in_maintenance ? (
             <button
               disabled={disabled}
@@ -144,6 +145,13 @@ function PodCard({
               Set Maintenance
             </button>
           )}
+          <button
+            disabled={disabled}
+            onClick={() => onAction('Freedom Mode Pod ' + pod.pod_number, () => fleetApi.freedomMode(pod.pod_id!), false)}
+            className="text-xs px-2 py-1 rounded text-blue-400 hover:bg-blue-400/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Freedom
+          </button>
         </div>
       </div>
 
@@ -259,7 +267,7 @@ function DeploySection() {
               key={p.pod_id}
               className={`text-xs px-2 py-1 rounded ${DEPLOY_POD_STYLES[p.status] || DEPLOY_POD_STYLES.pending}`}
             >
-              {p.pod_number != null ? `Pod ${p.pod_number}` : p.pod_id}: {p.status}
+              {p.pod_number != null ? podLabel(p as unknown as { pod_number: number }) : p.pod_id}: {p.status}
             </span>
           ))}
         </div>
@@ -475,7 +483,7 @@ export default function FleetPage() {
           <option value="">All Pods</option>
           {data?.pods.map(pod => (
             <option key={pod.pod_number} value={pod.pod_id ?? ''}>
-              Pod {pod.pod_number}
+              {podLabel(pod)}
             </option>
           ))}
         </select>
@@ -505,7 +513,7 @@ export default function FleetPage() {
                     <td className="px-4 py-2 text-sm text-white whitespace-nowrap">
                       {formatActivityTime(entry.timestamp)}
                     </td>
-                    <td className="px-4 py-2 text-sm text-white">Pod {entry.pod_number}</td>
+                    <td className="px-4 py-2 text-sm text-white">{podLabel(entry)}</td>
                     <td className="px-4 py-2">
                       <span className={`text-xs px-2 py-0.5 rounded ${categoryBadgeClass(entry.category)}`}>
                         {entry.category}
