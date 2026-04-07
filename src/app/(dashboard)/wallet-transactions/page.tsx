@@ -1,6 +1,11 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
+import { walletApi } from '@/lib/api/wallet';
+import type { WalletInfo } from '@/lib/api/wallet';
+import { toast } from 'sonner';
+import ConfirmDialog from '@/components/ConfirmDialog';
+import { AuthContext } from '@/components/AuthProvider';
 
 interface WalletTxn {
   id: string;
@@ -139,6 +144,20 @@ export default function WalletTransactionsPage() {
   const [topupLoading, setTopupLoading] = useState(false);
   const [topupError, setTopupError] = useState('');
 
+  // Auth context for role-based visibility — per D-14
+  const { isAdmin } = useContext(AuthContext);
+
+  // Cash Refund modal state — per D-08
+  const [showCashRefund, setShowCashRefund] = useState(false);
+  const [cashRefundAmount, setCashRefundAmount] = useState('');
+  const [cashRefundNotes, setCashRefundNotes] = useState('');
+  const [cashRefundLoading, setCashRefundLoading] = useState(false);
+  const [cashRefundError, setCashRefundError] = useState('');
+  const [showCashRefundConfirm, setShowCashRefundConfirm] = useState(false);
+
+  // Wallet info for selected driver (provides max_cash_refund) — per D-09
+  const [walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
+
   // Fetch driver list on mount
   useEffect(() => {
     setDriversLoading(true);
@@ -152,6 +171,14 @@ export default function WalletTransactionsPage() {
         setDriversLoading(false);
       });
   }, []);
+
+  // Fetch wallet info when driver selected — per D-09
+  useEffect(() => {
+    if (!selectedDriverId) { setWalletInfo(null); return; }
+    walletApi.getInfo(selectedDriverId)
+      .then(res => setWalletInfo(res.wallet))
+      .catch(() => setWalletInfo(null));
+  }, [selectedDriverId]);
 
   const selectedDriver = drivers.find(d => d.id === selectedDriverId);
 
@@ -303,6 +330,15 @@ export default function WalletTransactionsPage() {
             >
               Top Up
             </button>
+            {/* Cash Refund — per D-08, D-14: visible when driver selected AND user is admin/manager */}
+            {isAdmin && (
+              <button
+                onClick={() => { setShowCashRefund(true); setCashRefundAmount(''); setCashRefundNotes(''); setCashRefundError(''); }}
+                className="mt-5 px-4 py-2 bg-orange-600/10 text-orange-400 rounded-lg text-sm font-medium hover:bg-orange-600/20 transition-colors"
+              >
+                Cash Refund
+              </button>
+            )}
           </>
         )}
       </div>
@@ -400,6 +436,130 @@ export default function WalletTransactionsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Cash Refund Modal — per D-09, D-10 */}
+      {showCashRefund && selectedDriverId && selectedDriver && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-rp-card border border-rp-border rounded-xl p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-lg font-bold mb-1">Cash Refund</h2>
+            <p className="text-rp-grey text-sm mb-4">Refunding real money for {selectedDriver.name}</p>
+
+            <div className="space-y-3 mb-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-neutral-400">Current Balance</span>
+                <span className="text-white font-medium">{fmt(selectedDriver.wallet_balance_paise)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-neutral-400">Max Cash Refund</span>
+                <span className="text-orange-400 font-medium">
+                  {walletInfo ? fmt(walletInfo.max_cash_refund) : 'Loading...'}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Refund Amount (INR)</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={cashRefundAmount}
+                  onChange={e => setCashRefundAmount(e.target.value)}
+                  placeholder={walletInfo ? `Max ${(walletInfo.max_cash_refund / 100).toFixed(0)}` : '...'}
+                  className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-rp-grey focus:outline-none focus:border-rp-red"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-rp-grey mb-1">Notes (optional)</label>
+                <input
+                  type="text"
+                  value={cashRefundNotes}
+                  onChange={e => setCashRefundNotes(e.target.value)}
+                  placeholder="e.g. Customer requested cash back"
+                  className="w-full bg-rp-black border border-rp-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-rp-grey focus:outline-none focus:border-rp-red"
+                />
+              </div>
+              {cashRefundError && <p className="text-red-400 text-sm">{cashRefundError}</p>}
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowCashRefund(false)}
+                className="px-4 py-2 rounded-lg text-sm text-rp-grey hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const amountPaise = Math.round(parseFloat(cashRefundAmount) * 100);
+                  if (isNaN(amountPaise) || amountPaise <= 0) {
+                    setCashRefundError('Enter a valid amount');
+                    return;
+                  }
+                  if (walletInfo && amountPaise > walletInfo.max_cash_refund) {
+                    setCashRefundError(`Cannot exceed max cash refund of ${fmt(walletInfo.max_cash_refund)}`);
+                    return;
+                  }
+                  setCashRefundError('');
+                  setShowCashRefundConfirm(true);
+                }}
+                disabled={!cashRefundAmount || !walletInfo}
+                className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-500 transition-colors disabled:opacity-50"
+              >
+                Review Refund
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cash Refund Confirmation — per D-10 */}
+      {showCashRefundConfirm && selectedDriverId && (
+        <ConfirmDialog
+          open={true}
+          title="Confirm Cash Refund"
+          message={`Refund ${cashRefundAmount ? fmt(Math.round(parseFloat(cashRefundAmount) * 100)) : ''} in CASH to ${selectedDriver?.name}? This cannot be undone.`}
+          confirmLabel="Process Refund"
+          variant="danger"
+          loading={cashRefundLoading}
+          onCancel={() => setShowCashRefundConfirm(false)}
+          onConfirm={async () => {
+            if (!selectedDriverId) return;  // NULL GUARD
+            setCashRefundLoading(true);
+            try {
+              const amountPaise = Math.round(parseFloat(cashRefundAmount) * 100);
+              const res = await walletApi.cashRefund(selectedDriverId, {
+                amount_paise: amountPaise,
+                notes: cashRefundNotes || undefined,
+              });
+              toast.success(`Cash refund of ${fmt(amountPaise)} processed. New balance: ${fmt(res.new_balance_credits)}`);
+              setShowCashRefund(false);
+              setShowCashRefundConfirm(false);
+              setCashRefundAmount('');
+              setCashRefundNotes('');
+              fetchTransactions();
+              // Refresh wallet info
+              walletApi.getInfo(selectedDriverId).then(r => setWalletInfo(r.wallet)).catch(() => {});
+              // Update driver balance in local state
+              setDrivers(prev => prev.map(d =>
+                d.id === selectedDriverId ? { ...d, wallet_balance_paise: res.new_balance_credits } : d
+              ));
+            } catch (err) {
+              const msg = (err as Error).message;
+              if (msg.includes('Exceeds')) {
+                setCashRefundError(msg);
+                toast.error(msg);
+              } else {
+                toast.error('Cash refund failed: ' + msg);
+              }
+              setShowCashRefundConfirm(false);
+            } finally {
+              setCashRefundLoading(false);
+            }
+          }}
+        />
       )}
 
       {loading && (
