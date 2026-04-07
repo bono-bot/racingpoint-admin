@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { billingApi } from '@/lib/api/billing';
 import { fleetApi } from '@/lib/api/fleet';
 import type { ActiveSession } from '@/lib/api/billing';
+import { podLabel } from '@/lib/utils';
 import type { PodFleetStatus } from '@/lib/api/fleet';
 
 /* ---------- Helpers ---------- */
@@ -71,7 +72,7 @@ function PodCard({ pod }: { pod: PodInfo }) {
         : 'border-rp-border'
     }`}>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-lg font-bold">Pod {pod.podNumber}</span>
+        <span className="text-lg font-bold">{pod.podNumber === 9 ? 'POS' : `Pod ${pod.podNumber}`}</span>
         <StatusBadge status={pod.status} />
       </div>
 

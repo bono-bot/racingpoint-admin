@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback, Fragment } from 'react';
 import { toast } from 'sonner';
 import { format, subDays } from 'date-fns';
 import { billingApi } from '@/lib/api/billing';
+import { podLabel } from '@/lib/utils';
 import type { ActiveSession, SessionEvent, SplitBillingInfo } from '@/lib/api/billing';
 
 /** Extends ActiveSession with currency_type from Phase 339 wallet separation */
@@ -400,7 +401,7 @@ export default function BillingHistoryPage() {
                           <div>{fmtDate(session.started_at)}</div>
                           <div className="text-xs text-neutral-500">{fmtTime(session.started_at)}</div>
                         </td>
-                        <td className="px-4 py-2.5 font-medium">Pod {session.pod_number}</td>
+                        <td className="px-4 py-2.5 font-medium">{podLabel(session)}</td>
                         <td className="px-4 py-2.5">{session.driver_name}</td>
                         <td className="px-4 py-2.5">{session.pricing_tier_name}</td>
                         <td className="px-4 py-2.5 tabular-nums text-neutral-400">{fmtElapsed(session.driving_seconds)}</td>

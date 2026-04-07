@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, Fragment } from 'react';
 import { format, subDays } from 'date-fns';
 import { billingApi } from '@/lib/api/billing';
+import { podLabel } from '@/lib/utils';
 import type { ActiveSession } from '@/lib/api/billing';
 
 /* ---------- Helpers ---------- */
@@ -505,7 +506,7 @@ export default function BillingAnalyticsPage() {
                             <div>{fmtDate(session.started_at)}</div>
                             <div className="text-xs text-neutral-500">{fmtTime(session.started_at)}</div>
                           </td>
-                          <td className="px-4 py-2.5 font-medium">Pod {session.pod_number}</td>
+                          <td className="px-4 py-2.5 font-medium">{podLabel(session)}</td>
                           <td className="px-4 py-2.5">{session.driver_name}</td>
                           <td className="px-4 py-2.5">{session.pricing_tier_name}</td>
                           <td className="px-4 py-2.5 tabular-nums text-neutral-400">{fmtElapsed(session.driving_seconds)}</td>

@@ -7,6 +7,7 @@ import { configApi } from '@/lib/api/config';
 import type { PodConfigResponse, ConfigStatus } from '@/lib/api/config';
 import { fleetApi } from '@/lib/api/fleet';
 import type { PodFleetStatus } from '@/lib/api/fleet';
+import { podLabel } from '@/lib/utils';
 import ConfigEditorModal from '@/components/ConfigEditorModal';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -78,7 +79,7 @@ function PodConfigCard({
   return (
     <div className="bg-rp-card border border-rp-border rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
-        <span className="font-semibold">Pod {pod.pod_number}</span>
+        <span className="font-semibold">{podLabel(pod)}</span>
         <StatusBadge status={status} />
       </div>
       <div className="space-y-1 text-xs text-neutral-400 mb-3">

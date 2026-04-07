@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { fleetApi } from '@/lib/api/fleet';
 import { billingApi } from '@/lib/api/billing';
 import { SkeletonCard } from '@/components/Skeleton';
+import { podLabel } from '@/lib/utils';
 import type { FleetHealthResponse, PodFleetStatus } from '@/lib/api/fleet';
 import type { ActiveSession } from '@/lib/api/billing';
 
@@ -179,7 +180,7 @@ export default function ControlRoomPage() {
                       className="flex flex-col items-center justify-center p-3 bg-rp-black/50 hover:bg-rp-black rounded-lg transition-colors group"
                     >
                       <span className={`w-4 h-4 rounded-full ${st.color} mb-2 group-hover:scale-110 transition-transform`} />
-                      <span className="text-sm font-medium text-neutral-300">Pod {pod.pod_number}</span>
+                      <span className="text-sm font-medium text-neutral-300">{podLabel(pod)}</span>
                       <span className="text-[11px] text-rp-grey">{st.label}</span>
                     </Link>
                   );
@@ -224,7 +225,7 @@ export default function ControlRoomPage() {
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-medium text-rp-red bg-rp-red/10 px-2 py-0.5 rounded">
-                        Pod {session.pod_number}
+                        {podLabel(session)}
                       </span>
                       <div>
                         <p className="text-sm text-neutral-300">{session.driver_name || 'Guest'}</p>

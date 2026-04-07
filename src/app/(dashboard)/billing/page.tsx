@@ -7,6 +7,7 @@ import { billingApi } from '@/lib/api/billing';
 import { fleetApi } from '@/lib/api/fleet';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { useConnection } from '@/contexts/ConnectionContext';
+import { podLabel } from '@/lib/utils';
 import type { ActiveSession, SessionEvent, BillingRate } from '@/lib/api/billing';
 import type { PodFleetStatus } from '@/lib/api/fleet';
 
@@ -152,7 +153,7 @@ function StartSessionModal({ open, onClose, onSuccess }: {
               >
                 <option value="">Select pod...</option>
                 {pods.map(p => (
-                  <option key={p.pod_id} value={p.pod_id!}>Pod {p.pod_number}</option>
+                  <option key={p.pod_id} value={p.pod_id!}>{podLabel(p)}</option>
                 ))}
               </select>
             </div>
@@ -417,7 +418,7 @@ export default function BillingPage() {
                             </svg>
                           </button>
                         </td>
-                        <td className="px-4 py-2.5 font-medium">Pod {session.pod_number}</td>
+                        <td className="px-4 py-2.5 font-medium">{podLabel(session)}</td>
                         <td className="px-4 py-2.5">{session.driver_name}</td>
                         <td className="px-4 py-2.5">{session.pricing_tier_name}</td>
                         <td className={`px-4 py-2.5 tabular-nums ${countdownColor(remaining)}`}>

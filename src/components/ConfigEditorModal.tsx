@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { configApi, HOT_RELOAD_FIELDS } from '@/lib/api/config';
 import type { AgentConfig } from '@/lib/api/config';
+import { podLabel } from '@/lib/utils';
 import type { PodFleetStatus } from '@/lib/api/fleet';
 
 // ── Props ────────────────────────────────────────────────────────────────────
@@ -141,9 +142,9 @@ export default function ConfigEditorModal({
     try {
       const result = await configApi.setPodConfig(pod.pod_id, editedConfig);
       if (result.pushed) {
-        toast.success(`Config pushed to Pod ${pod.pod_number}`);
+        toast.success(`Config pushed to ${podLabel(pod)}`);
       } else {
-        toast.success(`Config saved for Pod ${pod.pod_number} — will push on next connect`);
+        toast.success(`Config saved for ${podLabel(pod)} — will push on next connect`);
       }
       onSaved();
       onClose();
@@ -349,7 +350,7 @@ export default function ConfigEditorModal({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-rp-border shrink-0">
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-semibold">Edit Config — Pod {pod.pod_number}</h2>
+            <h2 className="text-base font-semibold">Edit Config — {podLabel(pod)}</h2>
             <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${
               pod.ws_connected
                 ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/30'
@@ -407,7 +408,7 @@ export default function ConfigEditorModal({
             disabled={pushing || diff.length === 0 || !pod.pod_id}
             className="px-4 py-2 text-sm font-medium rounded-lg bg-[#E10600] hover:bg-[#c50500] text-white disabled:opacity-50 transition-colors"
           >
-            {pushing ? 'Pushing...' : `Push to Pod ${pod.pod_number}`}
+            {pushing ? 'Pushing...' : `Push to ${podLabel(pod)}`}
           </button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import type { GameCatalogEntry, ActiveGame } from '@/lib/api';
 import type { FleetHealthResponse } from '@/lib/api/fleet';
 import type { Driver } from '@/lib/api/drivers';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { podLabel } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const GAME_COLORS: Record<string, string> = {
@@ -145,7 +146,7 @@ export default function GamesPage() {
                   <td className="px-4 py-3">
                     <span className="inline-flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                      <span className="text-white font-medium">Pod {g.pod_number}</span>
+                      <span className="text-white font-medium">{podLabel(g)}</span>
                     </span>
                   </td>
                   <td className="px-4 py-3">
@@ -188,7 +189,7 @@ export default function GamesPage() {
                 >
                   <option value="">Select pod...</option>
                   {idlePods.map(p => (
-                    <option key={p.pod_id} value={p.pod_id}>Pod {p.pod_number} (idle)</option>
+                    <option key={p.pod_id} value={p.pod_id}>{podLabel(p)} (idle)</option>
                   ))}
                 </select>
               </div>

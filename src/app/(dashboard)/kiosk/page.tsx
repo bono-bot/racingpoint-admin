@@ -245,7 +245,7 @@ export default function KioskControlPage() {
                 return (
                   <div key={pod.id} className={`flex items-center justify-between px-4 py-3 ${isOffline ? 'opacity-40' : ''}`}>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white">Pod {pod.number}</p>
+                      <p className="text-sm font-semibold text-white">{pod.number === 9 ? 'POS' : `Pod ${pod.number}`}</p>
                       <p className="text-xs text-neutral-500 truncate">{pod.name}</p>
                     </div>
                     <label className={`flex items-center gap-2 cursor-pointer shrink-0 ml-3 ${isSaving ? 'opacity-50' : ''}`}>

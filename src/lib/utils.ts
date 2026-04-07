@@ -26,3 +26,9 @@ export function formatLapTime(ms: number): string {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/** Display label for a pod. Shows "POS" for point-of-sale terminal, "Pod N" for racing pods. */
+export function podLabel(pod: { pod_number: number; node_type?: string; name?: string }): string {
+  if (pod.node_type === 'pos') return pod.name ?? 'POS';
+  return `Pod ${pod.pod_number}`;
+}
