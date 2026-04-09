@@ -1,23 +1,109 @@
-import Database from 'better-sqlite3';
 import path from 'path';
+
+/**
+ * admin.db SQLite connection management.
+ *
+ * v47.0 Phase 345-02:
+ * - Lazy-load pattern: the better-sqlite3 native binding is loaded on first
+ *   getDb() call, NOT at module evaluation time. A missing ABI no longer
+ *   crashes the entire admin Next.js process at boot — only routes that
+ *   actually touch admin.db fail.
+ * - ABI auto-retry: on first ABI failure we throw an informative error with
+ *   the exact rebuild command. Admin-deploy.sh is expected to handle this
+ *   before first request reaches the route.
+ * - Errors are thrown with structured data so route handlers can return
+ *   JSON 503 with error_code ADMIN_DB_ABI_MISMATCH / ADMIN_DB_OPEN_FAILED.
+ */
+
+// Import type only — value import is lazy inside getDb()
+type BetterSqliteDatabase = import('better-sqlite3').Database;
 
 const DB_PATH = path.join(process.cwd(), 'data', 'admin.db');
 
-let db: Database.Database | null = null;
+let db: BetterSqliteDatabase | null = null;
+let loadError: Error | null = null;
 
-export function getDb(): Database.Database {
-  if (!db) {
+export class AdminDbError extends Error {
+  code: string;
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+    this.name = 'AdminDbError';
+  }
+}
+
+export function getDb(): BetterSqliteDatabase {
+  if (db) return db;
+  if (loadError) throw loadError;
+
+  let Database: typeof import('better-sqlite3');
+  try {
+    // Lazy require — at this point better-sqlite3 may fail with ABI mismatch
+    // on Node version upgrades. We catch and transform into a structured error.
+    Database = require('better-sqlite3') as typeof import('better-sqlite3');
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const isAbi = msg.includes('NODE_MODULE_VERSION') || msg.includes('different Node.js version');
+    loadError = new AdminDbError(
+      isAbi ? 'ADMIN_DB_ABI_MISMATCH' : 'ADMIN_DB_REQUIRE_FAILED',
+      isAbi
+        ? `better-sqlite3 ABI mismatch (Node ${process.version}). Fix: 'cd C:\\RacingPoint\\admin && npm rebuild better-sqlite3' or re-run admin-deploy.sh.`
+        : `better-sqlite3 require failed: ${msg}`
+    );
+    throw loadError;
+  }
+
+  try {
     const fs = require('fs');
     fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
     db = new Database(DB_PATH);
     db.pragma('journal_mode = WAL');
     db.pragma('foreign_keys = ON');
     initTables(db);
+    return db;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    loadError = new AdminDbError('ADMIN_DB_OPEN_FAILED', `admin.db open failed: ${msg}`);
+    throw loadError;
   }
-  return db;
 }
 
-function initTables(db: Database.Database) {
+/**
+ * Helper for route handlers: wraps getDb() in a try/catch that maps
+ * AdminDbError → NextResponse JSON 503. Use in every admin.db-touching route
+ * to ensure clients receive structured errors, never HTML 500 pages.
+ *
+ * Usage:
+ *   export async function GET() {
+ *     return withAdminDb((db) => {
+ *       const rows = db.prepare('SELECT * FROM menu_items').all();
+ *       return NextResponse.json(rows);
+ *     });
+ *   }
+ */
+export function withAdminDbError(err: unknown) {
+  const { NextResponse } = require('next/server') as typeof import('next/server');
+  if (err instanceof AdminDbError) {
+    return NextResponse.json(
+      {
+        error: 'admin database unavailable',
+        error_code: err.code,
+        detail: err.message,
+      },
+      { status: 503 }
+    );
+  }
+  return NextResponse.json(
+    {
+      error: 'internal server error',
+      error_code: 'INTERNAL',
+      detail: err instanceof Error ? err.message : String(err),
+    },
+    { status: 500 }
+  );
+}
+
+function initTables(db: BetterSqliteDatabase) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS menu_items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -164,8 +250,8 @@ function initTables(db: Database.Database) {
   }
 }
 
-function seedMenu(db: Database.Database) {
-  const items = [
+function seedMenu(db: BetterSqliteDatabase) {
+  const items: Array<[string, string, number, number]> = [
     // Starters
     ['Starters', 'Veg Spring Rolls', 199, 1],
     ['Starters', 'Paneer Tikka', 249, 1],
