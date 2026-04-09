@@ -2,11 +2,19 @@
   "name": "racingpoint-admin",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0 <23.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "postbuild": "cp -r .next/static .next/standalone/.next/static 2>/dev/null; if [ -d public ]; then cp -r public .next/standalone/public; fi; echo 'postbuild: static assets copied to standalone'",
     "start": "next start",
+    "deploy": "bash scripts/admin-deploy.sh",
+    "deploy:rollback": "bash scripts/admin-deploy.sh --rollback",
+    "deploy:dry-run": "bash scripts/admin-deploy.sh --dry-run",
+    "verify": "node scripts/verify-deploy.js",
+    "verify:static": "node scripts/verify-deploy.js --skip-live",
     "lint": "eslint"
   },
   "dependencies": {
