@@ -3,6 +3,10 @@
 > Canonical source: `C:/Users/bono/racingpoint/racecontrol/CLAUDE.md`
 > This file contains the RELEVANT SUBSET for this repo. Always defer to racecontrol CLAUDE.md for the full ruleset.
 
+## Rule 0 — Enumerate Before Asserting (v4.4, 2026-04-09)
+
+Before any claim about what exists, what's available, or what you can do — **list it**. Glob the filesystem, grep memory, check `~/.claude/projects/C--Users-bono/memory/reference_local_capabilities.md`. Triggers requiring enumeration first: "all", "everywhere", "complete", "I can't", "there's no", "that's all", "I've read all". Full definition: racecontrol/CLAUDE.md or COGNITIVE-GATE-PROTOCOL.md v4.4. UCA metric counts violations (target: 0 per session).
+
 ## Repo Identity
 
 - **Purpose:** Next.js admin dashboard for Racing Point operations
