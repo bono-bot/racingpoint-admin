@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface Waiver {
   driver_id: string;
@@ -128,7 +129,7 @@ export default function WaiversPage() {
 
       {/* All waivers list */}
       {loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={9} />
       ) : data?.error ? (
         <div className="bg-rp-card border border-rp-border rounded-xl p-6 text-center">
           <p className="text-neutral-400 mb-2">{data.error}</p>
@@ -195,7 +196,7 @@ export default function WaiversPage() {
             onClick={e => e.stopPropagation()}>
             <h3 className="font-semibold mb-4">Customer Signature</h3>
             {sigLoading ? (
-              <div className="text-center text-rp-grey py-8">Loading...</div>
+              <SkeletonTable rows={1} cols={1} />
             ) : sigData ? (
               <div className="bg-white rounded-lg p-3">
                 <img src={sigData} alt="Signature" className="w-full" />

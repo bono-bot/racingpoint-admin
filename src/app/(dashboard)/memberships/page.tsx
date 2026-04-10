@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface MembershipTier {
   id: string;
@@ -42,7 +43,7 @@ function MembersList() {
     loadMembers();
   }, []);
 
-  if (membersLoading) return <div className="text-center text-rp-grey py-8">Loading members...</div>;
+  if (membersLoading) return <SkeletonTable rows={5} cols={6} />;
 
   if (members.length === 0) {
     return (
@@ -147,7 +148,7 @@ export default function MembershipsPage() {
       </div>
 
       {loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={5} />
       ) : tab === 'tiers' ? (
         tiers.length === 0 ? (
           <div className="text-center text-rp-grey py-8">No membership tiers configured. Tiers are seeded at database init.</div>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
 import { formatLapTime } from '@/lib/utils';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface Driver {
   id: string;
@@ -136,7 +137,7 @@ export default function LeaderboardPage() {
           {error}
         </div>
       ) : loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={4} />
       ) : tab === 'leaderboard' ? (
         /* Leaderboard Tab */
         drivers.length === 0 ? (

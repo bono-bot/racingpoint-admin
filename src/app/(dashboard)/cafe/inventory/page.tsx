@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface InventoryItem {
   id: number;
@@ -99,7 +100,7 @@ export default function InventoryPage() {
       )}
 
       {loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={6} />
       ) : items.length === 0 ? (
         <div className="text-center text-rp-grey py-8">No inventory items yet. Add your first item above.</div>
       ) : (

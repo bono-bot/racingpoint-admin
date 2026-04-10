@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface PricingRule {
   id: string;
@@ -124,7 +125,7 @@ export default function PricingPage() {
       {error ? (
         <div className="bg-rp-red/10 border border-rp-red/20 rounded-xl p-6 text-rp-red text-sm">{error}</div>
       ) : loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={7} />
       ) : rules.length === 0 ? (
         <div className="text-center text-rp-grey py-8">No pricing rules configured</div>
       ) : (

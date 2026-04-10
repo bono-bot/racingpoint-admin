@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface Tournament {
   id: string;
@@ -202,7 +203,7 @@ export default function TournamentsPage() {
       {error ? (
         <div className="bg-rp-red/10 border border-rp-red/20 rounded-xl p-6 text-rp-red text-sm">{error}</div>
       ) : loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={5} />
       ) : tournaments.length === 0 ? (
         <div className="text-center text-rp-grey py-8">No tournaments yet</div>
       ) : (

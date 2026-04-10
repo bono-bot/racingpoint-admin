@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { api, type Booking } from '@/lib/api';
 import { formatDate, formatTime } from '@/lib/utils';
 import ConfirmDialog from '@/components/ConfirmDialog';
+import { SkeletonTable } from '@/components/Skeleton';
 
 type SourceFilter = '' | 'whatsapp' | 'discord';
 type StatusFilter = '' | 'confirmed' | 'cancelled';
@@ -160,7 +161,7 @@ export default function BookingsPage() {
       {/* Table */}
       <div className="bg-rp-card border border-rp-border rounded-xl overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-rp-grey">Loading...</div>
+          <SkeletonTable rows={5} cols={9} />
         ) : bookings.length === 0 ? (
           <div className="p-8 text-center text-rp-grey">No bookings found</div>
         ) : (

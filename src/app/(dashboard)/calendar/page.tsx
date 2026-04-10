@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { formatDate, formatTime } from '@/lib/utils';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface CalendarEvent {
   id: string;
@@ -35,7 +36,7 @@ export default function CalendarPage() {
       <h1 className="text-2xl font-bold mb-6">Calendar</h1>
 
       {loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={3} />
       ) : events.length === 0 ? (
         <div className="text-center text-rp-grey py-8">No upcoming events</div>
       ) : (

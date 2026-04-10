@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface Coupon {
   id: string;
@@ -122,7 +123,7 @@ export default function CouponsPage() {
       {error ? (
         <div className="bg-rp-red/10 border border-rp-red/20 rounded-xl p-6 text-rp-red text-sm">{error}</div>
       ) : loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={7} />
       ) : coupons.length === 0 ? (
         <div className="text-center text-rp-grey py-8">No coupons yet</div>
       ) : (

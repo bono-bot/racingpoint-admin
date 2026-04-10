@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { SkeletonTable } from '@/components/Skeleton';
 
 interface MenuItem {
   id: number;
@@ -101,7 +102,7 @@ export default function CafePage() {
       </div>
 
       {loading ? (
-        <div className="text-center text-rp-grey py-8">Loading...</div>
+        <SkeletonTable rows={5} cols={4} />
       ) : (
         <div className="space-y-6">
           {Object.entries(grouped).map(([cat, catItems]) => (
