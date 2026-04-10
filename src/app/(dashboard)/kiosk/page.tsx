@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { SkeletonPage } from '@/components/Skeleton';
+import { toast } from 'sonner';
 
 interface KioskExperience {
   id: string;
@@ -115,7 +117,8 @@ export default function KioskControlPage() {
     try {
       await api.updateKioskSettings({ [key]: newValue });
       setSettings(prev => ({ ...prev, [key]: newValue }));
-    } catch { alert('Failed to update setting'); }
+      toast.success('Setting updated');
+    } catch (err) { toast.error('Failed to update setting: ' + (err as Error).message); }
     setSaving(null);
   };
 
@@ -124,7 +127,8 @@ export default function KioskControlPage() {
     try {
       await api.setPodScreen(podId, blank);
       setPodBlanking(prev => ({ ...prev, [podId]: blank }));
-    } catch { alert('Failed to update pod screen'); }
+      toast.success(blank ? 'Screen blanked' : 'Screen restored');
+    } catch (err) { toast.error('Failed to update pod screen: ' + (err as Error).message); }
     setSaving(null);
   };
 
@@ -136,7 +140,8 @@ export default function KioskControlPage() {
     setSaving(key);
     try {
       await api.updateKioskSettings({ [key]: settings[key] || '' });
-    } catch { alert('Failed to save'); }
+      toast.success('Setting saved');
+    } catch (err) { toast.error('Failed to save: ' + (err as Error).message); }
     setSaving(null);
   };
 
@@ -153,19 +158,21 @@ export default function KioskControlPage() {
       });
       setShowForm(false);
       setForm({ name: '', game: 'assetto_corsa', track: '', car: '', car_class: '', duration_minutes: 30, start_type: 'pitlane' });
+      toast.success('Experience created');
       load();
-    } catch { alert('Failed to create experience'); }
+    } catch (err) { toast.error('Failed to create experience: ' + (err as Error).message); }
   };
 
   const handleDeleteExperience = async (id: string) => {
     if (!confirm('Remove this experience?')) return;
     try {
       await api.deleteKioskExperience(id);
+      toast.success('Experience deleted');
       load();
-    } catch { alert('Failed to delete'); }
+    } catch (err) { toast.error('Failed to delete experience: ' + (err as Error).message); }
   };
 
-  if (loading) return <div className="text-center text-rp-grey py-12">Loading kiosk settings...</div>;
+  if (loading) return <SkeletonPage cards={0} tableRows={4} />;
   if (error) return <div className="bg-rp-red/10 border border-rp-red/20 rounded-xl p-6 text-rp-red text-sm">{error}</div>;
 
   return (

@@ -5,6 +5,7 @@ import { api, type Booking } from '@/lib/api';
 import { formatDate, formatTime } from '@/lib/utils';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { SkeletonTable } from '@/components/Skeleton';
+import { toast } from 'sonner';
 
 type SourceFilter = '' | 'whatsapp' | 'discord';
 type StatusFilter = '' | 'confirmed' | 'cancelled';
@@ -69,10 +70,11 @@ export default function BookingsPage() {
     setCancelLoading(true);
     try {
       await api.cancelBooking(cancelTarget.booking_id);
+      toast.success('Booking cancelled');
       setCancelTarget(null);
       loadBookings();
-    } catch {
-      alert('Failed to cancel booking');
+    } catch (err) {
+      toast.error('Failed to cancel booking: ' + (err as Error).message);
     }
     setCancelLoading(false);
   };

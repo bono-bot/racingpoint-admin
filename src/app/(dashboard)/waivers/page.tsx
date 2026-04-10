@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { SkeletonTable } from '@/components/Skeleton';
+import { toast } from 'sonner';
 
 interface Waiver {
   driver_id: string;
@@ -58,8 +59,8 @@ export default function WaiversPage() {
       const res = await fetch(`/api/waivers?${params}`);
       const result = await res.json();
       setCheckResult(result);
-    } catch {
-      alert('Check failed');
+    } catch (err) {
+      toast.error('Check failed: ' + (err as Error).message);
     }
     setChecking(false);
   }

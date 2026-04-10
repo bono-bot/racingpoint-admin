@@ -476,7 +476,7 @@ export default function WalletTransactionsPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-neutral-400">Max Cash Refund</span>
                 <span className="text-orange-400 font-medium">
-                  {walletInfo ? fmt(walletInfo.max_cash_refund) : 'Loading...'}
+                  {walletInfo ? fmt(walletInfo.max_cash_refund) : <span className="inline-block w-16 h-3 bg-rp-border/50 rounded animate-pulse" />}
                 </span>
               </div>
             </div>

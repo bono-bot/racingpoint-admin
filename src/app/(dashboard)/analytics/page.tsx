@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { SkeletonPage } from '@/components/Skeleton';
 
 interface AnalyticsData {
   hourlyData: { hour: number; label: string; count: number; revenue: number }[];
@@ -35,7 +36,7 @@ export default function AnalyticsPage() {
     fetch('/api/analytics').then(r => r.json()).then(d => { setData(d); setLoading(false); });
   }, []);
 
-  if (loading) return <div className="text-center text-rp-grey py-8">Loading analytics...</div>;
+  if (loading) return <SkeletonPage cards={4} tableRows={5} />;
   if (!data) return <div className="text-center text-rp-grey py-8">Failed to load</div>;
 
   const fmt = (n: number) => `₹${n.toLocaleString('en-IN')}`;

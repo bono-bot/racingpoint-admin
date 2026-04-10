@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
 import { formatLapTime } from '@/lib/utils';
 import { SkeletonTable } from '@/components/Skeleton';
+import { toast } from 'sonner';
 
 interface Driver {
   id: string;
@@ -75,8 +76,9 @@ export default function LeaderboardPage() {
       });
       setShowTrialForm(false);
       setTrialForm({ track: '', car: '', duration_minutes: '30' });
+      toast.success('Time trial created');
       loadTimeTrials();
-    } catch { alert('Failed to create time trial'); }
+    } catch (err) { toast.error('Failed to create time trial: ' + (err as Error).message); }
   };
 
   const tabClass = (value: Tab) =>

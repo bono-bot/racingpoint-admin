@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { api } from '@/lib/api';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { SkeletonTable } from '@/components/Skeleton';
+import { toast } from 'sonner';
 
 interface Tournament {
   id: string;
@@ -89,15 +90,17 @@ export default function TournamentsPage() {
       });
       setShowForm(false);
       setForm({ name: '', description: '', track: '', car: '', format: 'single_elimination', max_participants: '16', entry_fee_paise: '0', prize_pool_paise: '0', event_date: '' });
+      toast.success('Tournament created');
       load();
-    } catch { alert('Failed to create tournament'); }
+    } catch (err) { toast.error('Failed to create tournament: ' + (err as Error).message); }
   };
 
   const handleGenerateBracket = async (id: string) => {
     try {
       await api.generateBracket(id);
+      toast.success('Bracket generated');
       loadTournamentDetail(id);
-    } catch { alert('Failed to generate bracket'); }
+    } catch (err) { toast.error('Failed to generate bracket: ' + (err as Error).message); }
   };
 
   const loadTournamentDetail = async (id: string) => {
@@ -122,10 +125,11 @@ export default function TournamentsPage() {
     setResultLoading(true);
     try {
       await api.recordMatchResult(selected, matchResultTarget.id, selectedWinner);
+      toast.success('Match result recorded');
       setMatchResultTarget(null);
       setSelectedWinner(null);
       loadTournamentDetail(selected);
-    } catch { alert('Failed to record match result'); }
+    } catch (err) { toast.error('Failed to record match result: ' + (err as Error).message); }
     setResultLoading(false);
   };
 

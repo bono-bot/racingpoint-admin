@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { SkeletonTable } from '@/components/Skeleton';
+import { toast } from 'sonner';
 
 interface PricingRule {
   id: string;
@@ -57,13 +58,14 @@ export default function PricingPage() {
       });
       setShowForm(false);
       setForm({ name: '', day_of_week: '', start_hour: '', end_hour: '', multiplier: '1.0', flat_adjustment_paise: '0', min_group_size: '' });
+      toast.success('Pricing rule created');
       load();
-    } catch { alert('Failed to create rule'); }
+    } catch (err) { toast.error('Failed to create rule: ' + (err as Error).message); }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this pricing rule?')) return;
-    try { await api.deletePricingRule(id); load(); } catch { alert('Failed to delete'); }
+    try { await api.deletePricingRule(id); toast.success('Pricing rule deleted'); load(); } catch (err) { toast.error('Failed to delete rule: ' + (err as Error).message); }
   };
 
   return (

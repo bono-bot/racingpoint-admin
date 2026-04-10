@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { SkeletonTable } from '@/components/Skeleton';
+import { toast } from 'sonner';
 
 interface Coupon {
   id: string;
@@ -54,16 +55,18 @@ export default function CouponsPage() {
       });
       setShowForm(false);
       setForm({ code: '', discount_type: 'percent', discount_value: 10, max_uses: '', min_amount_paise: '', valid_until: '' });
+      toast.success('Coupon created');
       load();
-    } catch { alert('Failed to create coupon'); }
+    } catch (err) { toast.error('Failed to create coupon: ' + (err as Error).message); }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Delete this coupon?')) return;
     try {
       await api.deleteCoupon(id);
+      toast.success('Coupon deleted');
       load();
-    } catch { alert('Failed to delete'); }
+    } catch (err) { toast.error('Failed to delete coupon: ' + (err as Error).message); }
   };
 
   return (

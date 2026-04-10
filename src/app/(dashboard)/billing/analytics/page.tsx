@@ -5,6 +5,7 @@ import { format, subDays } from 'date-fns';
 import { billingApi } from '@/lib/api/billing';
 import { podLabel } from '@/lib/utils';
 import type { ActiveSession } from '@/lib/api/billing';
+import { SkeletonTable } from '@/components/Skeleton';
 
 /* ---------- Helpers ---------- */
 
@@ -455,7 +456,7 @@ export default function BillingAnalyticsPage() {
 
       {/* Loading */}
       {loading && (
-        <div className="text-center text-rp-grey py-12">Loading analytics...</div>
+        <SkeletonTable rows={5} cols={7} />
       )}
 
       {!loading && !error && (
