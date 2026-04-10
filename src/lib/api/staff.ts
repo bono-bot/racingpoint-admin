@@ -28,6 +28,18 @@ export interface UpdateStaffParams {
   is_active?: boolean;
 }
 
+export interface ChangePinParams {
+  new_pin: string;
+}
+
+export interface ChangePinResponse {
+  status: string;
+  cloud_verified: boolean;
+  venue_verified: boolean;
+  latency_ms: number;
+  correlation_id: string;
+}
+
 export const staffApi = {
   list: () => rcFetch('/staff') as Promise<StaffListResponse>,
 
@@ -47,4 +59,10 @@ export const staffApi = {
     rcFetch(`/staff/${id}`, {
       method: 'DELETE',
     }) as Promise<{ status: string; id: string }>,
+
+  changePin: (id: string, data: ChangePinParams) =>
+    rcFetch(`/admin/staff/${id}/change-pin`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }) as Promise<ChangePinResponse>,
 };
