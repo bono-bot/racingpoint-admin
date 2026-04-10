@@ -1,5 +1,14 @@
 # racingpoint-admin — Standing Rules
 
+## The Principle — Verify Before Generate (2026-04-11)
+
+**Before generating ANY output, verify the inputs it depends on.**
+- **BEFORE:** Enumerate from environment — not memory
+- **DURING:** After every block: *"What did I just assume that I could have checked?"*
+- **AFTER:** Evidence = exact behavior + raw output + where + not-tested
+
+---
+
 > Canonical source: `C:/Users/bono/racingpoint/racecontrol/CLAUDE.md`
 > This file contains the RELEVANT SUBSET for this repo. Always defer to racecontrol CLAUDE.md for the full ruleset.
 
