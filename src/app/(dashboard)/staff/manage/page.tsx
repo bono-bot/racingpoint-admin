@@ -15,6 +15,9 @@ const ROLE_COLORS: Record<string, string> = {
   staff: 'bg-neutral-500/20 text-neutral-400',
 };
 
+// Feature flag: when ON, Change PIN modal replaces inline PIN display/edit
+const STAFF_PIN_UI_ENABLED = process.env.NEXT_PUBLIC_FEATURE_STAFF_PIN_UI === 'on';
+
 interface StaffForm {
   name: string;
   phone: string;
@@ -39,12 +42,22 @@ export default function StaffManagePage() {
   const [editForm, setEditForm] = useState<StaffForm>({ ...emptyForm });
   const [saving, setSaving] = useState(false);
 
-  // PIN visibility
+  // PIN visibility (preserved for flag-off fallback — D-16)
+  // React hooks must be declared unconditionally; rendering is conditional below
   const [visiblePins, setVisiblePins] = useState<Set<string>>(new Set());
 
   // Deactivate confirm
   const [deactivateTarget, setDeactivateTarget] = useState<StaffMember | null>(null);
   const [deactivating, setDeactivating] = useState(false);
+
+  // Change PIN modal state (STAFF-01/STAFF-04/STAFF-08/STAFF-09)
+  const [changePinTarget, setChangePinTarget] = useState<StaffMember | null>(null);
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
+  const [pinSubmitting, setPinSubmitting] = useState(false);
+  const [pinStep, setPinStep] = useState(0);
+  const [pinError, setPinError] = useState<string | null>(null);
+  const [pinPartialSuccess, setPinPartialSuccess] = useState(false);
 
   const loadStaff = useCallback(async () => {
     try {
@@ -90,7 +103,14 @@ export default function StaffManagePage() {
 
   const startEdit = (s: StaffMember) => {
     setEditingId(s.id);
-    setEditForm({ name: s.name, phone: s.phone, pin: s.pin, role: s.role });
+    // When flag is ON: do not populate pin in edit form — Change PIN modal handles PIN changes
+    // When flag is OFF: populate pin for inline editing (D-16 fallback)
+    setEditForm({
+      name: s.name,
+      phone: s.phone,
+      pin: STAFF_PIN_UI_ENABLED ? '' : s.pin,
+      role: s.role,
+    });
   };
 
   const cancelEdit = () => {
@@ -106,7 +126,8 @@ export default function StaffManagePage() {
     const changes: Record<string, string | boolean> = {};
     if (editForm.name.trim() !== original.name) changes.name = editForm.name.trim();
     if (editForm.phone.trim() !== original.phone) changes.phone = editForm.phone.trim();
-    if (editForm.pin.trim() !== original.pin) changes.pin = editForm.pin.trim();
+    // Only include pin change when flag is OFF (D-16 fallback path via staffApi.update)
+    if (!STAFF_PIN_UI_ENABLED && editForm.pin.trim() !== original.pin) changes.pin = editForm.pin.trim();
     if (editForm.role !== original.role) changes.role = editForm.role;
 
     if (Object.keys(changes).length === 0) {
@@ -160,6 +181,7 @@ export default function StaffManagePage() {
     }
   };
 
+  // togglePin preserved for flag-off fallback (D-16) — React hooks must be declared unconditionally
   const togglePin = (id: string) => {
     setVisiblePins(prev => {
       const next = new Set(prev);
@@ -167,6 +189,51 @@ export default function StaffManagePage() {
       else next.add(id);
       return next;
     });
+  };
+
+  // PIN validation: 4+ numeric digits, matching confirm (STAFF-04/D-02)
+  const isPinValid = newPin.length >= 4 && /^\d+$/.test(newPin) && newPin === confirmPin;
+
+  // Change PIN handler (D-03/D-08/D-11/D-13)
+  const handleChangePin = async () => {
+    if (!changePinTarget || !isPinValid) return;
+    setPinSubmitting(true);
+    setPinError(null);
+    setPinPartialSuccess(false);
+    setPinStep(0);
+
+    // Simulated step progress while awaiting single response (D-03/STAFF-08)
+    const t1 = setTimeout(() => setPinStep(1), 600);
+    const t2 = setTimeout(() => setPinStep(2), 1400);
+    const t3 = setTimeout(() => setPinStep(3), 2200);
+
+    try {
+      const res = await staffApi.changePin(changePinTarget.id, { new_pin: newPin });
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+
+      if (res.status === 'ok' && res.cloud_verified && res.venue_verified) {
+        setPinStep(4); // all done
+        toast.success(`PIN changed for ${changePinTarget.name}`);
+        // Close modal after 1.5s to let user see the green checkmarks
+        setTimeout(() => setChangePinTarget(null), 1500);
+      } else {
+        // Partial success per D-11/STAFF-09
+        setPinStep(4);
+        setPinPartialSuccess(true);
+        const failedParts: string[] = [];
+        if (!res.cloud_verified) failedParts.push('cloud verification');
+        if (!res.venue_verified) failedParts.push('venue sync');
+        setPinError(`PIN changed on cloud but ${failedParts.join(' and ')} failed - contact James (ref: ${res.correlation_id})`);
+      }
+    } catch (e: unknown) {
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      setPinStep(0);
+      const msg = e instanceof Error ? e.message : 'Unknown error';
+      setPinError(`PIN change failed: ${msg}`);
+      toast.error('PIN change failed');
+    } finally {
+      setPinSubmitting(false);
+    }
   };
 
   const filtered = staff.filter(s => showInactive || s.is_active);
@@ -228,6 +295,7 @@ export default function StaffManagePage() {
               />
             </div>
             <div>
+              {/* PIN always required for create regardless of feature flag */}
               <label className="text-xs text-rp-grey mb-1 block">PIN</label>
               <input
                 type="text"
@@ -288,7 +356,8 @@ export default function StaffManagePage() {
               <tr className="border-b border-rp-border text-rp-grey text-left">
                 <th className="px-4 py-3 font-medium">Name</th>
                 <th className="px-4 py-3 font-medium">Phone</th>
-                <th className="px-4 py-3 font-medium">PIN</th>
+                {/* PIN column: hidden when flag ON (STAFF-03/D-16) */}
+                {!STAFF_PIN_UI_ENABLED && <th className="px-4 py-3 font-medium">PIN</th>}
                 <th className="px-4 py-3 font-medium">Role</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium">Last Login</th>
@@ -320,15 +389,18 @@ export default function StaffManagePage() {
                           className="w-full bg-rp-black border border-rp-border rounded px-2 py-1 text-sm focus:outline-none focus:border-rp-red"
                         />
                       </td>
-                      <td className="px-4 py-2">
-                        <input
-                          type="text"
-                          value={editForm.pin}
-                          onChange={e => setEditForm({ ...editForm, pin: e.target.value })}
-                          maxLength={6}
-                          className="w-full bg-rp-black border border-rp-border rounded px-2 py-1 text-sm font-mono focus:outline-none focus:border-rp-red"
-                        />
-                      </td>
+                      {/* PIN edit field: only shown when flag OFF (D-16 fallback via staffApi.update) */}
+                      {!STAFF_PIN_UI_ENABLED && (
+                        <td className="px-4 py-2">
+                          <input
+                            type="text"
+                            value={editForm.pin}
+                            onChange={e => setEditForm({ ...editForm, pin: e.target.value })}
+                            maxLength={6}
+                            className="w-full bg-rp-black border border-rp-border rounded px-2 py-1 text-sm font-mono focus:outline-none focus:border-rp-red"
+                          />
+                        </td>
+                      )}
                       <td className="px-4 py-2">
                         <select
                           value={editForm.role}
@@ -371,15 +443,18 @@ export default function StaffManagePage() {
                     <>
                       <td className="px-4 py-3 font-medium">{s.name}</td>
                       <td className="px-4 py-3 text-rp-grey">{s.phone}</td>
-                      <td className="px-4 py-3">
-                        <button
-                          onClick={() => togglePin(s.id)}
-                          className="font-mono text-xs bg-rp-black border border-rp-border rounded px-2 py-1 hover:border-rp-red/50 transition-colors cursor-pointer"
-                          title={visiblePins.has(s.id) ? 'Click to hide' : 'Click to reveal'}
-                        >
-                          {visiblePins.has(s.id) ? s.pin : '\u2022\u2022\u2022\u2022'}
-                        </button>
-                      </td>
+                      {/* PIN cell: only shown when flag OFF (D-16 fallback) */}
+                      {!STAFF_PIN_UI_ENABLED && (
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => togglePin(s.id)}
+                            className="font-mono text-xs bg-rp-black border border-rp-border rounded px-2 py-1 hover:border-rp-red/50 transition-colors cursor-pointer"
+                            title={visiblePins.has(s.id) ? 'Click to hide' : 'Click to reveal'}
+                          >
+                            {visiblePins.has(s.id) ? s.pin : '\u2022\u2022\u2022\u2022'}
+                          </button>
+                        </td>
+                      )}
                       <td className="px-4 py-3">
                         <span className={`text-xs px-2 py-1 rounded-full ${ROLE_COLORS[s.role] || ROLE_COLORS.staff}`}>
                           {s.role.charAt(0).toUpperCase() + s.role.slice(1)}
@@ -401,6 +476,22 @@ export default function StaffManagePage() {
                           >
                             Edit
                           </button>
+                          {/* Change PIN button: only when flag ON and staff is active (STAFF-01/STAFF-10) */}
+                          {STAFF_PIN_UI_ENABLED && s.is_active && (
+                            <button
+                              onClick={() => {
+                                setChangePinTarget(s);
+                                setNewPin('');
+                                setConfirmPin('');
+                                setPinError(null);
+                                setPinPartialSuccess(false);
+                                setPinStep(0);
+                              }}
+                              className="text-blue-400 hover:text-blue-300 text-xs transition-colors"
+                            >
+                              Change PIN
+                            </button>
+                          )}
                           {s.is_active ? (
                             <button
                               onClick={() => setDeactivateTarget(s)}
@@ -437,6 +528,109 @@ export default function StaffManagePage() {
         onConfirm={handleDeactivate}
         onCancel={() => setDeactivateTarget(null)}
       />
+
+      {/* Change PIN Modal (STAFF-01/STAFF-04/STAFF-08/STAFF-09) */}
+      {changePinTarget && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-[#222] border border-[#333] rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">
+              Change PIN for {changePinTarget.name}
+            </h3>
+
+            {/* PIN inputs */}
+            <div className="space-y-3 mb-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">New PIN (4+ digits)</label>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={newPin}
+                  onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
+                  disabled={pinSubmitting}
+                  className="w-full bg-[#1a1a1a] border border-[#444] rounded px-3 py-2 text-white"
+                  placeholder="Enter new PIN"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Confirm PIN</label>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={confirmPin}
+                  onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
+                  disabled={pinSubmitting}
+                  className="w-full bg-[#1a1a1a] border border-[#444] rounded px-3 py-2 text-white"
+                  placeholder="Confirm new PIN"
+                />
+              </div>
+              {newPin.length > 0 && confirmPin.length > 0 && newPin !== confirmPin && (
+                <p className="text-red-400 text-sm">PINs do not match</p>
+              )}
+              {newPin.length > 0 && newPin.length < 4 && (
+                <p className="text-red-400 text-sm">PIN must be at least 4 digits</p>
+              )}
+            </div>
+
+            {/* Staged progress stepper (D-03/STAFF-08) */}
+            {pinSubmitting && (
+              <div className="mb-4 space-y-2">
+                {['Writing cloud...', 'Syncing venue...', 'Verifying cloud...', 'Verifying venue...'].map((label, i) => (
+                  <div key={label} className="flex items-center gap-2 text-sm">
+                    {pinStep > i ? (
+                      <span className="text-green-400">&#10003;</span>
+                    ) : pinStep === i ? (
+                      <span className="text-yellow-400 animate-pulse">&#9679;</span>
+                    ) : (
+                      <span className="text-gray-600">&#9675;</span>
+                    )}
+                    <span className={pinStep >= i ? 'text-white' : 'text-gray-600'}>{label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* All-done checkmarks (after response returns ok) */}
+            {!pinSubmitting && pinStep === 4 && !pinPartialSuccess && (
+              <div className="mb-4 space-y-2">
+                {['Writing cloud...', 'Syncing venue...', 'Verifying cloud...', 'Verifying venue...'].map((label) => (
+                  <div key={label} className="flex items-center gap-2 text-sm">
+                    <span className="text-green-400">&#10003;</span>
+                    <span className="text-white">{label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Error banner (D-11/STAFF-09) */}
+            {pinError && (
+              <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded text-sm text-red-300">
+                {pinError}
+              </div>
+            )}
+
+            {/* Action buttons (D-13) */}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setChangePinTarget(null)}
+                disabled={pinSubmitting}
+                className="px-4 py-2 text-gray-400 hover:text-white text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleChangePin}
+                disabled={!isPinValid || pinSubmitting}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-700 disabled:text-gray-500 rounded text-sm text-white"
+              >
+                {pinSubmitting ? 'Changing...' : 'Change PIN'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
