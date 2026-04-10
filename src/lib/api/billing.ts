@@ -97,8 +97,19 @@ export const billingApi = {
   getSessionEvents: (id: string): Promise<SessionEvent[]> =>
     rcFetch(`/billing/sessions/${id}/events`),
 
-  getRates: (): Promise<BillingRate[]> =>
-    rcFetch('/billing/rates'),
+  getRates: async (): Promise<BillingRate[]> => {
+    const data = await rcFetch('/billing/rates');
+    const raw = data.rates || data || [];
+    // Normalize: backend uses tier_name/rate_per_min_paise/threshold_minutes/is_active
+    // Frontend expects name/price_paise/duration_minutes/active
+    return raw.map((r: Record<string, unknown>) => ({
+      id: r.id as string,
+      name: (r.name || r.tier_name || '') as string,
+      duration_minutes: (r.duration_minutes ?? r.threshold_minutes ?? 0) as number,
+      price_paise: (r.price_paise ?? r.rate_per_min_paise ?? 0) as number,
+      active: (r.active ?? r.is_active ?? true) as boolean,
+    }));
+  },
 
   refundSession: (id: string, data: { amount_paise?: number; method: 'wallet' | 'cash' | 'upi'; reason?: string }): Promise<void> =>
     rcFetch(`/billing/${id}/refund`, { method: 'POST', body: JSON.stringify(data) }),
