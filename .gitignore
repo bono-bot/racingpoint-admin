@@ -51,3 +51,11 @@ Thumbs.db
 desktop.ini
 .vscode/settings.json
 .idea/
+
+# Added 2026-04-11 (CLD follow-up) — Playwright test-results churn
+# The entire test-results/ directory is regenerated on every Playwright
+# run (artifacts screenshots, html reports, screenshots dir, .last-run.json).
+# Previous state: 193 tracked files from a stale run, all churning with
+# 82-deletion noise in git status. Untracked via `git rm -r --cached` in
+# the same commit as this gitignore addition.
+test-results/
