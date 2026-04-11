@@ -41,6 +41,8 @@ const navSections: NavSection[] = [
       { href: '/fleet', label: 'Fleet Health' },
       // Phase 361-03: Content Drift between Fleet Health and Metrics
       { href: '/fleet/content-drift', label: 'Content Drift' },
+      // Phase 367-02: On-demand pod verification (GLD-G-02)
+      { href: '/fleet/verify', label: 'Pod Verify' },
       { href: '/metrics', label: 'Metrics' },
       { href: '/config', label: 'Config Editor' },
     ],
