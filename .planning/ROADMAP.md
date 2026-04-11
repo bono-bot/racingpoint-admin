@@ -93,3 +93,50 @@ Phases execute in numeric order: 176 -> 177 -> 178 -> 179
 | 177. Deploy Automation & Verification | 2/2 | Complete    | 2026-03-24 |
 | 178. Runtime Resilience | 2/2 | Complete    | 2026-03-24 |
 | 179. Health Monitoring & Alerting | 2/2 | Complete    | 2026-03-24 |
+
+---
+
+## Backlog
+
+### Phase 999.1: Drift-proof deploy-audit — auto-derive pages_expected from filesystem walker (BACKLOG)
+
+**Goal:** [Captured for future planning]
+**Requirements:** TBD
+**Plans:** 0 plans
+
+**Motivation:** The current `/api/health` endpoint compares a hardcoded `pages_expected` array against a runtime page count and returns `healthy: true` when `pages_available >= pages_expected`. The "expected" list has drifted out of sync with the actual filesystem on all three Next.js apps (admin, web, kiosk), so the audit is cosmetic — it reports `healthy: true` with fewer expected pages than actual pages, hiding new-page additions entirely and giving no signal on accidental deletions.
+
+**Evidence (CLD 2026-04-11, live probes from James .27 → server .23):**
+
+| App | Endpoint | pages_expected | pages_available | Delta | healthy |
+|---|---|---|---|---|---|
+| Admin | http://192.168.31.23:3201/api/health | 32 | 52 | +20 | true |
+| Web | http://192.168.31.23:3200/api/health | 25 | 49 | +22 | true |
+| Kiosk | http://192.168.31.23:3300/kiosk/api/health | 9 | 16 | +5 | true |
+
+Examples of extra (unlisted-but-present) pages:
+- Admin: `/customers/[id]`, `/mesh-intelligence`, `/staff`, `/drivers/[id]`, `/sessions/[id]`
+- Web: `/customers`, `/drivers/[id]`, `/billing/[id]`
+- Kiosk: `/session/[id]`, `/results/[id]`
+
+**Scope:**
+1. **Filesystem walker** — At build-time (preferred) or first-request time, walk `src/app/**/page.tsx` (App Router) and derive the authoritative `pages_expected` list from the filesystem. Mirror the Next.js route-resolution rules (group routes `(...)`, dynamic segments `[id]`, catch-alls `[...slug]`, route handlers vs pages).
+2. **Hash + count** — Hash the sorted page list. Emit `pages_expected_hash` alongside `pages_expected_count` in the health response so the runtime can verify "the build I'm running matches the build the walker saw."
+3. **Drift detection as an error, not a success** — `pages_available != pages_expected_count` must flip `healthy: false` with a `drift_detected` reason. Healthy ≠ "more is fine" — it means "matches manifest." Adds should go through code review, not silent health-passes.
+4. **Consumer in deploy-audit** — `scripts/deploy/deploy-audit.sh` (lives in racecontrol repo) should read the hash/count from each of the 3 Next.js apps and fail the post-deploy gate on any drift. This closes the Deploy Manifest Protocol loop for frontends.
+
+**Cross-repo note:** The walker implementation lives in this repo (`racingpoint-admin`) as the reference. An identical pattern must be ported to `racecontrol/web/` and `racecontrol/kiosk/` — those are separate commits in the racecontrol repo. If the add-backlog skill can't span repos, split into:
+- **(A1) admin** — this entry: walker + drift-as-error in racingpoint-admin.
+- **(A2) racecontrol web+kiosk** — sibling backlog in racecontrol repo: port walker to web/ and kiosk/, update deploy-audit.sh to consume the hash.
+
+**Out of scope:**
+- Fixing the specific 47 missing entries by hand (band-aid, not the fix).
+- API route health (separate concern from page inventory).
+- Backend/Rust health endpoints.
+
+**Permanence:** Source-code change (Next.js API route + deploy script consumer). Survives redeploy. No manual state.
+
+**Priority:** Medium-High — `healthy:true` is currently lying on 3 out of 3 Next.js apps. Any future "health OK" claim is unreliable until fixed. Blocks DMP's frontend gate from ever being trustworthy.
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
