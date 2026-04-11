@@ -39,6 +39,8 @@ const navSections: NavSection[] = [
     title: 'Fleet',
     items: [
       { href: '/fleet', label: 'Fleet Health' },
+      // Phase 361-03: Content Drift between Fleet Health and Metrics
+      { href: '/fleet/content-drift', label: 'Content Drift' },
       { href: '/metrics', label: 'Metrics' },
       { href: '/config', label: 'Config Editor' },
     ],

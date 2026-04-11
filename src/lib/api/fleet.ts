@@ -1,5 +1,6 @@
 import { rcFetch } from './base';
 import type { PodFleetStatus, FleetHealthResponse } from '@racingpoint/types';
+import type { PodInventory, ContentDirsResponse } from '@/lib/types';
 export type { PodFleetStatus, FleetHealthResponse };
 
 export interface DeployStatus {
@@ -61,4 +62,23 @@ export const fleetApi = {
   // Remote exec
   execOnPod: (podId: string, command: string): Promise<ExecResult> =>
     rcFetch('/pods/' + podId + '/exec', { method: 'POST', body: JSON.stringify({ command }) }),
+
+  // Phase 361-03: Content drift detection
+  // Both methods mirror the existing auth pattern: rcFetch sends credentials:include
+  // (staff JWT in session cookie) via the Next.js /api/rc proxy.
+
+  /**
+   * GET /api/v1/pods/{podId}/inventory — TOML-declared content for this pod.
+   * Staff JWT required. Returns PodInventory with games, cars, tracks.
+   */
+  podInventory: (podId: number): Promise<PodInventory> =>
+    rcFetch(`/pods/${podId}/inventory`),
+
+  /**
+   * GET /api/v1/debug/pod-content-dirs/{podId} — live disk scan for this pod.
+   * Staff JWT required. Server injects pod service key — browser never sees it.
+   * Returns ContentDirsResponse with cars_on_disk, tracks_on_disk per game.
+   */
+  podContentDirs: (podId: number): Promise<ContentDirsResponse> =>
+    rcFetch(`/debug/pod-content-dirs/${podId}`),
 };
