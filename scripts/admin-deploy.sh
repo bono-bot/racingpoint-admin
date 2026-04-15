@@ -67,7 +67,7 @@ case "$NODE_VER" in
 esac
 
 # Step 1: Archive previous build
-echo "[admin-deploy] Step 1/9: archive previous build"
+echo "[admin-deploy] Step 1/10: archive previous build"
 if [ -d ".next/standalone" ]; then
   rm -rf .next/prev-standalone
   mv .next/standalone .next/prev-standalone
@@ -75,24 +75,24 @@ if [ -d ".next/standalone" ]; then
 fi
 
 # Step 2: Clean install
-echo "[admin-deploy] Step 2/9: npm ci"
+echo "[admin-deploy] Step 2/10: npm ci"
 npm ci --no-audit --no-fund
 
 # Step 3: Next.js build
-echo "[admin-deploy] Step 3/9: next build"
+echo "[admin-deploy] Step 3/10: next build"
 npx next build
 
 # Step 4: Copy static assets into standalone tree (Next known gap)
-echo "[admin-deploy] Step 4/9: copy static assets into standalone tree"
+echo "[admin-deploy] Step 4/10: copy static assets into standalone tree"
 cp -r .next/static .next/standalone/.next/static
 cp -r public .next/standalone/public
 
 # Step 5: Rebuild native bindings against runtime Node
-echo "[admin-deploy] Step 5/9: rebuild better-sqlite3 against $NODE_VER"
+echo "[admin-deploy] Step 5/10: rebuild better-sqlite3 against $NODE_VER"
 ( cd .next/standalone && npm rebuild better-sqlite3 )
 
 # Step 6: Copy bootstrap + env file
-echo "[admin-deploy] Step 6/9: copy bootstrap + env file"
+echo "[admin-deploy] Step 6/10: copy bootstrap + env file"
 cp scripts/server-bootstrap.js .next/standalone/server-bootstrap.js
 if [ -f ".env.production.local" ]; then
   cp .env.production.local .next/standalone/.env.production.local
@@ -102,7 +102,7 @@ else
 fi
 
 # Step 7: Pre-start verify (static checks only)
-echo "[admin-deploy] Step 7/9: pre-start verify (static)"
+echo "[admin-deploy] Step 7/10: pre-start verify (static)"
 node scripts/verify-deploy.js --skip-live
 
 if [ "$MODE" = "--dry-run" ]; then
@@ -112,7 +112,7 @@ if [ "$MODE" = "--dry-run" ]; then
 fi
 
 # Step 8: Restart
-echo "[admin-deploy] Step 8/9: restart service"
+echo "[admin-deploy] Step 8/10: restart service"
 if [ -z "${ADMIN_RESTART_CMD:-}" ]; then
   echo "[admin-deploy]   WARN: no ADMIN_RESTART_CMD — restart the admin manually and re-run verify-deploy.js"
   echo "[admin-deploy]   venue example: ADMIN_RESTART_CMD='schtasks //F //End //TN StartAdminSvc; schtasks //Run //TN StartAdminSvc'"
@@ -133,7 +133,19 @@ for i in $(seq 1 30); do
 done
 
 # Step 9: Full verify (live checks)
-echo "[admin-deploy] Step 9/9: post-restart verify (live)"
+echo "[admin-deploy] Step 9/10: post-restart verify (live)"
 node scripts/verify-deploy.js
+
+# Step 10: Smoke test (all pages load, no hydration errors)
+echo "[admin-deploy] Step 10/10: 46-page smoke test"
+if command -v npx &>/dev/null && [ -f "tests/e2e/contract/smoke-all-pages.spec.ts" ]; then
+  bash scripts/run-smoke-test.sh || {
+    echo "[admin-deploy] WARN: smoke test failed — pages have errors"
+    echo "[admin-deploy] Deploy completed but smoke test gate FAILED"
+    exit 1
+  }
+else
+  echo "[admin-deploy]   SKIP: Playwright not available or test file missing"
+fi
 
 echo "[admin-deploy] DEPLOY OK"
