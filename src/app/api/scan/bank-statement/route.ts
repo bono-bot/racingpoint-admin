@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Tesseract from 'tesseract.js';
-import { getDb } from '@/lib/db';
+import { getDb, withAdminDbError } from '@/lib/db';
 
 const GATEWAY_URL = process.env.GATEWAY_URL || 'http://localhost:3100';
 const API_KEY = process.env.GATEWAY_API_KEY || 'rp-gateway-2026-secure-key';
@@ -122,8 +122,7 @@ Always return valid JSON.`;
       total_matched: matched.filter(t => t.match).length,
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json({ error: 'Parse failed', message }, { status: 500 });
+    return withAdminDbError(err);
   }
 }
 
@@ -154,7 +153,6 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ ok: true, saved: transactions.length });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json({ error: 'Save failed', message }, { status: 500 });
+    return withAdminDbError(err);
   }
 }
