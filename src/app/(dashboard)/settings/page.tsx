@@ -80,6 +80,34 @@ export default function SettingsPage() {
           </div>
         </div>
 
+        {/* Quick Links */}
+        <div className="bg-rp-card border border-rp-border rounded-xl p-5">
+          <h2 className="text-lg font-semibold mb-4">Configuration</h2>
+          <div className="space-y-2">
+            <a href="/settings/business-rules" className="flex justify-between items-center p-3 bg-rp-card/30 rounded-lg hover:bg-neutral-800 transition">
+              <div>
+                <span className="text-sm text-neutral-300">Business Rules</span>
+                <p className="text-xs text-rp-grey mt-0.5">Pricing, billing, marketing constants</p>
+              </div>
+              <span className="text-rp-grey">&#8250;</span>
+            </a>
+            <a href="/settings/health" className="flex justify-between items-center p-3 bg-rp-card/30 rounded-lg hover:bg-neutral-800 transition">
+              <div>
+                <span className="text-sm text-neutral-300">System Health</span>
+                <p className="text-xs text-rp-grey mt-0.5">Service status and diagnostics</p>
+              </div>
+              <span className="text-rp-grey">&#8250;</span>
+            </a>
+            <a href="/settings/pipeline" className="flex justify-between items-center p-3 bg-rp-card/30 rounded-lg hover:bg-neutral-800 transition">
+              <div>
+                <span className="text-sm text-neutral-300">AI Pipeline</span>
+                <p className="text-xs text-rp-grey mt-0.5">Detection and healing configuration</p>
+              </div>
+              <span className="text-rp-grey">&#8250;</span>
+            </a>
+          </div>
+        </div>
+
         {/* About */}
         <div className="bg-rp-card border border-rp-border rounded-xl p-5">
           <h2 className="text-lg font-semibold mb-4">About</h2>
