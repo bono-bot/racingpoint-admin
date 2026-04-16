@@ -7,9 +7,10 @@ export default function SettingsPage() {
   const [gatewayInfo, setGatewayInfo] = useState<{ timestamp: string } | null>(null);
 
   useEffect(() => {
+    const checkedAt = new Date().toISOString();
     fetch('/api/health')
       .then(r => r.json())
-      .then(d => { setGatewayStatus('online'); setGatewayInfo(d); })
+      .then(d => { setGatewayStatus('online'); setGatewayInfo({ ...d, timestamp: d.timestamp || checkedAt }); })
       .catch(() => setGatewayStatus('offline'));
   }, []);
 

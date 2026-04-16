@@ -270,7 +270,7 @@ export default function TournamentsPage() {
                               <div key={r.id} className="bg-rp-black border border-rp-border rounded-lg px-3 py-2">
                                 <p className="text-sm text-white font-medium">{r.driver_name}</p>
                                 <p className="text-xs text-neutral-500">
-                                  {new Date(r.registered_at).toLocaleDateString()}
+                                  {r.registered_at ? new Date(r.registered_at).toLocaleDateString() : '--'}
                                 </p>
                               </div>
                             ))}

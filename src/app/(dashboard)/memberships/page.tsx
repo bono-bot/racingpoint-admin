@@ -96,7 +96,7 @@ function MembersList() {
                     {m.status === 'active' && daysLeft <= 7 ? `${daysLeft}d left` : m.status}
                   </span>
                 </td>
-                <td className="py-3 text-neutral-400">{new Date(m.started_at).toLocaleDateString()}</td>
+                <td className="py-3 text-neutral-400">{m.started_at ? new Date(m.started_at).toLocaleDateString() : '--'}</td>
                 <td className="py-3 text-neutral-400">{expiresAt.toLocaleDateString()}</td>
               </tr>
             );

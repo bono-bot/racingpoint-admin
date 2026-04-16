@@ -113,10 +113,10 @@ export default function RecognitionPage() {
                       {k.category}
                     </span>
                     <span className="text-xs text-[#5A5A5A]">
-                      {new Date(k.created_at + 'Z').toLocaleDateString('en-IN', {
+                      {k.created_at ? new Date(k.created_at + 'Z').toLocaleDateString('en-IN', {
                         day: 'numeric',
                         month: 'short',
-                      })}
+                      }) : '--'}
                     </span>
                   </div>
                   <p className="text-sm text-white">
