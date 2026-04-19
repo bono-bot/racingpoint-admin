@@ -12,8 +12,18 @@ import { COOKIE_NAME } from '@/lib/auth-config';
  * On unreachable backend: returns 502 with hint.
  */
 
+function isCloudAuthoritativeWrite(method: string, segments: string[]): boolean {
+  if (method === 'GET' || method === 'HEAD') return false;
+  const head = segments[0];
+  const tail = segments[1];
+  if (head === 'staff' && tail !== 'validate-pin') return true;
+  if (head === 'admin' && tail === 'staff') return true;
+  return false;
+}
+
 async function proxy(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const rcUrl = process.env.RC_URL;
+  const rcCloudUrl = process.env.RC_CLOUD_URL;
   if (!rcUrl) {
     return NextResponse.json(
       {
@@ -34,8 +44,13 @@ async function proxy(req: NextRequest, { params }: { params: Promise<{ path: str
     return NextResponse.json({ error: 'unauthorized', error_code: 'NO_TOKEN' }, { status: 401 });
   }
 
+  // Phase 343: staff_members is cloud-authoritative. Route staff mutations to
+  // cloud racecontrol when RC_CLOUD_URL is set; cloud syncs back to venue ~30s.
+  const useCloud = Boolean(rcCloudUrl) && isCloudAuthoritativeWrite(req.method, path);
+  const baseUrl = useCloud ? (rcCloudUrl as string) : rcUrl;
+
   const rcPath = `/api/v1/${path.join('/')}`;
-  const url = `${rcUrl}${rcPath}${req.nextUrl.search}`;
+  const url = `${baseUrl}${rcPath}${req.nextUrl.search}`;
 
   try {
     const headers: Record<string, string> = {
