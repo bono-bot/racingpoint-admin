@@ -455,7 +455,7 @@ export default function FleetPage() {
         <h1 className="text-2xl font-bold">Fleet Health</h1>
         {data && (
           <p className="text-sm text-neutral-400 mt-1">
-            Last updated: {new Date(data.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+            Last updated: {data.timestamp ? new Date(data.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) : '--'}
           </p>
         )}
         <p className={`text-sm font-medium mt-2 ${summaryColor}`}>

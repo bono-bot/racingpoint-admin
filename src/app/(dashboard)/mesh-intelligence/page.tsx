@@ -156,7 +156,7 @@ export default function MeshIntelligencePage() {
             <tbody>
               {incidents?.map((inc: MeshIncident) => (
                 <tr key={inc.id} className="border-b border-[#333333]/50 hover:bg-[#2a2a2a]">
-                  <td className="px-4 py-3 text-gray-400 text-xs">{new Date(inc.timestamp).toLocaleTimeString()}</td>
+                  <td className="px-4 py-3 text-gray-400 text-xs">{inc.timestamp ? new Date(inc.timestamp).toLocaleTimeString() : '--'}</td>
                   <td className="px-4 py-3 text-white text-xs">{inc.node}</td>
                   <td className="px-4 py-3 font-mono text-xs text-gray-300">{inc.problem_key}</td>
                   <td className={`px-4 py-3 text-center text-xs ${SEVERITY_COLORS[inc.severity] || 'text-gray-400'}`}>
