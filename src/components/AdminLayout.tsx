@@ -63,7 +63,7 @@ const navSections: NavSection[] = [
       { href: '/coupons', label: 'Coupons' },
       { href: '/pricing', label: 'Pricing Rules' },
       { href: '/packages', label: 'Packages' },
-      // v47.0 Phase 354-01: /memberships hidden — route exists but not linked in nav
+      { href: '/memberships', label: 'Memberships' },
     ],
   },
   {
@@ -78,7 +78,7 @@ const navSections: NavSection[] = [
     title: 'Finance',
     items: [
       { href: '/purchases', label: 'Purchases' },
-      // v47.0 Phase 354-01: /wallet-transactions hidden — route exists but not linked in nav
+      { href: '/wallet-transactions', label: 'Wallet Transactions' },
       { href: '/finance', label: 'Dashboard' },
     ],
   },
