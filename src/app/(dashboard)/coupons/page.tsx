@@ -43,10 +43,31 @@ export default function CouponsPage() {
 
   useEffect(() => { load(); }, []);
 
+  const validate = (): string | null => {
+    const code = form.code.trim().toUpperCase();
+    if (!code) return 'Code is required';
+    if (!/^[A-Z0-9_-]{3,20}$/.test(code)) return 'Code must be 3-20 chars: A-Z, 0-9, _ or -';
+    const v = Number(form.discount_value);
+    if (!Number.isFinite(v) || v <= 0) return 'Value must be a positive number';
+    if (form.discount_type === 'percent' && (v < 1 || v > 100)) return 'Percent must be 1-100';
+    if (form.discount_type === 'flat' && v < 100) return 'Flat discount must be at least 100 paise (\u20B91)';
+    if (form.discount_type === 'free_minutes' && (v < 1 || v > 120)) return 'Free minutes must be 1-120';
+    if (form.max_uses && Number(form.max_uses) <= 0) return 'Max uses must be positive';
+    if (form.min_amount_paise && Number(form.min_amount_paise) < 0) return 'Min amount cannot be negative';
+    if (form.valid_until) {
+      const d = new Date(form.valid_until);
+      if (isNaN(d.getTime())) return 'Valid-until date is invalid';
+      if (d.getTime() < Date.now()) return 'Valid-until must be a future date';
+    }
+    return null;
+  };
+
   const handleCreate = async () => {
+    const err = validate();
+    if (err) { toast.error(err); return; }
     try {
       await api.createCoupon({
-        code: form.code.toUpperCase(),
+        code: form.code.trim().toUpperCase(),
         discount_type: form.discount_type,
         discount_value: Number(form.discount_value),
         max_uses: form.max_uses ? Number(form.max_uses) : null,
