@@ -1,25 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
 
-// Inline constants to avoid import issues in Edge Runtime
-const COOKIE_NAME = 'rp-admin-token';
-const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/logout', '/api/health'];
+const COMING_SOON_GATE = process.env.ADMIN_COMING_SOON_GATE !== '0';
 
-function getSecret() {
-  const secret = process.env.RC_JWT_SECRET;
-  if (!secret) throw new Error('RC_JWT_SECRET environment variable is required');
-  return new TextEncoder().encode(secret);
-}
+const GATE_PUBLIC_PREFIXES = [
+  '/coming-soon',
+  '/api/health',
+  '/api/auth/',
+];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Allow public paths
-  if (PUBLIC_PATHS.some(p => pathname.startsWith(p))) {
-    return NextResponse.next();
-  }
-
-  // Allow static assets and Next.js internals
   if (pathname.startsWith('/_next') ||
       pathname.startsWith('/favicon') ||
       pathname.endsWith('.ico') ||
@@ -29,34 +20,23 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = req.cookies.get(COOKIE_NAME)?.value;
-  if (!token) {
-    const loginUrl = new URL('/login', req.url);
-    if (pathname !== '/') {
-      loginUrl.searchParams.set('redirect', pathname);
-    }
-    return NextResponse.redirect(loginUrl);
+  if (!COMING_SOON_GATE) {
+    return NextResponse.next();
   }
 
-  try {
-    const { payload } = await jwtVerify(token, getSecret(), {
-      algorithms: ['HS256'],
-    });
-    // Pass user info downstream via headers
-    const res = NextResponse.next();
-    res.headers.set('x-user-role', (payload.role as string) || 'unknown');
-    res.headers.set('x-user-sub', (payload.sub as string) || 'unknown');
-    return res;
-  } catch {
-    // Token expired or invalid -- clear cookie and redirect to login
-    const loginUrl = new URL('/login', req.url);
-    if (pathname !== '/') {
-      loginUrl.searchParams.set('redirect', pathname);
-    }
-    const res = NextResponse.redirect(loginUrl);
-    res.cookies.delete(COOKIE_NAME);
-    return res;
+  if (GATE_PUBLIC_PREFIXES.some(p => pathname.startsWith(p))) {
+    return NextResponse.next();
   }
+
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.json(
+      { error: 'cloud_admin_gated', detail: 'Cloud admin is temporarily gated. Use venue admin :3201.' },
+      { status: 503 },
+    );
+  }
+
+  const comingSoon = new URL('/coming-soon', req.url);
+  return NextResponse.redirect(comingSoon);
 }
 
 export const config = {
