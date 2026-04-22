@@ -1,7 +1,13 @@
 import { test, expect } from '@playwright/test';
 
-const BASE = 'http://192.168.31.23:3201';
-const PIN = '1234'; // admin PIN
+const BASE = process.env.ADMIN_URL || 'http://localhost:3200';
+const PIN = process.env.ADMIN_PIN;
+if (!PIN) {
+  throw new Error(
+    'ADMIN_PIN env var required. Set it in shell before running: ADMIN_PIN=... npx playwright test. ' +
+    'Override BASE with ADMIN_URL (default: http://localhost:3200 — matches playwright.config.ts webServer).'
+  );
+}
 
 const ROUTES = [
   '/',

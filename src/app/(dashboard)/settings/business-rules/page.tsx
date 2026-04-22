@@ -32,6 +32,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 export default function BusinessRulesPage() {
   const [rules, setRules] = useState<BusinessRule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [backendMissing, setBackendMissing] = useState(false);
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [saving, setSaving] = useState(false);
@@ -42,8 +43,11 @@ export default function BusinessRulesPage() {
     try {
       const data = await rcFetch('/business-rules');
       setRules(data.rules || []);
+      setBackendMissing(false);
     } catch {
-      toast.error('Failed to load business rules');
+      // Phase 356 backend not yet implemented — UI stays available, shows pending state.
+      setBackendMissing(true);
+      setRules([]);
     }
     setLoading(false);
   };
@@ -149,6 +153,23 @@ export default function BusinessRulesPage() {
 
       {loading ? (
         <SkeletonTable rows={10} cols={4} />
+      ) : backendMissing ? (
+        <div className="bg-rp-card border border-amber-500/30 rounded-xl p-6">
+          <div className="flex items-start gap-3">
+            <div className="text-amber-400 text-xl">⏳</div>
+            <div>
+              <h2 className="font-semibold text-amber-400 mb-1">Backend pending — Phase 356</h2>
+              <p className="text-sm text-rp-grey leading-relaxed">
+                This page is pre-built for the runtime-constants API. The backend endpoint
+                <span className="font-mono text-neutral-300"> GET /api/v1/business-rules </span>
+                is not yet implemented on racecontrol. The UI will activate automatically once the endpoint lands — no action required here.
+              </p>
+              <p className="text-xs text-neutral-500 mt-2">
+                Admin UI shipped 2026-04-15 (commit 5a9db7b). RC-side Plans 01/02 not landed.
+              </p>
+            </div>
+          </div>
+        </div>
       ) : filtered.length === 0 ? (
         <div className="text-center text-rp-grey py-12">No business rules found</div>
       ) : (
