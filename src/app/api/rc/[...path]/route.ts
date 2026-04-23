@@ -4,6 +4,7 @@ import { COOKIE_NAME } from '@/lib/auth-config';
 import {
   recordRequest,
   checkRateLimit,
+  recordMiSymptom,
   type CallerClass,
 } from '@/lib/admin-gateway-state';
 
@@ -181,6 +182,15 @@ async function proxy(
   // A5 stub: rate-limit gate (disabled unless env-toggled)
   const rl = checkRateLimit(caller.identityKey, caller.class);
   if (!rl.allowed) {
+    recordMiSymptom({
+      problem_key: `admin_gateway_rate_limited_${caller.class}`,
+      severity: 'P3',
+      endpoint: `/api/v1/${path.join('/')}`,
+      caller: caller.class,
+      upstream_status: null,
+      request_id: requestId,
+      upstream_url: rcUrl,
+    });
     return NextResponse.json(
       {
         error: 'rate limit exceeded',
@@ -232,6 +242,15 @@ async function proxy(
       upstream_status: 'unreachable',
       use_cloud: useCloud,
     });
+    recordMiSymptom({
+      problem_key: 'admin_gateway_upstream_unreachable',
+      severity: 'P1',
+      endpoint: rcPath,
+      caller: caller.class,
+      upstream_status: null,
+      request_id: requestId,
+      upstream_url: baseUrl,
+    });
     return NextResponse.json(
       {
         error: 'racecontrol unreachable',
@@ -267,6 +286,18 @@ async function proxy(
       latency_ms: latencyMs,
       upstream_status: String(res.status),
       use_cloud: useCloud,
+    });
+  }
+
+  if (res.status >= 500) {
+    recordMiSymptom({
+      problem_key: `admin_gateway_upstream_5xx_${res.status}`,
+      severity: 'P2',
+      endpoint: rcPath,
+      caller: caller.class,
+      upstream_status: res.status,
+      request_id: requestId,
+      upstream_url: baseUrl,
     });
   }
 

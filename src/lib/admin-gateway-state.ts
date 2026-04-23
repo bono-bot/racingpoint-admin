@@ -174,3 +174,171 @@ export function checkRateLimit(callerKey: string, callerClass: CallerClass): {
   bucket.count++;
   return { allowed: true };
 }
+
+/**
+ * MI symptom emission (doctrine v3 §6 + MI-INTEGRATION.md).
+ *
+ * Gateway is a nervous-system endpoint — errors become non-blocking POSTs
+ * to `/api/v1/mesh/audit-seed-service`. Bucketed over 30s by problem_key
+ * so a flood of 502s becomes ONE aggregate POST, not N.
+ *
+ * Opt-in via `ADMIN_GATEWAY_MI_EMIT=1`. Needs `RC_SERVICE_KEY` in env
+ * (same key pods use for `/mesh/audit-seed-service`).
+ *
+ * Best-effort: emit failure is logged once per window at warn, never
+ * cascades into the client response.
+ */
+interface MiSymptomBucket {
+  count: number;
+  first_seen: number;
+  last_seen: number;
+  sample: {
+    endpoint: string;
+    caller: CallerClass;
+    upstream_status: number | null;
+    request_id: string;
+    upstream_url: string;
+  };
+  severity: 'P1' | 'P2' | 'P3';
+}
+
+const miBuckets = new Map<string, MiSymptomBucket>();
+const MI_FLUSH_INTERVAL_MS = 30_000;
+let miFlushTimer: NodeJS.Timeout | null = null;
+let miKeyWarnedMissing = false;
+
+function miEmitEnabled(): boolean {
+  return process.env.ADMIN_GATEWAY_MI_EMIT === '1';
+}
+
+export function recordMiSymptom(args: {
+  problem_key: string;
+  severity: 'P1' | 'P2' | 'P3';
+  endpoint: string;
+  caller: CallerClass;
+  upstream_status: number | null;
+  request_id: string;
+  upstream_url: string;
+}): void {
+  if (!miEmitEnabled()) return;
+  const now = Date.now();
+  const existing = miBuckets.get(args.problem_key);
+  if (existing) {
+    existing.count++;
+    existing.last_seen = now;
+  } else {
+    miBuckets.set(args.problem_key, {
+      count: 1,
+      first_seen: now,
+      last_seen: now,
+      sample: {
+        endpoint: args.endpoint,
+        caller: args.caller,
+        upstream_status: args.upstream_status,
+        request_id: args.request_id,
+        upstream_url: args.upstream_url,
+      },
+      severity: args.severity,
+    });
+  }
+  ensureMiFlushTimer();
+}
+
+function ensureMiFlushTimer(): void {
+  if (miFlushTimer) return;
+  miFlushTimer = setInterval(() => {
+    flushMiBuckets().catch((err) => {
+      console.warn(
+        JSON.stringify({
+          ts: new Date().toISOString(),
+          component: 'admin-gateway',
+          event: 'mi_flush_error',
+          error: err instanceof Error ? err.message : String(err),
+        })
+      );
+    });
+  }, MI_FLUSH_INTERVAL_MS);
+  if (typeof miFlushTimer.unref === 'function') miFlushTimer.unref();
+}
+
+async function flushMiBuckets(): Promise<void> {
+  if (miBuckets.size === 0) return;
+
+  const rcUrl = process.env.RC_URL;
+  const serviceKey = process.env.RC_SERVICE_KEY;
+  if (!rcUrl || !serviceKey) {
+    if (!miKeyWarnedMissing) {
+      console.warn(
+        JSON.stringify({
+          ts: new Date().toISOString(),
+          component: 'admin-gateway',
+          event: 'mi_emit_disabled',
+          reason: !rcUrl ? 'RC_URL missing' : 'RC_SERVICE_KEY missing',
+        })
+      );
+      miKeyWarnedMissing = true;
+    }
+    miBuckets.clear();
+    return;
+  }
+
+  const findings = Array.from(miBuckets.entries()).map(([problem_key, b]) => ({
+    problem_key,
+    severity: b.severity,
+    symptom_patterns: [
+      `upstream_status=${b.sample.upstream_status ?? 'unreachable'}`,
+      `endpoint=${b.sample.endpoint}`,
+      `caller=${b.sample.caller}`,
+      `count=${b.count}`,
+    ],
+    source: 'admin-gateway',
+    request_id: b.sample.request_id,
+    endpoint: b.sample.endpoint,
+    caller: b.sample.caller,
+    upstream_status: b.sample.upstream_status,
+    upstream_url: b.sample.upstream_url,
+    first_seen: new Date(b.first_seen).toISOString(),
+    fix_status: 'unknown',
+    escalation_message: `Admin gateway: ${b.count} ${problem_key} event(s) in last ${Math.round(
+      (b.last_seen - b.first_seen) / 1000
+    )}s — sample endpoint ${b.sample.endpoint} caller=${b.sample.caller}`,
+  }));
+
+  miBuckets.clear();
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(`${rcUrl}/api/v1/mesh/audit-seed-service`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Service-Key': serviceKey,
+      },
+      body: JSON.stringify({ findings }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    if (!res.ok) {
+      console.warn(
+        JSON.stringify({
+          ts: new Date().toISOString(),
+          component: 'admin-gateway',
+          event: 'mi_emit_rejected',
+          status: res.status,
+          findings_count: findings.length,
+        })
+      );
+    }
+  } catch (err) {
+    console.warn(
+      JSON.stringify({
+        ts: new Date().toISOString(),
+        component: 'admin-gateway',
+        event: 'mi_emit_error',
+        error: err instanceof Error ? err.message : String(err),
+        findings_count: findings.length,
+      })
+    );
+  }
+}
