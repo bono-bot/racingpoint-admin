@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const COMING_SOON_GATE = process.env.ADMIN_COMING_SOON_GATE !== '0';
 
+// `/api/rc/` and `/api/admin-gateway/` are part of the spinal-cord gateway contract
+// (GATEWAY-CONTRACT.md + doctrine v3 §5). They MUST bypass the COMING_SOON gate so
+// PWA / Kiosk / WhatsApp / rc-agent can reach racecontrol via cloud admin (A3 organ).
+// Without this, cloud middleware 503s `/api/rc/*` before the proxy code runs and
+// the spine is broken for the cloud organ.
 const GATE_PUBLIC_PREFIXES = [
   '/coming-soon',
   '/api/health',
   '/api/auth/',
+  '/api/rc/',
+  '/api/admin-gateway/',
 ];
 
 export async function middleware(req: NextRequest) {
