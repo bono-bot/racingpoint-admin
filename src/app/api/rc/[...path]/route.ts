@@ -39,7 +39,17 @@ const STRIP_HEADERS_REQ = new Set([
   'transfer-encoding',
 ]);
 
-const STRIP_HEADERS_RES = new Set(['transfer-encoding', 'connection']);
+// content-encoding + content-length must be stripped: Node fetch auto-decompresses
+// the body into arrayBuffer(), so forwarding the original encoding header would make
+// the browser try to decompress already-decompressed bytes (ERR_CONTENT_DECODING_FAILED).
+// Browser-DOM smoke 2026-04-23 evening caught this; curl missed it because curl
+// handles compression symmetrically.
+const STRIP_HEADERS_RES = new Set([
+  'transfer-encoding',
+  'connection',
+  'content-encoding',
+  'content-length',
+]);
 
 const SAMPLE_GET_RATE = 0.01;
 
