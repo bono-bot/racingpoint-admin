@@ -19,7 +19,8 @@ interface PipelineStatus {
   proposal_count: number;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.31.23:8080';
+// Route through admin's own gateway (/api/rc/*) — spinal-cord contract.
+// Direct public-env API-URL usage from admin src is blocked by scripts/check-spinal-cord.mjs.
 
 function fetcher<T>(url: string): Promise<T> {
   return fetch(url, { headers: { 'Content-Type': 'application/json' } }).then(r => r.json() as Promise<T>);
@@ -55,7 +56,7 @@ export default function PipelinePage() {
   useEffect(() => setHydrated(true), []);
 
   const { data: status, error } = useSWR<PipelineStatus>(
-    hydrated ? `${API_BASE}/api/v1/pipeline/status` : null,
+    hydrated ? '/api/rc/pipeline/status' : null,
     fetcher,
     { refreshInterval: 30000 }
   );
@@ -65,12 +66,12 @@ export default function PipelinePage() {
   async function toggleConfig(key: string, currentValue: boolean) {
     setToggling(key);
     try {
-      await fetch(`${API_BASE}/api/v1/pipeline/config`, {
+      await fetch('/api/rc/pipeline/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [key]: !currentValue }),
       });
-      mutate(`${API_BASE}/api/v1/pipeline/status`);
+      mutate('/api/rc/pipeline/status');
     } finally {
       setToggling(null);
     }
