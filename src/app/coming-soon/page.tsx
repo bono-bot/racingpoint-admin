@@ -24,31 +24,40 @@ export default function ComingSoonPage() {
             marginBottom: '1rem',
           }}
         >
-          RacingPoint Admin
+          RacingPoint
         </div>
         <h1 style={{ fontSize: '2.4rem', margin: '0 0 1rem', fontWeight: 600 }}>
-          Cloud dashboard coming soon
+          Cloud admin is launching soon
         </h1>
         <p style={{ fontSize: '1.05rem', lineHeight: 1.6, color: '#b4bccc', margin: '0 0 1.5rem' }}>
-          Cloud admin is temporarily gated while the API proxy layer is built.
-          All operational controls remain available on the venue admin console.
+          We&rsquo;re putting the finishing touches on the cloud admin experience.
+          In the meantime, our team is fully reachable.
         </p>
-        <div
+        <a
+          href="mailto:support@racingpoint.in"
           style={{
             display: 'inline-block',
-            padding: '0.85rem 1.25rem',
+            padding: '0.85rem 1.5rem',
             borderRadius: 8,
             background: '#141821',
             border: '1px solid #242a38',
-            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-            fontSize: '0.92rem',
             color: '#cfd6e4',
+            textDecoration: 'none',
+            fontSize: '0.95rem',
+            fontWeight: 500,
           }}
         >
-          Venue admin → http://192.168.31.23:3201
-        </div>
-        <p style={{ marginTop: '1.5rem', fontSize: '0.85rem', color: '#7a8597' }}>
-          Contact Uday if you need remote access.
+          support@racingpoint.in
+        </a>
+        <p style={{ marginTop: '2rem', fontSize: '0.85rem', color: '#7a8597' }}>
+          Visit{' '}
+          <a
+            href="https://racingpoint.in"
+            style={{ color: '#9aa5b8', textDecoration: 'underline' }}
+          >
+            racingpoint.in
+          </a>{' '}
+          for our main site.
         </p>
       </div>
     </div>
