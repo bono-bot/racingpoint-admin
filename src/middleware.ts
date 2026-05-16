@@ -3,7 +3,7 @@ import { jwtVerify } from 'jose';
 
 // Inline constants to avoid import issues in Edge Runtime
 const COOKIE_NAME = 'rp-admin-token';
-const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/logout', '/api/health'];
+const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/logout', '/api/auth/me', '/api/health'];
 
 function getSecret() {
   const secret = process.env.RC_JWT_SECRET;
